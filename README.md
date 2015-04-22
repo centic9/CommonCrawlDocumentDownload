@@ -60,6 +60,32 @@ There was a new index announced at http://blog.commoncrawl.org/2015/04/announcin
 support using it, we will need to review how https://github.com/ikreymer/cc-index-server downloads the binary tree of
 urls so we can use it to look for URLs by extensions.
 
+Indexes are available at s3://aws-publicdatasets/common-crawl/cc-index/collections/[CC-MAIN-YYYY-WW], 
+e.g. https://aws-publicdatasets.s3.amazonaws.com/common-crawl/cc-index/collections/CC-MAIN-2015-11/metadata.yaml
+
+Indexing is done via https://github.com/ikreymer/webarchive-indexing
+
+CDX file format is described at https://github.com/ikreymer/webarchive-indexing#cdx-file-format
+
+#### Reading the data
+
+For example, if you have the query result from http://index.commoncrawl.org/CC-MAIN-2015-11-index?url=commoncrawl.org&output=json&limit=1
+
+    {"urlkey": "org,commoncrawl)/", "timestamp": "20150302032705", "url": "http://commoncrawl.org/", "length": "2526", "filename": "common-crawl/crawl-data/CC-MAIN-2015-11/segments/1424936462700.28/warc/CC-MAIN-20150226074102-00159-ip-10-28-5-156.ec2.internal.warc.gz", "digest": "QE4UUUWUJWEZBBK6PUG3CHFAGEKDMDBZ", "offset": "53235662"}
+
+You can access the original resource via this url, using curl or wget:
+
+    curl http://index.commoncrawl.org/CC-MAIN-2015-11/20150302032705id_/http://commoncrawl.org/
+
+    wget http://index.commoncrawl.org/CC-MAIN-2015-11/20150302032705id_/http://commoncrawl.org/
+
+Note the format here is: /CC-MAIN-2015-11/ + the timestamp + id_ + / url
+
+Please note that this capability is part of the pywb replay software, and may change in the future for CommonCrawl. It's not guaranteed to work in all cases..
+
+This replay serves the original response http headers as well, which may not be consistent with content and may not always work in the browser.
+
+
 ### Related projects
 
 * https://github.com/jvtm/pyambit 
