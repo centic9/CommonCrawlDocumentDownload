@@ -56,6 +56,12 @@ Run unit tests
 available implementations), you can do things like streaming processing of the file instead of storing the file
 locally, which will avoid using too much disk-space
 
+#### Supporting the new URL Index
+
+There was a new index announced at http://blog.commoncrawl.org/2015/04/announcing-the-common-crawl-index/, in order to 
+support using it, we will need to review how https://github.com/ikreymer/cc-index-server downloads the binary tree of
+urls so we can use it to look for URLs by extensions.
+
 #### Related projects
 
 * https://github.com/jvtm/pyambit 
