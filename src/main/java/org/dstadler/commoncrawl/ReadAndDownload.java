@@ -15,7 +15,18 @@ import org.dstadler.commons.logging.jdk.LoggerFactory;
 import com.google.common.base.Preconditions;
 
 
-
+/**
+ * Main application to read the URLs from the CommonCrawl URL Index
+ * and pass the resulting blocks to the BlockProcessor.
+ * 
+ * You can change the SKIP_BLOCK constant to start at a different
+ * block index, e.g. if you handled a number of blocks before already.
+ * 
+ * You can switch to another BlockProcessor if you want to use a 
+ * different way of handling the blocks, e.g. class Processor will
+ * write the URLs into a file without downloading the actual binary
+ * data.
+ */
 public class ReadAndDownload {
     private final static Logger log = LoggerFactory.make();
     

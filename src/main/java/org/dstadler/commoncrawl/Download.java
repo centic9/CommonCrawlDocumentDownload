@@ -21,7 +21,7 @@ import org.dstadler.commons.http.HttpClientWrapper;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
 
 /**
- * ReadAndDownload a big list of urls from a file, convert the reversed domain
+ * Download files from a list of urls stored in a file, convert the reversed domain
  * to normal URLs and try to download them.
  * 
  *  Note: This is now superseeded by reading the binary data directly 

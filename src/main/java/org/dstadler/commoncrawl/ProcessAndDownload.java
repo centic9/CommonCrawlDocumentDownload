@@ -19,7 +19,7 @@ import org.dstadler.commons.logging.jdk.LoggerFactory;
 /**
  * Specialized Processor which reads the position in the Common Crawl
  * from the URL in the Block and then downloads and unwraps the actual
- * document.
+ * document in one go.
  *
  * @author dominik.stadler
  */

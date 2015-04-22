@@ -1,7 +1,15 @@
-[![Build Status](https://buildhive.cloudbees.com/job/centic9/job/CommonCrawl/badge/icon)](https://buildhive.cloudbees.com/job/centic9/job/CommonCrawl/)
+[![Build Status](https://buildhive.cloudbees.com/job/centic9/job/CommonCrawlDocumentDownload/badge/icon)](https://buildhive.cloudbees.com/job/centic9/job/CommonCrawlDocumentDownload/)
 
-Small tool to download data from CommonCrawl indexes, currently only the URL Index is supported. Please note that 
-a full download usually finds a huge number of files and thus downloading will require a large amount of disk space!
+This is a small tool to download binary data from the CommonCrawl indexes.
+
+Currently only the URL Index as described at https://github.com/trivio/common_crawl_index and 
+http://blog.commoncrawl.org/2013/01/common-crawl-url-index/ is supported. 
+
+We are evaluating support for the newer URL Index announced at http://blog.commoncrawl.org/2015/04/announcing-the-common-crawl-index/
+but we did not find a way to search for extensions and not parts of the url in this new index.
+
+Please note that a full run usually finds a huge number of files and thus downloading will require a large amount 
+of time and lots of disk-space if the data is stored locally!
 
 ## Getting started
 
@@ -42,12 +50,18 @@ Run unit tests
 
 	./gradlew check jacocoTestReport
 
+#### Ideas
+
+* By adding a new implementation of BlockProcesser (likely re-using existing stuff by deriving from one of the
+available implementations), you can do things like streaming processing of the file instead of storing the file
+locally, which will avoid using too much disk-space
+
 #### Related projects
 
 * https://github.com/jvtm/pyambit 
 
 #### Licensing
 
-* CommonCrawl is licensed under the [BSD 2-Clause License].
+* CommonCrawlDocumentDownload is licensed under the [BSD 2-Clause License].
 
 [BSD 2-Clause License]: http://www.opensource.org/licenses/bsd-license.php

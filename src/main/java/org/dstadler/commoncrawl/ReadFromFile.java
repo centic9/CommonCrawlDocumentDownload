@@ -13,11 +13,18 @@ import org.dstadler.commons.logging.jdk.LoggerFactory;
 import com.google.common.base.Preconditions;
 
 
-
+/**
+ * Read the blocks of urls from a local file that was downloaded
+ * via the download.sh script. 
+ * 
+ *  Note: This is now superseeded by reading the binary data directly 
+ *  from the Common Crawl archive via {@link ProcessAndDownload}. 
+ * 
+ */
 public class ReadFromFile {
     private final static Logger log = LoggerFactory.make();
     
-    private static final File DATA_FILE = new File("/usbb/commoncrawl/index.data");
+    private static final File DATA_FILE = new File("index.data");
     private static final int SKIP_BLOCKS = 0;
 
     public static void main(String[] args) throws IllegalStateException, IOException {

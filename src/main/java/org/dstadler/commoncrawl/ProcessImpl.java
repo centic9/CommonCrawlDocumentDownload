@@ -18,14 +18,11 @@ import org.dstadler.commons.logging.jdk.LoggerFactory;
 /**
  * Handler for blocks, it provides a queue where blocks are pushed to and 
  * starts a separate thread internally which will do the actual processing
- * of the block so that the main thread can spend all it's time downloading.
+ * of the block so that the main thread can spend all its time downloading.
  * 
  * Typically the Thread is mostly waiting for blocks as the bottleneck usually 
- * will be download of data in the main thread unless you have a very high 
- * bandwidth. 
- * 
- * Then it might be necessary to increase the upper bound of the Dequeue to
- * avoid  
+ * will be the downloading of data in the main thread unless you have a very high 
+ * bandwidth.
  *
  * @author dominik.stadler
  */
