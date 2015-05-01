@@ -33,7 +33,7 @@ import com.google.common.base.Preconditions;
 public class ReadAndDownload {
     private final static Logger log = LoggerFactory.make();
 
-    private static final int SKIP_BLOCKS = 150559;
+    private static final int SKIP_BLOCKS = 0;
 
     private static int blockIndex = SKIP_BLOCKS;
 
