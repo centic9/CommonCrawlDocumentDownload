@@ -20,8 +20,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.poi.util.HexDump;
 import org.apache.poi.util.LittleEndian;
-
 import org.dstadler.commons.logging.jdk.LoggerFactory;
+
 import com.google.common.base.Preconditions;
 
 
@@ -40,10 +40,10 @@ public class Utils {
     public static HttpEntity checkAndFetch(CloseableHttpResponse response, String url) throws IOException {
         int statusCode = response.getStatusLine().getStatusCode();
         if(statusCode > 206) {
-            String msg = "Had HTTP StatusCode " + statusCode + " for request: " + url + ", response: " + 
+            String msg = "Had HTTP StatusCode " + statusCode + " for request: " + url + ", response: " +
                     response.getStatusLine().getReasonPhrase();
             log.warning(msg);
-   
+
             throw new IOException(msg);
         }
         return response.getEntity();
@@ -77,7 +77,7 @@ public class Utils {
             }
         }
     }
-    
+
     public static String reverseDomain(String host) {
         if(StringUtils.isEmpty(host)) {
             return host;
@@ -90,10 +90,10 @@ public class Utils {
         for(int i = parts.length-1;i>= 0;i--) {
             builder.append(parts[i]).append(".");
         }
-        
+
         // remove trailing dot
         builder.setLength(builder.length()-1);
-        
+
         return builder.toString();
     }
 
@@ -105,14 +105,14 @@ public class Utils {
         } else {
             urlStr = "http://" + urlStr;
         }
-        
+
         // some URLs contain invalid characters, for now remove them although this
         // likely makes the URL invalid unless it is some query-parameter which is not
         // actually significant for the URL
         URI url = new URI(urlStr.replace("[", "").replace("]", ""));
-        
-        // convert the host of the URL from tld-first 
-        return new URI(url.getScheme(), url.getUserInfo(), Utils.reverseDomain(url.getHost()), 
+
+        // convert the host of the URL from tld-first
+        return new URI(url.getScheme(), url.getUserInfo(), Utils.reverseDomain(url.getHost()),
                 url.getPort(), url.getPath(), url.getQuery(), url.getFragment());
     }
 
@@ -131,7 +131,7 @@ public class Utils {
         processor.offer(block, blockIndex);
         return true;
     }
-    
+
 
     public static void logProgress(long startPos, int blockSize, int skipBlocks, long startTs, long blockIndex, int logStep, long fileLength) {
         if(blockIndex % logStep == 0) {
@@ -139,10 +139,10 @@ public class Utils {
             double diffSec = ((double)diff)/1000;
             long readBlocks = blockIndex - skipBlocks;
             long currentPos = startPos + (readBlocks * blockSize);
-   
-            log.info("Reading block " + blockIndex + " at position " + currentPos + 
+
+            log.info("Reading block " + blockIndex + " at position " + currentPos +
                     " fetched " + readBlocks + " blocks in " + diffSec + " s," +
-                    " with " + readBlocks/diffSec + " per second" + 
+                    " with " + readBlocks/diffSec + " per second" +
                     (fileLength > 0 ? ", " + (((double)currentPos)/fileLength*100) + "% of " + fileLength + " bytes done" : ""));
         }
     }
