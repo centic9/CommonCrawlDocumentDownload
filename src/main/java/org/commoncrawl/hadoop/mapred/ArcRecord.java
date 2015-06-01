@@ -139,7 +139,7 @@ public class ArcRecord
       LOG.error("Exception thrown while parsing ARC record", ex);
       return false;
     }
-     
+
     return true;
   }
 
@@ -332,7 +332,7 @@ public String toString() {
   /**
    * <p>Returns the MIME content type from the ARC record header.</p>
    * <p>Note: The MIME content type in the ARC record header is not necessarily the
-   * same as the <code>Content-Type</code> HTTP header inside the content body 
+   * same as the <code>Content-Type</code> HTTP header inside the content body
    * (if one is present).</p>
    *
    * @return The MIME content type for this entry.
@@ -344,7 +344,7 @@ public String toString() {
   /**
    * <p>Returns the content length from the ARC record header.</p>
    * <p>Note: The content length in the ARC record header is not necessarily the
-   * same as the <code>Content-Length</code> HTTP header inside the content body 
+   * same as the <code>Content-Length</code> HTTP header inside the content body
    * (if one is present).</p>
    *
    * @return The content length for this entry.
@@ -397,7 +397,7 @@ public String toString() {
 
   /**
    *
-   */ 
+   */
   public static class ByteArraySessionInputBuffer
       extends AbstractSessionInputBuffer {
 
@@ -512,7 +512,7 @@ public String toString() {
 
     if (this._httpResponse == null) {
       LOG.error("Unable to parse HTTP response"); return null;
-    }      
+    }
 
     // Set the reset of the payload as the HTTP entity.  Use an InputStreamEntity
     // to avoid a memory copy.
@@ -566,7 +566,7 @@ public String toString() {
       charset = ContentType.getOrDefault(this._httpResponse.getEntity()).getCharset().name();
     }
     catch (Throwable ex) {
-
+        // ignore exceptions here
     }
 
     // if anything goes wrong, try ISO-8859-1
