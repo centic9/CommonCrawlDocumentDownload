@@ -10,7 +10,8 @@ repositories {
 
 dependencies {
     compile 'org.dstadler:commons-dost:1.0.0.+'
-    compile 'org.apache.httpcomponents:httpclient:4.3.3'    
+    compile 'org.apache.httpcomponents:httpclient:4.3.3'
+    //compile 'org.netpreserve.commons:webarchive-commons:1.1.5'
 
 	// for Little Endian number parsing
     compile 'org.apache.poi:poi:3.12-beta1'
@@ -25,7 +26,21 @@ dependencies {
 	//compile 'com.google.guava:guava:18.0'   
 
 	testCompile "junit:junit:4+"
+    testCompile 'org.dstadler:commons-test:1.0.0.+'
 }
+
+// work around unnecessary timestamp in generated file which always causes dirty files in version control
+// https://issues.gradle.org/browse/GRADLE-2293
+task adjustEclipseSettingsFile << {
+   ant.replaceregexp(match:'^#.*', replace:'', flags:'g', byline:true) {
+      fileset(dir: project.projectDir, includes: '.settings/org.eclipse.jdt.core.prefs')
+   }
+}
+task sortEclipseSettingsFile << {
+   new File(project.projectDir, '.settings/org.eclipse.jdt.core.prefs').with { it.text = it.readLines().findAll { it }.sort().join('\n') }
+}
+eclipseJdt.finalizedBy adjustEclipseSettingsFile
+eclipseJdt.finalizedBy sortEclipseSettingsFile
 
 test {
 	systemProperties = System.properties
@@ -42,8 +57,9 @@ jacoco {
 }
 
 task wrapper(type: Wrapper) {
-	gradleVersion = '2.3'
+	gradleVersion = '2.4'
 }
+
 
 task download(type:JavaExec,dependsOn: compileJava) {
 	description = 'Reading blocks at beginning or the last stored block-number and download binary data from the common crawl archives'
