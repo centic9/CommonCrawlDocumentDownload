@@ -58,7 +58,7 @@ locally, which will avoid using too much disk-space
 
 There was a new index announced at http://blog.commoncrawl.org/2015/04/announcing-the-common-crawl-index/, in order to 
 support using it, we will need to review how https://github.com/ikreymer/cc-index-server downloads the binary tree of
-urls so we can use it to look for URLs by extensions.
+urls so we can use it to look for URLs by extensions. Also look at https://github.com/ikreymer/cdx-index-client for a sample client.
 
 Indexes are available at s3://aws-publicdatasets/common-crawl/cc-index/collections/[CC-MAIN-YYYY-WW], 
 e.g. https://aws-publicdatasets.s3.amazonaws.com/common-crawl/cc-index/collections/CC-MAIN-2015-11/metadata.yaml
