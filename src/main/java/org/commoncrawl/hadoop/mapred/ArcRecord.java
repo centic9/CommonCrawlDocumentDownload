@@ -33,6 +33,9 @@ import org.jsoup.nodes.Document;
 
 /**
  * An entry in an ARC (Internet Archive) data file.
+ * 
+ * Note: This file was taken from https://github.com/commoncrawl/commoncrawl-examples/blob/master/src/java/org/commoncrawl/hadoop/mapred/ArcRecord.java
+ * Changes include removing dependency on Hadoop and using IOUtils.read() in order to read all data in all cases
  *
  * @author Chris Stephens
  */

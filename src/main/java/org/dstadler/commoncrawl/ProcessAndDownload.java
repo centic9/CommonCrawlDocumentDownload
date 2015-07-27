@@ -52,9 +52,6 @@ public class ProcessAndDownload extends ProcessImpl implements Closeable {
         try (CloseableHttpResponse response = client.getHttpClient().execute(httpGet)) {
             HttpEntity entity = Utils.checkAndFetch(response, header.getUrl());
             
-            // for some strange reason I could not directly put the stream here into ArcRecord.readFrom()...
-            //byte[] bytes = IOUtils.toByteArray(new GZIPInputStream(entity.getContent()));
-            
             ArcRecord record = new ArcRecord();
             try (InputStream stream = new GZIPInputStream(entity.getContent())) {
                 record.readFrom(stream);
