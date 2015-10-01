@@ -156,7 +156,14 @@ There's not yet a UI for the query api, just the raw JSON result output.
 
 ### Related projects
 
-* https://github.com/jvtm/pyambit 
+* https://github.com/trivio/common_crawl_index
+* https://github.com/wiseman/common_crawl_index
+* https://github.com/ikreymer/cc-index-server
+* https://github.com/ikreymer/webarchive-indexing
+* https://github.com/ikreymer/cdx-index-client
+* https://github.com/internetarchive/webarchive-commons
+* https://github.com/iipc/webarchive-commons
+* https://github.com/ikreymer/pywb
 
 ### Licensing
 
