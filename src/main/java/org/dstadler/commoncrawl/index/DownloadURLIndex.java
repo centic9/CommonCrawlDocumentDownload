@@ -87,13 +87,13 @@ public class DownloadURLIndex {
 		            String line = reader.readLine();
 		            if(line == null) {
 		            	log.info("End of stream reached for " + url + " after " + count + " lines, ");
-		            	log.info(content.available() + " available, "
-		            			+ content.getCount() + " compressed bytes, "
-		            			+ content.read() + " read, "
-		            			+ uncompressedStream.available() + " available, "
-		            			+ uncompressedStream.getCount() + " uncompressed bytes, "
-		            			+ uncompressedStream.read() + " read, "
-		            			);
+//		            	log.info(content.available() + " available, "
+//		            			+ content.getCount() + " compressed bytes, "
+//		            			+ content.read() + " read, "
+//		            			+ uncompressedStream.available() + " available, "
+//		            			+ uncompressedStream.getCount() + " uncompressed bytes, "
+//		            			+ uncompressedStream.read() + " read, "
+//		            			);
 		            	
 		                break;
 		            }
