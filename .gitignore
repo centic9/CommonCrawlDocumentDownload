@@ -6,3 +6,10 @@ bin/
 build/
 commonurls.txt
 download
+*.warc
+*.wat
+*.wat.gz
+*.idx
+wat.paths
+segment.paths
+cdx*.gz
