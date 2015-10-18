@@ -41,6 +41,7 @@ public class DownloadURLIndex {
     
     // https://aws-publicdatasets.s3.amazonaws.com/common-crawl/cc-index/collections/CC-MAIN-2015-35/indexes/cdx-00000.gz
     
+	private static final JsonFactory f = new JsonFactory();
     
     private static final MappedCounter<String> FOUND_MIME_TYPES = new MappedCounterImpl<>();
     
@@ -61,6 +62,9 @@ public class DownloadURLIndex {
             	handleCDXFile(client.getHttpClient(), url);
             	
                 index++;
+                
+                // TODO: for now only process one file to not exhaust Internet connection limits
+                break;
             }
         }
     }
@@ -76,28 +80,46 @@ public class DownloadURLIndex {
 			CountingInputStream uncompressedStream = new CountingInputStream(new GZIPInputStream(content));
 			try (BufferedReader reader = new BufferedReader(
 	        		new InputStreamReader(uncompressedStream))) {
-	        	int count = 0;
-                while(true) {
-                    String line = reader.readLine();
-                    if(url == null) {
-                        break;
-                    }
-                    
-                    int endOfUrl = line.indexOf(' ');
-                    Preconditions.checkState(endOfUrl != -1, "could not find end of url");
-                    int endOfTimestamp = line.indexOf(' ', endOfUrl+1);
-                    Preconditions.checkState(endOfTimestamp != -1, "could not find end of timestamp");
-                    String json = line.substring(endOfTimestamp+1);
-                    
-                    handleJSON(json);
-                    
-                    count++;
-                    //System.out.print('.');
-                    if(count % 100000 == 0) {
-                    	log.info(count + " lines, compressed bytes: " + content.getCount() + 
-                    			", bytes: " + uncompressedStream.getCount() + ": " + FOUND_MIME_TYPES.sortedMap());
-                    }
-                }
+				try {
+		        	int count = 0;
+		        	long lastLog = System.currentTimeMillis();
+	                while(true) {
+	                    String line = reader.readLine();
+	                    if(line == null) {
+	                    	log.info("End of stream reached for " + url + " after " + count + " lines, " + 
+	                    			content.getCount() + " compressed bytes, " + 
+	                    			uncompressedStream.getCount() + " uncompressed bytes");
+	                    	
+	                    	// TODO: close the client here for now until we find out why it stops before the stream
+	                    	// is actually fully processed
+	                    	httpClient.close();
+	                    	
+	                        break;
+	                    }
+	                    
+	                    int endOfUrl = line.indexOf(' ');
+	                    Preconditions.checkState(endOfUrl != -1, "could not find end of url");
+	                    int endOfTimestamp = line.indexOf(' ', endOfUrl+1);
+	                    Preconditions.checkState(endOfTimestamp != -1, "could not find end of timestamp");
+	                    String json = line.substring(endOfTimestamp+1);
+	                    
+	                    handleJSON(json);
+	                    
+	                    count++;
+	                    //System.out.print('.');
+	                    if(count % 100000 == 0 || lastLog < (System.currentTimeMillis() - 10000)) {
+	                    	log.info(count + " lines, compressed bytes: " + content.getCount() + 
+	                    			", bytes: " + uncompressedStream.getCount() + ": " + FOUND_MIME_TYPES.sortedMap());
+	                    	lastLog = System.currentTimeMillis();
+	                    }
+	                }
+				} catch (Exception e) {
+					// try to stop processing in case of Exceptions in order to not download the whole file 
+					// in the implicit close()
+					httpClient.close();
+					
+					throw e;
+				}
         	} finally {
         		// ensure all content is taken out to free resources
         		EntityUtils.consume(entity);
@@ -106,67 +128,27 @@ public class DownloadURLIndex {
 	}
 
     private static void handleJSON(String json) throws JsonParseException, IOException {
-    	JsonFactory f = new JsonFactory();
-    	JsonParser jp = f.createParser(json);
-    	
-    	while(jp.nextToken() != JsonToken.END_OBJECT) {
-    		/*
-url
-mime
-status
-digest
-length
-offset
-filename
-    		 */
-    		if(jp.getCurrentToken() == JsonToken.VALUE_STRING) { 
-	    		if("mime".equals(jp.getCurrentName())) {
-	    			String mimeType = jp.getValueAsString();
-					FOUND_MIME_TYPES.addInt(mimeType, 1);
-	    			
-	    			if(MimeTypes.matches(mimeType)) {
-	    				log.info("Found-Mimetype: " + json);
-	    			}
-	    		} else if("url".equals(jp.getCurrentName())) {
-	    			String url = jp.getValueAsString();
-	    			if(Extensions.matches(url)) {
-	    				log.info("Found-URL: " + json);
-	    			}
+    	try (JsonParser jp = f.createParser(json)) {
+	    	while(jp.nextToken() != JsonToken.END_OBJECT) {
+	    		if(jp.getCurrentToken() == JsonToken.VALUE_STRING) { 
+	    			/* JSON: url, mime, status, digest, length, offset, filename */
+		    		if("mime".equals(jp.getCurrentName())) {
+		    			String mimeType = jp.getValueAsString();
+						FOUND_MIME_TYPES.addInt(mimeType, 1);
+		    			
+		    			if(MimeTypes.matches(mimeType)) {
+		    				log.info("Found-Mimetype: " + json);
+		    			}
+		    		} else if("url".equals(jp.getCurrentName())) {
+		    			String url = jp.getValueAsString();
+		    			if(Extensions.matches(url)) {
+		    				log.info("Found-URL: " + json);
+		    			}
+		    		}
 	    		}
-    		}
+	    	}
     	}
-    	
     }
-    	   /*
-    	   4 jp.nextToken(); // will return JsonToken.START_OBJECT (verify?)
-    	   5 while (jp.nextToken() != JsonToken.END_OBJECT) {
-    	   6   String fieldname = jp.getCurrentName();
-    	   7   jp.nextToken(); // move to value, or START_OBJECT/START_ARRAY
-    	   8   if ("name".equals(fieldname)) { // contains an object
-    	   9     Name name = new Name();
-    	  10     while (jp.nextToken() != JsonToken.END_OBJECT) {
-    	  11       String namefield = jp.getCurrentName();
-    	  12       jp.nextToken(); // move to value
-    	  13       if ("first".equals(namefield)) {
-    	  14         name.setFirst(jp.getText());
-    	  15       } else if ("last".equals(namefield)) {
-    	  16         name.setLast(jp.getText());
-    	  17       } else {
-    	  18         throw new IllegalStateException("Unrecognized field '"+fieldname+"'!");
-    	  19       }
-    	  20     }
-    	  21     user.setName(name);
-    	  22   } else if ("gender".equals(fieldname)) {
-    	  23     user.setGender(User.Gender.valueOf(jp.getText()));
-    	  24   } else if ("verified".equals(fieldname)) {
-    	  25     user.setVerified(jp.getCurrentToken() == JsonToken.VALUE_TRUE);
-    	  26   } else if ("userImage".equals(fieldname)) {
-    	  27     user.setUserImage(jp.getBinaryValue());
-    	  28   } else {
-    	  29     throw new IllegalStateException("Unrecognized field '"+fieldname+"'!");
-    	  30   }
-    	  31 }
-    	  32 jp.close(); // ensure resources get cleaned up timely and properly	}*/
 
 	private static void download(CloseableHttpClient client, int index, String urlStr, File destFile, URI url) throws IOException, ClientProtocolException {
         HttpGet httpGet = new HttpGet(url);
