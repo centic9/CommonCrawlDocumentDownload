@@ -34,7 +34,7 @@ public class Utils {
 
     public static final String INDEX_URL = "https://aws-publicdatasets.s3.amazonaws.com/common-crawl/projects/url-index/url-index.1356128792";
     public static final int HEADER_BLOCK_SIZE = 8;
-    public static final File DOWNLOAD_DIR = new File("download");
+    public static File DOWNLOAD_DIR = new File("download");
     public static final File COMMONURLS_PATH = new File("commonurls.txt");
 
     public static HttpEntity checkAndFetch(CloseableHttpResponse response, String url) throws IOException {
@@ -48,7 +48,6 @@ public class Utils {
         }
         return response.getEntity();
     }
-
 
     public static Pair<Long, Long> readStartPos(CloseableHttpClient client) throws IOException, ClientProtocolException {
         log.info("Reading header from " + INDEX_URL);

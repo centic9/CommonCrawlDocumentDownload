@@ -44,7 +44,7 @@ public class ProcessAndDownload extends ProcessImpl implements Closeable {
             return;
         }
 
-        log.info(blockIndex + ": Reading file for " + url + " from " + header.getUrl() + " to " + destFile);
+        log.info(blockIndex + ": Reading file for " + url + " at " + header.getRangeHader() + " from " + header.getUrl() + " to " + destFile);
 
         // do a range-query for exactly this document in the Common Crawl dataset
         HttpGet httpGet = new HttpGet(header.getUrl());
@@ -54,12 +54,15 @@ public class ProcessAndDownload extends ProcessImpl implements Closeable {
             
             ArcRecord record = new ArcRecord();
             try (InputStream stream = new GZIPInputStream(entity.getContent())) {
-                record.readFrom(stream);
-                
+            	// could not use WARCRecord here as it expects a different format?!?
+            	// try (WARCRecord record = new WARCRecord(stream, destFile.getName(), 0)) {
+            	//    FileUtils.copyInputStreamToFile(record, destFile);
+
+            	record.readFrom(stream);
                 try {
-                    FileUtils.copyInputStreamToFile(record.getHttpResponse().getEntity().getContent(), destFile);
+                	FileUtils.copyInputStreamToFile(record.getHttpResponse().getEntity().getContent(), destFile);
                 } catch (IllegalStateException  | HttpException e) {
-                    throw new IOException(e);
+                	throw new IOException(e);
                 }
             }
         }
