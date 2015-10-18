@@ -54,7 +54,7 @@ public class ProcessAndDownload extends ProcessImpl implements Closeable {
             
             ArcRecord record = new ArcRecord();
             try (InputStream stream = new GZIPInputStream(entity.getContent())) {
-            	// could not use WARCRecord here as it expects a different format?!?
+            	// could not use WARCRecord or ARCRecord here as it expects a different format?!?
             	// try (WARCRecord record = new WARCRecord(stream, destFile.getName(), 0)) {
             	//    FileUtils.copyInputStreamToFile(record, destFile);
 
