@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.logging.Logger;
-import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
@@ -15,6 +14,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.archive.util.zip.GZIPMembersInputStream;
 import org.dstadler.commoncrawl.Extensions;
 import org.dstadler.commoncrawl.MimeTypes;
 import org.dstadler.commoncrawl.Utils;
@@ -38,21 +38,13 @@ public class DownloadURLIndex {
     private static final String URL_FORMAT = 
     		"https://aws-publicdatasets.s3.amazonaws.com/common-crawl/cc-index/collections/CC-MAIN-2015-35/indexes/cdx-%s.gz";
     
-    // https://aws-publicdatasets.s3.amazonaws.com/common-crawl/cc-index/collections/CC-MAIN-2015-35/indexes/cdx-00000.gz
-    
 	private static final JsonFactory f = new JsonFactory();
     
     private static final MappedCounter<String> FOUND_MIME_TYPES = new MappedCounterImpl<>();
-    
+
     public static void main(String[] args) throws Exception {
-//        if(!Utils.DOWNLOAD_DIR.exists()) {
-//            if(!Utils.DOWNLOAD_DIR.mkdirs()) {
-//                throw new IllegalStateException("Could not create directory " + Utils.DOWNLOAD_DIR);
-//            }
-//        }
-        
         log.info("Processing index files starting from index " + START_INDEX + " with pattern " + URL_FORMAT);
-        try (HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
+        try (HttpClientWrapper client = new HttpClientWrapper("", null, 120_000)) {
             int index = START_INDEX;
             while(true) {
                 String indexStr = String.format("%05d", index);    
@@ -88,7 +80,7 @@ public class DownloadURLIndex {
 	protected static void handleInputStream(Closeable httpClient, String url, InputStream stream)
 			throws IOException, Exception {
 		CountingInputStream content = new CountingInputStream(stream);
-		CountingInputStream uncompressedStream = new CountingInputStream(new GZIPInputStream(content));
+		CountingInputStream uncompressedStream = new CountingInputStream(new GZIPMembersInputStream(content));
 		try (BufferedReader reader = new BufferedReader(
 				new InputStreamReader(uncompressedStream), 1024*1024)) {
 			try {
