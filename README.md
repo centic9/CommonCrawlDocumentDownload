@@ -1,15 +1,14 @@
 [![Build Status](https://buildhive.cloudbees.com/job/centic9/job/CommonCrawlDocumentDownload/badge/icon)](https://buildhive.cloudbees.com/job/centic9/job/CommonCrawlDocumentDownload/)
 
-This is a small tool to download binary data from the CommonCrawl indexes.
+This is a small tool to find matching URLs and download the corresponding binary data from the CommonCrawl indexes.
 
-Currently only the URL Index as described at https://github.com/trivio/common_crawl_index and 
-http://blog.commoncrawl.org/2013/01/common-crawl-url-index/ is supported. 
+Support for the newer URL Index (http://blog.commoncrawl.org/2015/04/announcing-the-common-crawl-index/) is currently in progress, finding matching URLs works, adding download capabilities is in progress.
 
-We are evaluating support for the newer URL Index announced at http://blog.commoncrawl.org/2015/04/announcing-the-common-crawl-index/
-but we did not yet find a way to search for extensions instead of parts of the url in this new index.
+Support for the older URL Index as described at https://github.com/trivio/common_crawl_index and 
+http://blog.commoncrawl.org/2013/01/common-crawl-url-index/ is still available in the "oldindex" package.
 
-Please note that a full run usually finds a huge number of files and thus downloading will require a large amount 
-of time and lots of disk-space if the data is stored locally!
+Please note that a full run usually finds a huge number of files and thus downloading will require a large 
+amount of time and lots of disk-space if the data is stored locally!
 
 ## Getting started
 
@@ -26,7 +25,7 @@ of time and lots of disk-space if the data is stored locally!
 
     ./gradlew download
 
-Starts downloading files found in the URL Index that have matching extensions.
+Starts downloading the URL index files and looks at each URL, adding any matching URL to a file called "commoncrawl.txt"
 
 ## The longer stuff
 
@@ -42,15 +41,15 @@ Run unit tests
 
 #### Adjust which files are found
 
-There are two things that you can tweak:
+There are a few things that you can tweak:
 
-* The file-extensions that are detcted as download-able files is handled in the class Extensions
-* The starting Block-Number is currently set as constant in class org.dstadler.commoncrawl.ReadAndDownload, this way
-  you can also re-start a download that was interrupted before
+* The file-extensions that are detcted as download-able files are handled in the class Extensions
+* The mime-types that are detcted as download-able files isare handled in the class MimeTypes
+* The starting file-index (of the aprox. 300 cdx-files) is currently set as constant in class org.dstadler.commoncrawl.index.DownloadURLIndex, this way you can also re-start a download that was interrupted before
 
 ### Ideas
 
-* By adding a new implementation of BlockProcesser (likely re-using existing stuff by deriving from one of the
+* Old Index: By adding a new implementation of BlockProcesser (likely re-using existing stuff by deriving from one of the
 available implementations), you can do things like streaming processing of the file instead of storing the file
 locally, which will avoid using too much disk-space
 
@@ -159,7 +158,7 @@ to get the full WARC record.
 
 There's not yet a UI for the query api, just the raw JSON result output.
 
-### Estimates
+### Estimates (based on Old Index)
 
 * Size of overall URL Index is 233689120776, i.e. 217GB
 * Header: 6 Bytes
