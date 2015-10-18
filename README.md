@@ -67,6 +67,23 @@ Indexing is done via https://github.com/ikreymer/webarchive-indexing
 
 CDX file format is described at https://github.com/ikreymer/webarchive-indexing#cdx-file-format
 
+#### Reading URLs via the URL Index
+
+The URL index is certainly the easiest way to get a list of URLs for a crawl.  If you're willing to accept the half million URLs in the meta index as being suitably randomly distributed, you could just use that:
+
+$ aws --no-sign-request s3 cp s3://aws-publicdatasets/common-crawl/cc-index/collections/CC-MAIN-2015-14/indexes/cluster.idx .
+$ wc -l *idx
+  549054 cluster.idx
+
+Otherwise you could download the entire 300 file index and process that:
+
+$ aws --no-sign-request s3 cp s3://aws-publicdatasets/common-crawl/cc-index/collections/CC-MAIN-2015-14/indexes/cdx-00000.gz .
+...
+$ aws --no-sign-request s3 cp s3://aws-publicdatasets/common-crawl/cc-index/collections/CC-MAIN-2015-14/indexes/cdx-00299.gz .
+
+The announcement describing the index is here (but note that the index location is incorrect in that post):
+http://blog.commoncrawl.org/2015/04/announcing-the-common-crawl-index/
+
 #### Reading the data
 
 For example, if you have the query result from http://index.commoncrawl.org/CC-MAIN-2015-11-index?url=commoncrawl.org&output=json&limit=1
