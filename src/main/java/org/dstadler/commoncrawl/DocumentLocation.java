@@ -1,4 +1,4 @@
-package org.dstadler.commoncrawl.oldindex;
+package org.dstadler.commoncrawl;
 
 import org.apache.poi.util.LittleEndian;
 
@@ -10,8 +10,10 @@ import org.apache.poi.util.LittleEndian;
  *
  * @author dominik.stadler
  */
-public class BlockHeader {
+public class DocumentLocation {
     public long segmentId;
+    
+    public String filename;
     
     // the next 8 bytes represents the ARC file creation date, 
     public long arcCreationDate;
@@ -28,6 +30,10 @@ public class BlockHeader {
     public long arcFileSize;
 
     public String getUrl() {
+    	if(filename != null) {
+    		//"filename": "common-crawl/crawl-data/CC-MAIN-2015-35/segments/1440645293619.80/warc/CC-MAIN-20150827031453-00044-ip-10-171-96-226.ec2.internal.warc.gz"}		 */
+    		return "https://aws-publicdatasets.s3.amazonaws.com/" + filename;
+    	}
         return "https://aws-publicdatasets.s3.amazonaws.com/common-crawl/parse-output/segment/" + 
                 segmentId + "/" + arcCreationDate + "_" + arcFilePartition + ".arc.gz";
     }
@@ -37,7 +43,7 @@ public class BlockHeader {
     }
     
 
-    public static BlockHeader read(byte[] block, int index) {
+    public static DocumentLocation readFromOldIndexBlock(byte[] block, int index) {
 //        System.out.println(HexDump.dump(Arrays.copyOfRange(block, index-8, index), 0, 0));
 //        System.out.println(HexDump.dump(Arrays.copyOfRange(block, index, index+8), 0, 0));
 //        System.out.println(HexDump.dump(Arrays.copyOfRange(block, index+8, index+16), 0, 0));
@@ -45,7 +51,7 @@ public class BlockHeader {
 //        System.out.println(HexDump.dump(Arrays.copyOfRange(block, index+20, index+28), 0, 0));
 //        System.out.println(HexDump.dump(Arrays.copyOfRange(block, index+28, index+32), 0, 0));
 
-        BlockHeader header = new BlockHeader();
+        DocumentLocation header = new DocumentLocation();
         
         header.segmentId = LittleEndian.getLong(block, index);
         

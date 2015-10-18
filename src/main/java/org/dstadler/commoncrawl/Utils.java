@@ -1,5 +1,6 @@
 package org.dstadler.commoncrawl;
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -7,19 +8,23 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.poi.util.HexDump;
 import org.apache.poi.util.LittleEndian;
+import org.commoncrawl.hadoop.mapred.ArcRecord;
 import org.dstadler.commoncrawl.oldindex.BlockProcessor;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
 
@@ -171,4 +176,37 @@ public class Utils {
         }
         return new File(DOWNLOAD_DIR, replace + postfix);
     }
+
+	public static void downloadFileFromCommonCrawl(CloseableHttpClient httpClient, String url, DocumentLocation header)
+			throws IOException, EOFException, ClientProtocolException {
+		// check if we already have that file
+        File destFile = Utils.computeDownloadFileName(url, "");
+        if(destFile.exists()) {
+            log.info("File " + destFile + " already downloaded");
+            return;
+        }
+
+        log.info("Reading file for " + url + " at " + header.getRangeHader() + " from " + header.getUrl() + " to " + destFile);
+
+        // do a range-query for exactly this document in the Common Crawl dataset
+        HttpGet httpGet = new HttpGet(header.getUrl());
+        httpGet.addHeader("Range", header.getRangeHader());
+        try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
+            HttpEntity entity = Utils.checkAndFetch(response, header.getUrl());
+            
+            ArcRecord record = new ArcRecord();
+            try (InputStream stream = new GZIPInputStream(entity.getContent())) {
+            	// could not use WARCRecord or ARCRecord here as it expects a different format?!?
+            	// try (WARCRecord record = new WARCRecord(stream, destFile.getName(), 0)) {
+            	//    FileUtils.copyInputStreamToFile(record, destFile);
+
+            	record.readFrom(stream);
+                try {
+                	FileUtils.copyInputStreamToFile(record.getHttpResponse().getEntity().getContent(), destFile);
+                } catch (IllegalStateException  | HttpException e) {
+                	throw new IOException(e);
+                }
+            }
+        }
+	}
 }
