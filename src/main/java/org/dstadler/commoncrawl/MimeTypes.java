@@ -38,6 +38,9 @@ public class MimeTypes {
     	// application/vnd.openxmlformats-officedocument.vmlDrawing
     	MIME_TYPES.add(Pattern.compile(".*vmlDrawing.*"));
     	
+    	// application/vnd.visio
+    	MIME_TYPES.add(Pattern.compile(".*visio.*"));
+    	
 //    	MIME_TYPE_MATCHER.add(Pattern.compile(".*.*"));
     	
     	/*

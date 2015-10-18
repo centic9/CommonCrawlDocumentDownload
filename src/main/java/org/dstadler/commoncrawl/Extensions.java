@@ -38,6 +38,9 @@ public class Extensions {
 
         // Visio - binary
         ".vsd",
+        ".vss",
+        ".vst",
+        ".vsw",
         
         // Visio - ooxml (currently unsupported)
         ".vsdm",
