@@ -50,24 +50,21 @@ public class DownloadURLIndex {
                 String indexStr = String.format("%05d", index);    
             	String url = String.format(URL_FORMAT, indexStr);
             	
-            	handleCDXFile(client.getHttpClient(), url);
+            	handleCDXFile(client.getHttpClient(), url, index);
             	
                 index++;
-                
-                // TODO: for now only process one file to not exhaust Internet connection limits
-                break;
             }
         }
     }
     
-    private static void handleCDXFile(CloseableHttpClient httpClient, String url) throws Exception {
-    	log.info("Loading data from " + url);
+    private static void handleCDXFile(CloseableHttpClient httpClient, String url, int index) throws Exception {
+    	log.info("Loading file " + index + " from " + url);
 
     	final HttpGet httpGet = new HttpGet(url);
 		try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
 		    HttpEntity entity = Utils.checkAndFetch(response, url);
 
-		    log.info("Content has " + entity.getContentLength()  + " bytes");
+		    log.info("File " + index + " has " + entity.getContentLength()  + " bytes");
 		    try {
 		    	handleInputStream(httpClient, url, entity.getContent());
 			} finally {
@@ -98,10 +95,6 @@ public class DownloadURLIndex {
 		            			+ uncompressedStream.read() + " read, "
 		            			);
 		            	
-		            	// TODO: close the client here for now until we find out why it stops before the stream
-		            	// is actually fully processed
-		            	httpClient.close();
-		            	
 		                break;
 		            }
 		            
@@ -125,7 +118,7 @@ public class DownloadURLIndex {
 				// try to stop processing in case of Exceptions in order to not download the whole file 
 				// in the implicit close()
 				httpClient.close();
-				
+
 				throw e;
 			}
 		}
@@ -137,7 +130,7 @@ public class DownloadURLIndex {
 	    		if(jp.getCurrentToken() == JsonToken.VALUE_STRING) { 
 	    			/* JSON: url, mime, status, digest, length, offset, filename */
 		    		if("mime".equals(jp.getCurrentName())) {
-		    			String mimeType = jp.getValueAsString();
+		    			String mimeType = jp.getValueAsString().toLowerCase();
 						FOUND_MIME_TYPES.addInt(mimeType, 1);
 		    			
 		    			if(MimeTypes.matches(mimeType)) {
@@ -145,7 +138,7 @@ public class DownloadURLIndex {
 		    				FileUtils.writeStringToFile(new File("commoncrawl.txt"), json + "\n", true);
 		    			}
 		    		} else if("url".equals(jp.getCurrentName())) {
-		    			String url = jp.getValueAsString();
+		    			String url = jp.getValueAsString().toLowerCase();
 		    			if(Extensions.matches(url)) {
 		    				log.info("Found-URL: " + json);
 		    				FileUtils.writeStringToFile(new File("commoncrawl.txt"), json + "\n", true);
