@@ -1,4 +1,4 @@
-package org.dstadler.commoncrawl;
+package org.dstadler.commoncrawl.oldindex;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -11,7 +11,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.poi.util.HexDump;
 import org.apache.poi.util.LittleEndian;
 import org.junit.Test;
-
+import org.dstadler.commoncrawl.oldindex.BlockHeader;
+import org.dstadler.commoncrawl.oldindex.BlockProcessor;
 import org.dstadler.commons.net.UrlUtils;
 
 

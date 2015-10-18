@@ -1,10 +1,12 @@
-package org.dstadler.commoncrawl;
+package org.dstadler.commoncrawl.oldindex;
 
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
+import org.dstadler.commoncrawl.Utils;
+import org.dstadler.commoncrawl.oldindex.ProcessAndDownload;
 import org.junit.Test;
 
 

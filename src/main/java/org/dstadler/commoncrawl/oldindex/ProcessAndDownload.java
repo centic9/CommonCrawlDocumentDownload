@@ -1,4 +1,4 @@
-package org.dstadler.commoncrawl;
+package org.dstadler.commoncrawl.oldindex;
 
 import java.io.Closeable;
 import java.io.File;
@@ -13,6 +13,7 @@ import org.apache.http.HttpException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.commoncrawl.hadoop.mapred.ArcRecord;
+import org.dstadler.commoncrawl.Utils;
 import org.dstadler.commons.http.HttpClientWrapper;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
 

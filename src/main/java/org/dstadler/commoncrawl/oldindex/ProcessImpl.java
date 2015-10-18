@@ -1,4 +1,4 @@
-package org.dstadler.commoncrawl;
+package org.dstadler.commoncrawl.oldindex;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.dstadler.commoncrawl.Extensions;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
 
 /**

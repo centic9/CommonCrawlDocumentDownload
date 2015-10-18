@@ -1,4 +1,4 @@
-package org.dstadler.commoncrawl;
+package org.dstadler.commoncrawl.oldindex;
 
 import java.io.Closeable;
 

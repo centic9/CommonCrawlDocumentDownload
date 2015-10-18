@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.dstadler.commoncrawl.oldindex.BlockProcessor;
 import org.dstadler.commons.http.HttpClientWrapper;
 import org.dstadler.commons.http.NanoHTTPD;
 import org.dstadler.commons.testing.MockRESTServer;

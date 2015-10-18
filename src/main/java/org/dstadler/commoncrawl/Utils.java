@@ -20,6 +20,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.poi.util.HexDump;
 import org.apache.poi.util.LittleEndian;
+import org.dstadler.commoncrawl.oldindex.BlockProcessor;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
 
 import com.google.common.base.Preconditions;

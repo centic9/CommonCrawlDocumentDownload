@@ -65,6 +65,6 @@ task wrapper(type: Wrapper) {
 task download(type:JavaExec,dependsOn: compileJava) {
 	description = 'Reading blocks at beginning or the last stored block-number and download binary data from the common crawl archives'
 	
-	main = 'org.dstadler.commoncrawl.ReadAndDownload'
+	main = 'org.dstadler.commoncrawl.oldindex.ReadAndDownload'
 	classpath = sourceSets.main.runtimeClasspath
 }

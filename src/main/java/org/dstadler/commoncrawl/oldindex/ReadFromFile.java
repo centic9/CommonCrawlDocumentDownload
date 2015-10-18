@@ -1,4 +1,4 @@
-package org.dstadler.commoncrawl;
+package org.dstadler.commoncrawl.oldindex;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.util.logging.Logger;
 
 import org.apache.http.client.ClientProtocolException;
-
+import org.dstadler.commoncrawl.Utils;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
 import com.google.common.base.Preconditions;
 
