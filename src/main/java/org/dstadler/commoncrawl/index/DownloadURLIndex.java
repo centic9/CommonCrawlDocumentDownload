@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -110,7 +111,8 @@ public class DownloadURLIndex {
 		            //System.out.print('.');
 		            if(count % 100000 == 0 || lastLog < (System.currentTimeMillis() - 10000)) {
 		            	log.info(count + " lines, compressed bytes: " + content.getCount() + 
-		            			", bytes: " + uncompressedStream.getCount() + ": " + FOUND_MIME_TYPES.sortedMap());
+		            			", bytes: " + uncompressedStream.getCount() + ": " + 
+		            			StringUtils.abbreviate(FOUND_MIME_TYPES.sortedMap().toString(), 100));
 		            	lastLog = System.currentTimeMillis();
 		            }
 		        }
