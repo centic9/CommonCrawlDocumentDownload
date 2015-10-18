@@ -8,22 +8,22 @@ repositories {
 	mavenCentral()
 }
 
+configurations.all { 
+	all*.exclude group: 'org.apache.hadoop'		// not found on Maven Central?
+}
+
 dependencies {
     compile 'org.dstadler:commons-dost:1.0.0.+'
-    compile 'org.apache.httpcomponents:httpclient:4.3.3'
-    //compile 'org.netpreserve.commons:webarchive-commons:1.1.5'
+    compile 'org.apache.httpcomponents:httpclient:4.5.1'
+    compile 'org.netpreserve.commons:webarchive-commons:1.1.6'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.6.3'    
 
 	// for Little Endian number parsing
-    compile 'org.apache.poi:poi:3.12-beta1'
-    
+    compile 'org.apache.poi:poi:3.13'
+
     // for commoncrawl-source
     compile 'log4j:log4j:1.2.17'
     compile 'org.jsoup:jsoup:1.8.1'
-
-	//compile 'commons-io:commons-io:2.4'
-	//compile 'org.apache.commons:commons-lang3:3.4'
-
-	//compile 'com.google.guava:guava:18.0'   
 
 	testCompile "junit:junit:4+"
     testCompile 'org.dstadler:commons-test:1.0.0.+'
@@ -38,6 +38,7 @@ task adjustEclipseSettingsFile << {
 }
 task sortEclipseSettingsFile << {
    new File(project.projectDir, '.settings/org.eclipse.jdt.core.prefs').with { it.text = it.readLines().findAll { it }.sort().join('\n') }
+   new File(project.projectDir, '.classpath').with { it.text = it.readLines().findAll { it }.unique().join('\n') }
 }
 eclipseJdt.finalizedBy adjustEclipseSettingsFile
 eclipseJdt.finalizedBy sortEclipseSettingsFile
@@ -46,7 +47,7 @@ test {
 	systemProperties = System.properties
 
 	// show standard out and standard error of the test JVM(s) on the console
-	testLogging.showStandardStreams = true
+	//testLogging.showStandardStreams = true
 
 	// http://forums.gradle.org/gradle/topics/jacoco_related_failure_in_multiproject_build
 	systemProperties['user.dir'] = workingDir
