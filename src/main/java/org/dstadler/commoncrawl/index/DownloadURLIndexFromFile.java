@@ -7,6 +7,12 @@ import java.util.logging.Logger;
 
 import org.dstadler.commons.logging.jdk.LoggerFactory;
 
+/**
+ * Sample to read from locally stored cdx-00000.gz files 
+ * 
+ * @author dstadler
+ *
+ */
 public class DownloadURLIndexFromFile {
     private static final Logger log = LoggerFactory.make();
 

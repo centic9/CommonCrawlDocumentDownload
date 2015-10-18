@@ -175,7 +175,7 @@ public class ArcRecord
 
     if (metadata.length != 5) {
       LOG.info(" [ "+arcRecordHeader+" ] ");
-      throw new IllegalArgumentException("ARC v1 record header must be 5 fields.");
+      throw new IllegalArgumentException("ARC v1 record header must be 5 fields, but had " + metadata.length + ".");
     }
 
     SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");

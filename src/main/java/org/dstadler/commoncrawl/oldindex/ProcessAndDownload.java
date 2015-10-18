@@ -27,7 +27,7 @@ public class ProcessAndDownload extends ProcessImpl implements Closeable {
         // read location information
         DocumentLocation header = DocumentLocation.readFromOldIndexBlock(block, headerStart);
 
-        Utils.downloadFileFromCommonCrawl(client.getHttpClient(), url, header);
+        Utils.downloadFileFromCommonCrawl(client.getHttpClient(), url, header, false);
     }
 
     @Override

@@ -33,11 +33,7 @@ public class Download {
     private final static Logger log = LoggerFactory.make();
     
     public static void main(String[] args) throws Exception {
-        if(!Utils.DOWNLOAD_DIR.exists()) {
-            if(!Utils.DOWNLOAD_DIR.mkdirs()) {
-                throw new IllegalStateException("Could not create directory " + Utils.DOWNLOAD_DIR);
-            }
-        }
+        Utils.ensureDownloadDir();
         
         try (BufferedReader reader = new BufferedReader(new FileReader(Utils.COMMONURLS_PATH))) {
             try (HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {

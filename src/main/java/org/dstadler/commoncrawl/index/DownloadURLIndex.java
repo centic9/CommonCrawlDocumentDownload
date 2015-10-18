@@ -38,7 +38,7 @@ public class DownloadURLIndex {
     
     private static final String URL_FORMAT = 
     		"https://aws-publicdatasets.s3.amazonaws.com/common-crawl/cc-index/collections/CC-MAIN-2015-35/indexes/cdx-%s.gz";
-    
+
 	private static final JsonFactory f = new JsonFactory();
     
     private static final MappedCounter<String> FOUND_MIME_TYPES = new MappedCounterImpl<>();

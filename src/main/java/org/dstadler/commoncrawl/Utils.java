@@ -24,11 +24,14 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.poi.util.HexDump;
 import org.apache.poi.util.LittleEndian;
+import org.archive.io.warc.WARCRecord;
 import org.commoncrawl.hadoop.mapred.ArcRecord;
 import org.dstadler.commoncrawl.oldindex.BlockProcessor;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
 
 import com.google.common.base.Preconditions;
+
+import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
 
 
 public class Utils {
@@ -177,7 +180,7 @@ public class Utils {
         return new File(DOWNLOAD_DIR, replace + postfix);
     }
 
-	public static void downloadFileFromCommonCrawl(CloseableHttpClient httpClient, String url, DocumentLocation header)
+	public static void downloadFileFromCommonCrawl(CloseableHttpClient httpClient, String url, DocumentLocation header, boolean useWARC)
 			throws IOException, EOFException, ClientProtocolException {
 		// check if we already have that file
         File destFile = Utils.computeDownloadFileName(url, "");
@@ -194,18 +197,30 @@ public class Utils {
         try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
             HttpEntity entity = Utils.checkAndFetch(response, header.getUrl());
             
-            ArcRecord record = new ArcRecord();
             try (InputStream stream = new GZIPInputStream(entity.getContent())) {
-            	// could not use WARCRecord or ARCRecord here as it expects a different format?!?
-            	// try (WARCRecord record = new WARCRecord(stream, destFile.getName(), 0)) {
-            	//    FileUtils.copyInputStreamToFile(record, destFile);
+            	// we get differently formatted files depending on the version of CommonCrawl that we look at...
+            	if(useWARC) {
+            		try (WARCRecord record = new WARCRecord(new FastBufferedInputStream(stream), destFile.getName(), 0)) {
+        				record.skip(record.getHeader().getContentBegin());
+        				FileUtils.copyInputStreamToFile(record, destFile);
+            		}
+            	} else {
+            		ArcRecord record = new ArcRecord();
+	            	record.readFrom(stream);
+	                try {
+	                	FileUtils.copyInputStreamToFile(record.getHttpResponse().getEntity().getContent(), destFile);
+	                } catch (IllegalStateException  | HttpException e) {
+	                	throw new IOException(e);
+	                }
+            	}
+            }
+        }
+	}
 
-            	record.readFrom(stream);
-                try {
-                	FileUtils.copyInputStreamToFile(record.getHttpResponse().getEntity().getContent(), destFile);
-                } catch (IllegalStateException  | HttpException e) {
-                	throw new IOException(e);
-                }
+	public static void ensureDownloadDir() {
+		if(!Utils.DOWNLOAD_DIR.exists()) {
+            if(!Utils.DOWNLOAD_DIR.mkdirs()) {
+                throw new IllegalStateException("Could not create directory " + Utils.DOWNLOAD_DIR);
             }
         }
 	}

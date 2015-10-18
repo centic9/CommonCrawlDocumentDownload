@@ -2,6 +2,8 @@ package org.dstadler.commoncrawl.index;
 
 import java.io.IOException;
 
+import org.dstadler.commoncrawl.DocumentLocation;
+
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -47,5 +49,14 @@ public class CDXItem {
     	}
     	
     	return item;		
+	}
+
+	public DocumentLocation getDocumentLocation() {
+		DocumentLocation location = new DocumentLocation();
+		location.arcFileOffset = offset;
+		location.arcFileSize = length;
+		location.filename = filename;
+
+		return location;
 	}
 }
