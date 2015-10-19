@@ -35,6 +35,7 @@ public class DownloadURLIndex {
     private static final Logger log = LoggerFactory.make();
     
     private static final int START_INDEX = 0;
+    private static final int END_INDEX = 299;
     
     private static final String URL_FORMAT = 
     		"https://aws-publicdatasets.s3.amazonaws.com/common-crawl/cc-index/collections/CC-MAIN-2015-35/indexes/cdx-%s.gz";
@@ -46,14 +47,11 @@ public class DownloadURLIndex {
     public static void main(String[] args) throws Exception {
         log.info("Processing index files starting from index " + START_INDEX + " with pattern " + URL_FORMAT);
         try (HttpClientWrapper client = new HttpClientWrapper("", null, 120_000)) {
-            int index = START_INDEX;
-            while(true) {
+            for(int index = START_INDEX;index <= END_INDEX;index++) {
                 String indexStr = String.format("%05d", index);    
             	String url = String.format(URL_FORMAT, indexStr);
             	
             	handleCDXFile(client.getHttpClient(), url, index);
-            	
-                index++;
             }
         }
     }
