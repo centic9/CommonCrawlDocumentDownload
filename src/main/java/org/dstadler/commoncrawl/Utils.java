@@ -25,6 +25,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.poi.util.HexDump;
 import org.apache.poi.util.LittleEndian;
 import org.archive.io.warc.WARCRecord;
+import org.archive.util.LaxHttpParser;
 import org.commoncrawl.hadoop.mapred.ArcRecord;
 import org.dstadler.commoncrawl.oldindex.BlockProcessor;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
@@ -180,16 +181,23 @@ public class Utils {
         return new File(DOWNLOAD_DIR, replace + postfix);
     }
 
-	public static void downloadFileFromCommonCrawl(CloseableHttpClient httpClient, String url, DocumentLocation header, boolean useWARC)
+	public static File downloadFileFromCommonCrawl(CloseableHttpClient httpClient, String url, DocumentLocation header, boolean useWARC)
 			throws IOException, EOFException, ClientProtocolException {
 		// check if we already have that file
         File destFile = Utils.computeDownloadFileName(url, "");
         if(destFile.exists()) {
             log.info("File " + destFile + " already downloaded");
-            return;
+            return null;
         }
 
-        log.info("Reading file for " + url + " at " + header.getRangeHader() + " from " + header.getUrl() + " to " + destFile);
+        downloadFileFromCommonCrawl(httpClient, url, header, useWARC, destFile);
+        
+        return destFile;
+	}
+
+	public static void downloadFileFromCommonCrawl(CloseableHttpClient httpClient, String url, DocumentLocation header, boolean useWARC,
+			File destFile) throws IOException, EOFException, ClientProtocolException {
+		log.info("Reading file for " + url + " at " + header.getRangeHader() + " from " + header.getUrl() + " to " + destFile);
 
         // do a range-query for exactly this document in the Common Crawl dataset
         HttpGet httpGet = new HttpGet(header.getUrl());
@@ -200,9 +208,15 @@ public class Utils {
             try (InputStream stream = new GZIPInputStream(entity.getContent())) {
             	// we get differently formatted files depending on the version of CommonCrawl that we look at...
             	if(useWARC) {
-            		try (WARCRecord record = new WARCRecord(new FastBufferedInputStream(stream), destFile.getName(), 0)) {
-        				record.skip(record.getHeader().getContentBegin());
-        				FileUtils.copyInputStreamToFile(record, destFile);
+					try (WARCRecord record = new WARCRecord(new FastBufferedInputStream(stream), destFile.getName(), 0)) {
+						// use the parser to remove the HTTP headers
+						LaxHttpParser.parseHeaders(record,"UTF-8");
+						
+    	                try {
+    	                	FileUtils.copyInputStreamToFile(record, destFile);
+    	                } catch (IllegalStateException e) {
+    	                	throw new IOException(e);
+    	                }
             		}
             	} else {
             		ArcRecord record = new ArcRecord();
