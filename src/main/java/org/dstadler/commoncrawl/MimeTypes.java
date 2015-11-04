@@ -1,7 +1,7 @@
 package org.dstadler.commoncrawl;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -10,38 +10,38 @@ import java.util.regex.Pattern;
  * @author dominik.stadler
  */
 public class MimeTypes {
-    private static final Set<Pattern> MIME_TYPES = new HashSet<>();
+    private static final Map<Pattern, String> MIME_TYPES = new HashMap<>();
     static {
     	// application/msword
-    	MIME_TYPES.add(Pattern.compile(".*msword.*"));
+    	MIME_TYPES.put(Pattern.compile(".*msword.*"), ".doc");
     	// application/vnd.ms-word
-    	MIME_TYPES.add(Pattern.compile(".*ms-word.*"));
+    	MIME_TYPES.put(Pattern.compile(".*ms-word.*"), ".doc");
     	// application/vnd.openxmlformats-officedocument.wordprocessingml.document
-    	MIME_TYPES.add(Pattern.compile(".*wordprocessingml.*"));
+    	MIME_TYPES.put(Pattern.compile(".*wordprocessingml.*"), ".docx");
     	
     	// application/msexcel
-    	MIME_TYPES.add(Pattern.compile(".*msexcel.*"));
+    	MIME_TYPES.put(Pattern.compile(".*msexcel.*"), ".xls");
     	// application/vnd.ms-excel
-    	MIME_TYPES.add(Pattern.compile(".*ms-excel.*"));
+    	MIME_TYPES.put(Pattern.compile(".*ms-excel.*"), ".xls");
     	// application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
-    	MIME_TYPES.add(Pattern.compile(".*spreadsheetml.*"));
+    	MIME_TYPES.put(Pattern.compile(".*spreadsheetml.*"), ".xlsx");
 
     	// application/vnd.openxmlformats-officedocument.presentationml.presentation
-    	MIME_TYPES.add(Pattern.compile(".*presentationml.*"));
+    	MIME_TYPES.put(Pattern.compile(".*presentationml.*"), ".pptx");
 
     	// application/vnd.ms-tnef
-    	MIME_TYPES.add(Pattern.compile(".*ms-tnef.*"));
+    	MIME_TYPES.put(Pattern.compile(".*ms-tnef.*"), ".msg");
     	
     	// application/vnd.openxmlformats-officedocument.drawingml.chart+xml
-    	MIME_TYPES.add(Pattern.compile(".*drawingml.*"));
+    	MIME_TYPES.put(Pattern.compile(".*drawingml.*"), ".dwg");
 
     	// application/vnd.openxmlformats-officedocument.vmlDrawing
-    	MIME_TYPES.add(Pattern.compile(".*vmlDrawing.*"));
+    	MIME_TYPES.put(Pattern.compile(".*vmlDrawing.*"), ".dwg");
     	
     	// application/vnd.visio
-    	MIME_TYPES.add(Pattern.compile(".*visio.*"));
+    	MIME_TYPES.put(Pattern.compile(".*visio.*"), ".vsd");
     	
-//    	MIME_TYPE_MATCHER.add(Pattern.compile(".*.*"));
+//    	MIME_TYPE_MATCHER.put(Pattern.compile(".*.*");
     	
     	/*
 vnd.openxmlformats-officedocument.custom-properties+xml 	application/vnd.openxmlformats-officedocument.custom-properties+xml 	
@@ -58,12 +58,26 @@ vnd.openxmlformats-package.relationships+xml 	application/vnd.openxmlformats-pac
     }
     
     public static boolean matches(String mime) {
-        for(Pattern pattern : MIME_TYPES) {
+        for(Pattern pattern : MIME_TYPES.keySet()) {
             if(pattern.matcher(mime).matches()) {
                 return true;
             }
         }
         
         return false;
+    }
+    
+    public static String toExtension(String mime) {
+    	if(mime == null) {
+    		return "";
+    	}
+
+        for(Map.Entry<Pattern, String> entry : MIME_TYPES.entrySet()) {
+            if(entry.getKey().matcher(mime).matches()) {
+            	return entry.getValue();
+            }
+        }
+        
+        return "";
     }
 }

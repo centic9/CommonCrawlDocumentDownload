@@ -184,7 +184,7 @@ public class Utils {
 	public static File downloadFileFromCommonCrawl(CloseableHttpClient httpClient, String url, DocumentLocation header, boolean useWARC)
 			throws IOException, EOFException, ClientProtocolException {
 		// check if we already have that file
-        File destFile = Utils.computeDownloadFileName(url, "");
+        File destFile = Utils.computeDownloadFileName(url, MimeTypes.toExtension(header.getMime()));
         if(destFile.exists()) {
             log.info("File " + destFile + " already downloaded");
             return null;

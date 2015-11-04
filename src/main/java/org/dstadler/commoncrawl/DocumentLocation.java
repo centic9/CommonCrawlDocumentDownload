@@ -29,6 +29,8 @@ public class DocumentLocation {
     // and then finally the last 4 bytes represent the size of compressed data stored inside the ARC file.
     public long arcFileSize;
 
+    public String mime;
+    
     public String getUrl() {
     	if(filename != null) {
     		//"filename": "common-crawl/crawl-data/CC-MAIN-2015-35/segments/1440645293619.80/warc/CC-MAIN-20150827031453-00044-ip-10-171-96-226.ec2.internal.warc.gz"}		 */
@@ -71,4 +73,8 @@ public class DocumentLocation {
         
         return header;
     }
+
+	public String getMime() {
+		return mime;
+	}
 }
