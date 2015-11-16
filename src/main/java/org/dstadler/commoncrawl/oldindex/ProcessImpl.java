@@ -95,7 +95,7 @@ public class ProcessImpl implements BlockProcessor {
                         // indicate in the output whenever we are idle
                         System.out.print("z");
                     }
-                } catch (InterruptedException e) {
+                } catch (@SuppressWarnings("unused") InterruptedException e) {
                     // no action needed
                 } catch (Exception e) {
                     log.log(Level.WARNING, "Had Exception while handling block", e);

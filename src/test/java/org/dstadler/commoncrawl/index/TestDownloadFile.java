@@ -44,8 +44,7 @@ public class TestDownloadFile {
     		    HttpEntity entity = Utils.checkAndFetch(response, URL);
 
     		    System.out.println("Content has " + entity.getContentLength()  + " bytes");
-    		    try {
-    		    	InputStream stream = entity.getContent();
+		    	try (InputStream stream = entity.getContent()) {
     				InputStream uncompressedStream = new GZIPMembersInputStream(stream);
     				try (BufferedReader reader = new BufferedReader(
     						new InputStreamReader(uncompressedStream), 1024*1024)) {

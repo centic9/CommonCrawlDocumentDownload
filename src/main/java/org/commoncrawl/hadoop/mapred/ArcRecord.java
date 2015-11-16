@@ -288,7 +288,7 @@ public String toString() {
       in.readFully(this._payload, 0, payloadLength);
     }
     catch (EOFException ex) {
-      throw new IOException("End of input reached before payload was fully deserialized.");
+      throw new IOException("End of input reached before payload was fully deserialized.", ex);
     }
 
     // assume that if a new payload was loaded, HTTP response will need to be reparsed.
@@ -547,19 +547,23 @@ public String toString() {
       this.getHttpResponse();
     }
     catch (HttpException ex) {
-      LOG.error("Unable to parse HTML: Exception during HTTP response parsing"); return null;
+      LOG.error("Unable to parse HTML: Exception during HTTP response parsing", ex); 
+      return null;
     }
 
     if (this._httpResponse == null) {
-      LOG.error("Unable to parse HTML: Exception during HTTP response parsing"); return null;
+      LOG.error("Unable to parse HTML: Exception during HTTP response parsing"); 
+      return null;
     }
 
     if (this._httpResponse.getEntity() == null) {
-      LOG.error("Unable to parse HTML: No HTTP response entity found"); return null;
+      LOG.error("Unable to parse HTML: No HTTP response entity found"); 
+      return null;
     }
 
     if (!this._contentType.toLowerCase().contains("html")) {
-      LOG.warn("Unable to parse HTML: Content is not HTML"); return null;
+      LOG.warn("Unable to parse HTML: Content is not HTML"); 
+      return null;
     }
 
     String charset = null;
@@ -568,7 +572,7 @@ public String toString() {
       // Default value returned is "text/plain" with charset of ISO-8859-1.
       charset = ContentType.getOrDefault(this._httpResponse.getEntity()).getCharset().name();
     }
-    catch (Throwable ex) {
+    catch (@SuppressWarnings("unused") Throwable ex) {
         // ignore exceptions here
     }
 

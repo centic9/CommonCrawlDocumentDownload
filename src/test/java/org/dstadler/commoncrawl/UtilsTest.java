@@ -131,7 +131,7 @@ public class UtilsTest {
         try {
             Utils.isCorruptDownload(new File("doesnotexist"));
             fail("Should catch exception");
-        } catch (FileNotFoundException e) {
+        } catch (@SuppressWarnings("unused") FileNotFoundException e) {
             // expected here
         }
     }

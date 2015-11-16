@@ -105,9 +105,8 @@ public class DownloadURLIndexTest {
     		    log.info("Content has " + entity.getContentLength()  + " bytes");
 //    	        CountingInputStream content = new CountingInputStream(entity.getContent());
 //    			CountingInputStream uncompressedStream = new CountingInputStream(new GZIPInputStream(content));
-    	        InputStream content = entity.getContent();
-    			InputStream uncompressedStream = new GZIPInputStream(content);
-				try {
+    	        try (InputStream content = entity.getContent()) {
+				try (InputStream uncompressedStream = new GZIPInputStream(content)) {
 		        	int count = 0;
 		        	long lastLog = System.currentTimeMillis();
 	                while(true) {
@@ -147,7 +146,7 @@ public class DownloadURLIndexTest {
             	} finally {
             		// ensure all content is taken out to free resources
             		EntityUtils.consume(entity);
-            	}
+            	} }
     		}
         }
 	}
