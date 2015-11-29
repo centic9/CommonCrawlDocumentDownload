@@ -5,7 +5,8 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * Which extensions we are interested in.
+ * A list of patterns of mimetypes that we are interested in.
+ * 
  *
  * @author dominik.stadler
  */
@@ -25,6 +26,10 @@ public class MimeTypes {
     	MIME_TYPES.put(Pattern.compile(".*ms-excel.*"), ".xls");
     	// application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
     	MIME_TYPES.put(Pattern.compile(".*spreadsheetml.*"), ".xlsx");
+    	// 
+    	MIME_TYPES.put(Pattern.compile("application/vnd.ms-excel.addin.macroEnabled.12"), ".xlsm");
+    	// 
+    	MIME_TYPES.put(Pattern.compile("application/vnd.ms-excel.sheet.binary.macroEnabled.12"), ".xlsb");
 
     	// application/vnd.openxmlformats-officedocument.presentationml.presentation
     	MIME_TYPES.put(Pattern.compile(".*presentationml.*"), ".pptx");
