@@ -34,11 +34,13 @@ import com.google.common.io.CountingInputStream;
 public class DownloadURLIndex {
     private static final Logger log = LoggerFactory.make();
     
-    private static final int START_INDEX = 0;
+	private static final String CURRENT_CRAWL = "CC-MAIN-2015-40";
+
+	private static final int START_INDEX = 0;
     private static final int END_INDEX = 299;
     
     private static final String URL_FORMAT = 
-    		"https://aws-publicdatasets.s3.amazonaws.com/common-crawl/cc-index/collections/CC-MAIN-2015-35/indexes/cdx-%s.gz";
+    		"https://aws-publicdatasets.s3.amazonaws.com/common-crawl/cc-index/collections/" + CURRENT_CRAWL + "/indexes/cdx-%s.gz";
 
 	private static final JsonFactory f = new JsonFactory();
     
@@ -135,13 +137,13 @@ public class DownloadURLIndex {
 		    			
 		    			if(MimeTypes.matches(mimeType)) {
 		    				log.info("Found-Mimetype: " + json);
-		    				FileUtils.writeStringToFile(new File("commoncrawl.txt"), json + "\n", true);
+		    				FileUtils.writeStringToFile(new File("commoncrawl-" + CURRENT_CRAWL + ".txt"), json + "\n", true);
 		    			}
 		    		} else if("url".equals(jp.getCurrentName())) {
 		    			String url = jp.getValueAsString().toLowerCase();
 		    			if(Extensions.matches(url)) {
 		    				log.info("Found-URL: " + json);
-		    				FileUtils.writeStringToFile(new File("commoncrawl.txt"), json + "\n", true);
+		    				FileUtils.writeStringToFile(new File("commoncrawl-" + CURRENT_CRAWL + ".txt"), json + "\n", true);
 		    			}
 		    		}
 	    		}

@@ -8,6 +8,12 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 
+/**
+ * Class which holds information about one item from the CDX-index.
+ * 
+ * @author dstadler
+ *
+ */
 public class CDXItem {
 	private static final JsonFactory f = new JsonFactory();
     
