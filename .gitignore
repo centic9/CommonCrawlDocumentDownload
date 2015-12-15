@@ -13,3 +13,5 @@ download
 wat.paths
 segment.paths
 cdx*.gz
+commoncrawl.txt
+commoncrawl-CC-MAIN-*
