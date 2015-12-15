@@ -213,6 +213,7 @@ public class UtilsTest {
         assertEquals(new File(Utils.DOWNLOAD_DIR, "3d-coat.com_mantis_excel__xml_export.php.xls"), Utils.computeDownloadFileName("http://3d-coat.com/mantis/excel_:xml_export.php.xls", ".xls"));
         assertEquals(new File(Utils.DOWNLOAD_DIR, "3d-coat.com_mantis_excel__xml_export.php.xls"), Utils.computeDownloadFileName("http://3d-coat.com/mantis/excel_%xml_export.php.xls", ".xls"));
         assertEquals(new File(Utils.DOWNLOAD_DIR, "3d-coat.com_mantis_excel__xml_export.php.xls"), Utils.computeDownloadFileName("http://3d-coat.com/mantis/excel_+xml_export.php.xls", ".xls"));
+        assertEquals(new File(Utils.DOWNLOAD_DIR, "3d-coat.com_mantis_excel__xml_export.php.xls"), Utils.computeDownloadFileName("http://3d-coat.com/mantis/excel_*xml_export.php.xls", ".xls"));
     }
 
     // helper method to get coverage of the unused constructor

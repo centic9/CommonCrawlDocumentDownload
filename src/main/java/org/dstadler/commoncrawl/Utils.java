@@ -179,7 +179,7 @@ public class Utils {
                 replace("/", "_").replace("[", "(").
                 replace("]", ")").replace("?", "_").
                 replace(":", "_").replace("%",  "_").
-                replace("+", "_");
+                replace("+", "_").replace("*", "_");
         if(replace.length() > 240) {
             String extension = FilenameUtils.getExtension(replace);
             // don't use an extension that would make the overall filename length become more than 250 characters
