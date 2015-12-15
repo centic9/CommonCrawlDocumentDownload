@@ -206,9 +206,13 @@ public class UtilsTest {
         // extensions
         assertEquals(new File(Utils.DOWNLOAD_DIR, "3d-coat.com_mantis_excel_xml_export.php.xls"), Utils.computeDownloadFileName("http://3d-coat.com/mantis/excel_xml_export.php", ".xls"));
         assertEquals(new File(Utils.DOWNLOAD_DIR, "3d-coat.com_mantis_excel_xml_export.php.xls"), Utils.computeDownloadFileName("http://3d-coat.com/mantis/excel_xml_export.php.xls", ".xls"));
+        // overlong extension
+        assertEquals(new File(Utils.DOWNLOAD_DIR, StringUtils.repeat("a", 10) + "." + StringUtils.repeat("a", 229) + "....xls"), Utils.computeDownloadFileName(StringUtils.repeat("a",  10) + "." + StringUtils.repeat("a", 400), ".xls"));
 
-        // colon
+        // more special characters
         assertEquals(new File(Utils.DOWNLOAD_DIR, "3d-coat.com_mantis_excel__xml_export.php.xls"), Utils.computeDownloadFileName("http://3d-coat.com/mantis/excel_:xml_export.php.xls", ".xls"));
+        assertEquals(new File(Utils.DOWNLOAD_DIR, "3d-coat.com_mantis_excel__xml_export.php.xls"), Utils.computeDownloadFileName("http://3d-coat.com/mantis/excel_%xml_export.php.xls", ".xls"));
+        assertEquals(new File(Utils.DOWNLOAD_DIR, "3d-coat.com_mantis_excel__xml_export.php.xls"), Utils.computeDownloadFileName("http://3d-coat.com/mantis/excel_+xml_export.php.xls", ".xls"));
     }
 
     // helper method to get coverage of the unused constructor
