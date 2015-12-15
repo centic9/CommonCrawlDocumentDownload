@@ -36,7 +36,7 @@ public class DownloadFromCommonCrawl {
     					break;
     				}
 
-    				double percentage = (double)(bytes)/COMMONCRAWL_FILE.length();
+    				double percentage = (double)(bytes)/COMMONCRAWL_FILE.length()*100;
     				log.info("Downloading line " + (count+1) + ": " + String.format("%.4f", percentage) + "%: " + StringUtils.abbreviate(line, 50));
     				CDXItem item = CDXItem.parse(line);
 
