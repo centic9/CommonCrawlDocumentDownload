@@ -25,7 +25,7 @@ import org.junit.Test;
 
 public class UtilsTest {
     //private final static Logger log = LoggerFactory.make();
-    
+
     @Test
     public void testReverseDomain() throws Exception {
         assertEquals("www.actualicese.com", Utils.reverseDomain("com.actualicese.www"));
@@ -35,7 +35,7 @@ public class UtilsTest {
         assertEquals("a", Utils.reverseDomain("a."));
         assertEquals("a.b.c.d.e.f.g.h.i.j.k.l.m.n.o", Utils.reverseDomain("o.n.m.l.k.j.i.h.g.f.e.d.c.b.a"));
         assertEquals("www.ac_tualicese.-.com", Utils.reverseDomain("com.-.ac_tualicese.www"));
-        
+
         assertEquals("", Utils.reverseDomain(""));
         assertEquals(null, Utils.reverseDomain(null));
     }
@@ -65,7 +65,7 @@ public class UtilsTest {
         assertEquals(
                 new URI("http://co.ar.au"),
                 Utils.convertUrl("au.ar.co"));
-        
+
         assertEquals(
                 new URI("http://coa.ar.au"),
                 Utils.convertUrl("au.ar.co[a]"));
@@ -73,7 +73,7 @@ public class UtilsTest {
         assertEquals(
                 new URI("http://167.86.200.110/portals/7/language%20arts/smith/research%20on%20the%20elizabethan%20per--macbeth.doc"),
                 Utils.convertUrl("110.200.86.167/portals/7/language%20arts/smith/research%20on%20the%20elizabethan%20per--macbeth.doc"));
-        
+
         assertEquals(
                 new URI("http://199.91.152.175/hi0kbnp7eudg/nozym54zojh/monkey%5c's+book+of+opposites.pptx"),
                 Utils.convertUrl("175.152.91.199/hi0kbnp7eudg/nozym54zojh/monkey%5c%27s+book+of+opposites.pptx"));
@@ -94,24 +94,24 @@ public class UtilsTest {
         try {
             // empty file
             assertFalse(Utils.isCorruptDownload(file));
-            
+
             // some data
             FileUtils.writeStringToFile(file, "somedata");
             assertFalse(Utils.isCorruptDownload(file));
-            
+
             // specific data
             FileUtils.writeStringToFile(file, "<!DOCTYPE HTML");
             assertTrue(Utils.isCorruptDownload(file));
 
             FileUtils.writeStringToFile(file, "<!DOCTYPE html");
             assertTrue(Utils.isCorruptDownload(file));
-            
+
             FileUtils.writeStringToFile(file, "<!DOCTYPE html>");
             assertTrue(Utils.isCorruptDownload(file));
-            
+
             FileUtils.writeStringToFile(file, "<!doctype html");
             assertTrue(Utils.isCorruptDownload(file));
-            
+
             FileUtils.writeStringToFile(file, "<html");
             assertTrue(Utils.isCorruptDownload(file));
             FileUtils.writeStringToFile(file, "\n<html");
@@ -135,22 +135,22 @@ public class UtilsTest {
             // expected here
         }
     }
-    
+
     @Test
     public void testLogProgress() throws Exception {
         // no output
         Utils.logProgress(1, 2, 3, 4, 5, 6, 12322);
-        
+
         // output
         Utils.logProgress(1, 2, 3, 4, 12, 6, 0);
         Utils.logProgress(1, 2, 3, System.currentTimeMillis(), 12, 6, 12);
-        
+
         // now with reasonable values
         int SKIP_BLOCKS = 2116400;
-        int blockSize = 65536; 
-        long startPos = (long)Utils.HEADER_BLOCK_SIZE + (blockSize * 2644) + ((long)blockSize * SKIP_BLOCKS); 
+        int blockSize = 65536;
+        long startPos = (long)Utils.HEADER_BLOCK_SIZE + (blockSize * 2644) + ((long)blockSize * SKIP_BLOCKS);
         Utils.logProgress(startPos, blockSize, SKIP_BLOCKS, System.currentTimeMillis()-5000, SKIP_BLOCKS + 500, 20, 233689120776l);
-        
+
         // results not easily testable...
     }
 
@@ -189,15 +189,26 @@ public class UtilsTest {
         assertEquals(Utils.DOWNLOAD_DIR, Utils.computeDownloadFileName("", ""));
         assertEquals(new File(Utils.DOWNLOAD_DIR, "12"), Utils.computeDownloadFileName("1", "2"));
         assertEquals(new File(Utils.DOWNLOAD_DIR, "com.corp.www_file123234"), Utils.computeDownloadFileName("com.corp.www/file123234", ""));
-        
+
         // remove :http
         assertEquals(new File(Utils.DOWNLOAD_DIR, "com.corp.www_file123234"), Utils.computeDownloadFileName("com.corp.www/file123234:http", ""));
-        
+
         // replace some characters
         assertEquals(new File(Utils.DOWNLOAD_DIR, "com.corp.www_file123234()123()123_"), Utils.computeDownloadFileName("com.corp.www/file123234()123[]123/", ""));
-        
+
         // overlong names
         assertEquals(new File(Utils.DOWNLOAD_DIR, StringUtils.repeat("1", 240 ) + "..."), Utils.computeDownloadFileName(StringUtils.repeat("1", 500), ""));
+
+        // http/https-prefix
+        assertEquals(new File(Utils.DOWNLOAD_DIR, "com.corp.www_file123234()123()123_"), Utils.computeDownloadFileName("http://com.corp.www/file123234()123[]123/", ""));
+        assertEquals(new File(Utils.DOWNLOAD_DIR, "com.corp.www_file123234()_123()123_"), Utils.computeDownloadFileName("https://com.corp.www/file123234()?123[]123/", ""));
+
+        // extensions
+        assertEquals(new File(Utils.DOWNLOAD_DIR, "3d-coat.com_mantis_excel_xml_export.php.xls"), Utils.computeDownloadFileName("http://3d-coat.com/mantis/excel_xml_export.php", ".xls"));
+        assertEquals(new File(Utils.DOWNLOAD_DIR, "3d-coat.com_mantis_excel_xml_export.php.xls"), Utils.computeDownloadFileName("http://3d-coat.com/mantis/excel_xml_export.php.xls", ".xls"));
+
+        // colon
+        assertEquals(new File(Utils.DOWNLOAD_DIR, "3d-coat.com_mantis_excel__xml_export.php.xls"), Utils.computeDownloadFileName("http://3d-coat.com/mantis/excel_:xml_export.php.xls", ".xls"));
     }
 
     // helper method to get coverage of the unused constructor
@@ -209,28 +220,28 @@ public class UtilsTest {
     @Test
     public void testHandleBlock() throws IOException {
         byte[] block = FileUtils.readFileToByteArray(new File("src/test/data/block0.bin"));
-        
+
         final AtomicBoolean called = new AtomicBoolean();
         try (BlockProcessor processor = new BlockProcessor() {
-            
+
             @Override
             public void close() throws IOException {
                 // nothing needed here
             }
-            
+
             @Override
-            public void offer(byte[] block, long blockIndex) {
-                assertEquals(Utils.BLOCK_SIZE, block.length);
+            public void offer(byte[] array, long blockIndex) {
+                assertEquals(Utils.BLOCK_SIZE, array.length);
                 assertEquals(0, blockIndex);
-                
+
                 called.set(true);
             }
         }) {
             assertTrue(Utils.handleBlock(0, Utils.BLOCK_SIZE, new ByteArrayInputStream(block), processor));
         }
-        
+
         assertTrue(called.get());
-        
+
         assertFalse(Utils.handleBlock(0, Utils.BLOCK_SIZE, new ByteArrayInputStream(new byte[0]), null));
     }
 }

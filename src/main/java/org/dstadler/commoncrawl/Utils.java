@@ -173,12 +173,16 @@ public class Utils {
 
     public static File computeDownloadFileName(String urlStr, String postfix) {
         // try to simply use the full url with only slashes replaced
-        String replace = StringUtils.removeEnd(urlStr, ":http").
-                replace("/", "_").replace("[", "(").replace("]", ")");
+    	String replace = StringUtils.removeStart(urlStr, "http://");
+    	replace = StringUtils.removeStart(replace, "https://");
+        replace = StringUtils.removeEnd(replace, ":http").
+                replace("/", "_").replace("[", "(").
+                replace("]", ")").replace("?", "_").
+                replace(":", "_");
         if(replace.length() > 240) {
             replace = replace.substring(0, 240) + "..." + FilenameUtils.getExtension(replace);
         }
-        return new File(DOWNLOAD_DIR, replace + postfix);
+        return new File(DOWNLOAD_DIR, replace.endsWith(postfix) ? replace : replace + postfix);
     }
 
 	public static File downloadFileFromCommonCrawl(CloseableHttpClient httpClient, String url, DocumentLocation header, boolean useWARC)
@@ -190,8 +194,17 @@ public class Utils {
             return null;
         }
 
-        downloadFileFromCommonCrawl(httpClient, url, header, useWARC, destFile);
-        
+        try {
+        	downloadFileFromCommonCrawl(httpClient, url, header, useWARC, destFile);
+        } catch (IOException e) {
+        	// retry once for HTTP 500 that we see sometimes
+        	if(e.getMessage().contains("HTTP StatusCode 500")) {
+        		downloadFileFromCommonCrawl(httpClient, url, header, useWARC, destFile);
+        	} else {
+        		throw e;
+        	}
+        }
+
         return destFile;
 	}
 
@@ -204,14 +217,14 @@ public class Utils {
         httpGet.addHeader("Range", header.getRangeHader());
         try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
             HttpEntity entity = Utils.checkAndFetch(response, header.getUrl());
-            
+
             try (InputStream stream = new GZIPInputStream(entity.getContent())) {
             	// we get differently formatted files depending on the version of CommonCrawl that we look at...
             	if(useWARC) {
 					try (WARCRecord record = new WARCRecord(new FastBufferedInputStream(stream), destFile.getName(), 0)) {
 						// use the parser to remove the HTTP headers
 						LaxHttpParser.parseHeaders(record,"UTF-8");
-						
+
     	                try {
     	                	FileUtils.copyInputStreamToFile(record, destFile);
     	                } catch (IllegalStateException e) {

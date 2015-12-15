@@ -76,7 +76,7 @@ jacoco {
 }
 
 
-task download(type:JavaExec,dependsOn: compileJava) {
+task lookupURLs(type:JavaExec,dependsOn: compileJava) {
 	description = 'Reads the current Common Crawl URL index data and extracts all URLs for interesting mime-types or file extensions'
 	
 	main = 'org.dstadler.commoncrawl.index.DownloadURLIndex'
@@ -88,5 +88,12 @@ task downloadOldIndex(type:JavaExec,dependsOn: compileJava) {
 	description = 'Reading blocks at beginning or the last stored block-number and download binary data from the common crawl archives'
 	
 	main = 'org.dstadler.commoncrawl.oldindex.ReadAndDownload'
+	classpath = sourceSets.main.runtimeClasspath
+}
+
+task downloadDocuments(type:JavaExec,dependsOn: compileJava) {
+	description = 'Uses the URLs listed in commoncrawl.txt to download the documents from the Common Crawl'
+	
+	main = 'org.dstadler.commoncrawl.index.DownloadFromCommonCrawl'
 	classpath = sourceSets.main.runtimeClasspath
 }
