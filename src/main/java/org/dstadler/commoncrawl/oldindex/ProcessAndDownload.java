@@ -9,14 +9,16 @@ import org.dstadler.commoncrawl.Utils;
 import org.dstadler.commons.http.HttpClientWrapper;
 
 /**
- * Specialized Processor which reads the position in the Common Crawl
+ * Specialized {@link BlockProcessor} which reads the position in the Common Crawl
  * from the URL in the Block and then downloads and unwraps the actual
  * document in one go.
+ *
+ * This is usually used in the download-applications.
  *
  * @author dominik.stadler
  */
 public class ProcessAndDownload extends ProcessImpl implements Closeable {
-    private final HttpClientWrapper client = new HttpClientWrapper("", null, 30_000); 
+    private final HttpClientWrapper client = new HttpClientWrapper("", null, 30_000);
 
     public ProcessAndDownload(File file, boolean append) throws IOException {
         super(file, append);
