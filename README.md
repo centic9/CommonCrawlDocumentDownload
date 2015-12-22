@@ -1,4 +1,4 @@
-[![Build Status](https://buildhive.cloudbees.com/job/centic9/job/CommonCrawlDocumentDownload/badge/icon)](https://buildhive.cloudbees.com/job/centic9/job/CommonCrawlDocumentDownload/)
+[![Build Status](https://travis-ci.org/centic9/CommonCrawlDocumentDownload.svg)](https://travis-ci.org/centic9/CommonCrawlDocumentDownload)
 
 This is a small tool to find matching URLs and download the corresponding binary data from the CommonCrawl indexes.
 
