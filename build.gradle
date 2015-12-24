@@ -18,9 +18,6 @@ dependencies {
     compile 'org.netpreserve.commons:webarchive-commons:1.1.6'
     compile 'com.fasterxml.jackson.core:jackson-core:2.6.3'    
 
-	// for Little Endian number parsing
-    compile 'org.apache.poi:poi:3.13'
-
     // for commoncrawl-source
     compile 'log4j:log4j:1.2.17'
     compile 'org.jsoup:jsoup:1.8.1'

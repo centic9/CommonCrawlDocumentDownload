@@ -35,7 +35,7 @@ public class ProcessAndDownloadTest {
 	            assertTrue(file.exists());
 	            assertTrue(file.length() > 0);
 	            
-				assertTrue(destFile.exists());
+				assertTrue("Should have resulting file, but did not find it at " + destFile, destFile.exists());
 	        } finally {
 	            assertTrue(file.delete());
 	        }
