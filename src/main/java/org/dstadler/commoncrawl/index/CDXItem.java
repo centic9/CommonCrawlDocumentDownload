@@ -35,20 +35,23 @@ public class CDXItem {
     	try (JsonParser jp = f.createParser(json)) {
 	    	while(jp.nextToken() != JsonToken.END_OBJECT) {
 	    		if(jp.getCurrentToken() == JsonToken.VALUE_STRING) {
-	    			if("url".equals(jp.getCurrentName())) {
+	    			String name = jp.getCurrentName();
+					if("url".equals(name)) {
 	    				item.url = jp.getValueAsString().toLowerCase();
-	    			} else if ("mime".equals(jp.getCurrentName())) {
+	    			} else if ("mime".equals(name)) {
 	    				item.mime = jp.getValueAsString().toLowerCase();
-	    			} else if ("status".equals(jp.getCurrentName())) {
+	    			} else if ("status".equals(name)) {
 	    				item.status = jp.getValueAsString();
-	    			} else if ("digest".equals(jp.getCurrentName())) {
+	    			} else if ("digest".equals(name)) {
 	    				item.digest = jp.getValueAsString();
-	    			} else if ("length".equals(jp.getCurrentName())) {
+	    			} else if ("length".equals(name)) {
 	    				item.length = jp.getValueAsLong();
-	    			} else if ("offset".equals(jp.getCurrentName())) {
+	    			} else if ("offset".equals(name)) {
 	    				item.offset = jp.getValueAsLong();
-	    			} else if ("filename".equals(jp.getCurrentName())) {
+	    			} else if ("filename".equals(name)) {
 	    				item.filename = jp.getValueAsString();
+	    			} else {
+	    				throw new IllegalStateException("Unknown field found: " + name);
 	    			}
 	    		}
 	    	}
