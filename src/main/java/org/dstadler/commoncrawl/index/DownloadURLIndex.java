@@ -34,7 +34,7 @@ import com.google.common.io.CountingInputStream;
 public class DownloadURLIndex {
     private static final Logger log = LoggerFactory.make();
 
-	private static final String CURRENT_CRAWL = "CC-MAIN-2015-40";
+	private static final String CURRENT_CRAWL = "CC-MAIN-2015-48";
 
 	private static final int START_INDEX = 0;
     private static final int END_INDEX = 299;

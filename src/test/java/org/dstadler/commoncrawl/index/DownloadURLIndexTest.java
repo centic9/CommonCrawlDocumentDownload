@@ -28,7 +28,7 @@ public class DownloadURLIndexTest {
 	public void testRead() throws Exception {
         try (HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
 
-        	String url = "https://aws-publicdatasets.s3.amazonaws.com/common-crawl/cc-index/collections/CC-MAIN-2015-35/indexes/cdx-00000.gz";
+        	String url = "https://aws-publicdatasets.s3.amazonaws.com/common-crawl/cc-index/collections/CC-MAIN-2015-48/indexes/cdx-00000.gz";
         	log.info("Loading data from " + url);
 
         	final HttpGet httpGet = new HttpGet(url);
@@ -61,7 +61,7 @@ public class DownloadURLIndexTest {
     	                    	// TODO: close the client here for now until we find out why it stops before the stream
     	                    	// is actually fully processed
     	                    	client.getHttpClient().close();
-    	                    	
+
     	                    	break;
     	                    }
 
@@ -69,17 +69,17 @@ public class DownloadURLIndexTest {
     	                    length+=line.length() + 1;
     	                    if(count % 100000 == 0 || lastLog < (System.currentTimeMillis() - 10000)) {
     	                    	log.info(count + " lines, bytes: " + length
-    	                    			//+ ", compressed bytes: " + content.getCount() 
+    	                    			//+ ", compressed bytes: " + content.getCount()
     	                    			//+ ", bytes: " + uncompressedStream.getCount()
     	                    			);
     	                    	lastLog = System.currentTimeMillis();
     	                    }
     	                }
     				} catch (Exception e) {
-    					// try to stop processing in case of Exceptions in order to not download the whole file 
+    					// try to stop processing in case of Exceptions in order to not download the whole file
     					// in the implicit close()
     					client.getHttpClient().close();
-    					
+
     					throw e;
     				}
             	} finally {
@@ -95,7 +95,7 @@ public class DownloadURLIndexTest {
 	public void testReadDirectly() throws Exception {
         try (HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
 
-        	String url = "https://aws-publicdatasets.s3.amazonaws.com/common-crawl/cc-index/collections/CC-MAIN-2015-35/indexes/cdx-00000.gz";
+        	String url = "https://aws-publicdatasets.s3.amazonaws.com/common-crawl/cc-index/collections/CC-MAIN-2015-48/indexes/cdx-00000.gz";
         	log.info("Loading data from " + url);
 
         	final HttpGet httpGet = new HttpGet(url);
@@ -124,24 +124,24 @@ public class DownloadURLIndexTest {
 	                    	// TODO: close the client here for now until we find out why it stops before the stream
 	                    	// is actually fully processed
 	                    	client.getHttpClient().close();
-	                    	
+
 	                    	break;
 	                    }
 
 	                    count++;
 	                    if(count % 1000000 == 0 || lastLog < (System.currentTimeMillis() - 10000)) {
 	                    	log.info(count + " bytes"
-	                    			//+ ", compressed bytes: " + content.getCount() 
+	                    			//+ ", compressed bytes: " + content.getCount()
 	                    			//+ ", bytes: " + uncompressedStream.getCount()
 	                    			);
 	                    	lastLog = System.currentTimeMillis();
 	                    }
 	                }
 				} catch (Exception e) {
-					// try to stop processing in case of Exceptions in order to not download the whole file 
+					// try to stop processing in case of Exceptions in order to not download the whole file
 					// in the implicit close()
 					client.getHttpClient().close();
-					
+
 					throw e;
             	} finally {
             		// ensure all content is taken out to free resources
@@ -156,7 +156,7 @@ public class DownloadURLIndexTest {
 	@Test
 	public void testReadFromFile() throws Exception {
 		File file = new File("cdx-00000.gz");
-		
+
     	log.info("Loading data from " + file);
 
 	    log.info("Content has " + file.length()  + " bytes");
@@ -186,7 +186,7 @@ public class DownloadURLIndexTest {
                     length+=line.length() + 1;
                     if(count % 100000 == 0 || lastLog < (System.currentTimeMillis() - 10000)) {
                     	log.info(count + " lines, bytes: " + length
-                    			+ ", compressed bytes: " + content.getCount() 
+                    			+ ", compressed bytes: " + content.getCount()
                     			+ ", bytes: " + uncompressedStream.getCount()
                     			);
                     	lastLog = System.currentTimeMillis();
