@@ -149,9 +149,9 @@ public class Utils {
             long currentPos = startPos + (readBlocks * blockSize);
 
             log.info("Reading block " + blockIndex + " at position " + currentPos +
-                    " fetched " + readBlocks + " blocks in " + diffSec + " s," +
-                    " with " + readBlocks/diffSec + " per second" +
-                    (fileLength > 0 ? ", " + (((double)currentPos)/fileLength*100) + "% of " + fileLength + " bytes done" : ""));
+                    " fetched " + readBlocks + " blocks in " + String.format("%.2f", diffSec) + " s," +
+                    " with " + String.format("%.2f", readBlocks/diffSec) + " per second" +
+                    (fileLength > 0 ? ", " + String.format("%.2f", (((double)currentPos)/fileLength*100)) + "% of " + fileLength + " bytes done" : ""));
         }
     }
 
