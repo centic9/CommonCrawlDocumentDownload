@@ -76,7 +76,7 @@ public class DownloadURLIndex {
 	}
 
 	protected static void handleInputStream(Closeable httpClient, String url, InputStream stream, int index, long length)
-			throws IOException, Exception {
+			throws IOException {
 		try (CountingInputStream content = new CountingInputStream(stream)) {
 		try (CountingInputStream uncompressedStream = new CountingInputStream(new GZIPMembersInputStream(content))) {
 		try (BufferedReader reader = new BufferedReader(
