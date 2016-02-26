@@ -348,11 +348,11 @@ public class LittleEndian implements LittleEndianConsts
 
     /**
      * executes:
-     * <p/>
+     *
      * <code>
      * data[offset] = (byte)value;
      * </code>
-     * </p>
+     *
      * Added for consistency with other put~() methods
      */
     public static void putByte( byte[] data, int offset, int value )

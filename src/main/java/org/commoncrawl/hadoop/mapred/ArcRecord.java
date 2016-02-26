@@ -147,8 +147,9 @@ public class ArcRecord
   }
 
   /**
-   * <p>Parses and sets the ARC record header fields.</p>
-   * <p>Currently, this method expects the ARC record header string to contain
+   * Parses and sets the ARC record header fields.
+   * 
+   * Currently, this method expects the ARC record header string to contain
    * the following fields, in order, separated by space:
    * <ul>
    * <li>URL</li>
@@ -157,9 +158,9 @@ public class ArcRecord
    * <li>Content Type</li>
    * <li>Content Length</li>
    * </ul>
-   * </p>
-   * <p>For more information on the arc file format, see
-   * {@link http://www.archive.org/web/researcher/ArcFileFormat.php}.</p>
+   *
+   * For more information on the arc file format, see
+   * http://www.archive.org/web/researcher/ArcFileFormat.php.
    *
    * @param arcRecordHeader The first line of an ARC file entry - the header
    *                        line for an ARC file item.
