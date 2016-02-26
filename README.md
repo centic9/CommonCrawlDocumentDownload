@@ -1,10 +1,12 @@
 [![Build Status](https://travis-ci.org/centic9/CommonCrawlDocumentDownload.svg)](https://travis-ci.org/centic9/CommonCrawlDocumentDownload)
 
+[![Build Status](https://travis-ci.org/centic9/CommonCrawlDocumentDownload.svg)](https://travis-ci.org/centic9/CommonCrawlDocumentDownload) [![Gradle Status](https://gradleupdate.appspot.com/centic9/CommonCrawlDocumentDownload/status.svg?branch=master)](https://gradleupdate.appspot.com/centic9/CommonCrawlDocumentDownload/status)
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.dstadler/commoncrawldownload/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/org.dstadler/commoncrawldownload) [![Maven Central](https://img.shields.io/maven-central/v/org.dstadler/commoncrawldownload.svg)](https://maven-badges.herokuapp.com/maven-central/org.dstadler/commoncrawldownload)
+
 This is a small tool to find matching URLs and download the corresponding binary data from the CommonCrawl indexes.
 
-Support for the newer URL Index (http://blog.commoncrawl.org/2015/04/announcing-the-common-crawl-index/) is currently in progress, finding matching URLs works, adding download capabilities is in progress.
-
-Support for the older URL Index as described at https://github.com/trivio/common_crawl_index and 
+Support for the newer URL Index (http://blog.commoncrawl.org/2015/04/announcing-the-common-crawl-index/) is available, older URL Index as described at https://github.com/trivio/common_crawl_index and 
 http://blog.commoncrawl.org/2013/01/common-crawl-url-index/ is still available in the "oldindex" package.
 
 Please note that a full run usually finds a huge number of files and thus downloading will require a large 
@@ -14,18 +16,26 @@ amount of time and lots of disk-space if the data is stored locally!
 
 ### Grab it
 
-    git clone git://github.com/centic9/CommonCrawl
+    git clone git://github.com/centic9/CommonCrawlDocumentDownload
 
 ### Build it and create the distribution files
 
-	cd CommonCrawl
+	cd CommonCrawlDocumentDownload
 	./gradlew check
 
 ### Run it
 
-    ./gradlew download
+    ./gradlew lookupURLs
+    
+Reads the current Common Crawl URL index data and extracts all URLs for interesting mime-types or file extensions, stores the URLs in a file called `commoncrawl.txt`
+        
+    ./gradlew downloadDocuments
 
-Starts downloading the URL index files and looks at each URL, adding any matching URL to a file called "commoncrawl.txt"
+Uses the URLs listed in `commoncrawl.txt` to download the documents from the Common Crawl
+
+    ./gradlew downloadOldIndex
+
+Starts downloading the URL index files from the old index and looks at each URL, downloading binary data from the common crawl archives.
 
 ## The longer stuff
 
@@ -43,45 +53,26 @@ Run unit tests
 
 There are a few things that you can tweak:
 
-* The file-extensions that are detcted as download-able files are handled in the class Extensions
-* The mime-types that are detcted as download-able files isare handled in the class MimeTypes
-* The starting file-index (of the aprox. 300 cdx-files) is currently set as constant in class org.dstadler.commoncrawl.index.DownloadURLIndex, this way you can also re-start a download that was interrupted before
+* The file-extensions that are detcted as download-able files are handled in the class `Extensions`.
+* The mime-types that are detcted as download-able files isare handled in the class `MimeTypes`.
+* The starting file-index (of the aprox. 300 cdx-files) is currently set as constant in class `org.dstadler.commoncrawl.index.DownloadURLIndex`, this way you can also re-start a download that was interrupted before.
 
 ### Ideas
 
-* Old Index: By adding a new implementation of BlockProcesser (likely re-using existing stuff by deriving from one of the
+* Old Index: By adding a new implementation of `BlockProcesser` (likely re-using existing stuff by deriving from one of the
 available implementations), you can do things like streaming processing of the file instead of storing the file
 locally, which will avoid using too much disk-space
 
 ### Supporting the new URL Index
 
-There was a new index announced at http://blog.commoncrawl.org/2015/04/announcing-the-common-crawl-index/, in order to 
-support using it, we will need to review how https://github.com/ikreymer/cc-index-server downloads the binary tree of
-urls so we can use it to look for URLs by extensions. Also look at https://github.com/ikreymer/cdx-index-client for a sample client.
+The new index announced at http://blog.commoncrawl.org/2015/04/announcing-the-common-crawl-index/ is supported now
 
 Indexes are available at s3://aws-publicdatasets/common-crawl/cc-index/collections/[CC-MAIN-YYYY-WW], 
 e.g. https://aws-publicdatasets.s3.amazonaws.com/common-crawl/cc-index/collections/CC-MAIN-2015-11/metadata.yaml
 
 Indexing is done via https://github.com/ikreymer/webarchive-indexing
 
-CDX file format is described at https://github.com/ikreymer/webarchive-indexing#cdx-file-format
-
-#### Reading URLs via the URL Index
-
-The URL index is certainly the easiest way to get a list of URLs for a crawl.  If you're willing to accept the half million URLs in the meta index as being suitably randomly distributed, you could just use that:
-
-$ aws --no-sign-request s3 cp s3://aws-publicdatasets/common-crawl/cc-index/collections/CC-MAIN-2015-14/indexes/cluster.idx .
-$ wc -l *idx
-  549054 cluster.idx
-
-Otherwise you could download the entire 300 file index and process that:
-
-$ aws --no-sign-request s3 cp s3://aws-publicdatasets/common-crawl/cc-index/collections/CC-MAIN-2015-14/indexes/cdx-00000.gz .
-...
-$ aws --no-sign-request s3 cp s3://aws-publicdatasets/common-crawl/cc-index/collections/CC-MAIN-2015-14/indexes/cdx-00299.gz .
-
-The announcement describing the index is here (but note that the index location is incorrect in that post):
-http://blog.commoncrawl.org/2015/04/announcing-the-common-crawl-index/
+CDX file format is described at https://github.com/ikreymer/webarchive-indexing#cdx-file-format, also take a look at https://github.com/ikreymer/cc-index-server and https://github.com/ikreymer/cdx-index-client for a sample client.
 
 #### Reading the data
 
