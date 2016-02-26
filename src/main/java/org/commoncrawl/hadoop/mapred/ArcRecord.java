@@ -519,7 +519,12 @@ public String toString() {
 
     // Set the reset of the payload as the HTTP entity.  Use an InputStreamEntity
     // to avoid a memory copy.
-    InputStreamEntity entity = new InputStreamEntity(new ByteArrayInputStream(this._payload, end, this._payload.length - end), this._payload.length - end);
+    //trim trailing '\n' if it exists
+    int entityLength = _payload.length-end;
+    if (_payload.length > 0 && _payload[_payload.length-1]=='\n') {
+      entityLength--;
+    }
+    InputStreamEntity entity = new InputStreamEntity(new ByteArrayInputStream(this._payload, end, entityLength), entityLength);
     entity.setContentType(this._httpResponse.getFirstHeader("Content-Type"));
     entity.setContentEncoding(this._httpResponse.getFirstHeader("Content-Encoding"));
     this._httpResponse.setEntity(entity);

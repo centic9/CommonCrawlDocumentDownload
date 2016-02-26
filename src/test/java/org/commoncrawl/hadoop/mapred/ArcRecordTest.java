@@ -1,16 +1,16 @@
 package org.commoncrawl.hadoop.mapred;
 
-import static org.junit.Assert.*;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.zip.GZIPInputStream;
-
-import org.apache.http.HttpException;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.archive.io.arc.ARCRecord;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.zip.GZIPInputStream;
+
+import static org.junit.Assert.*;
 
 public class ArcRecordTest {
 
@@ -19,13 +19,18 @@ public class ArcRecordTest {
         ArcRecord record = new ArcRecord();
         try (InputStream stream = new GZIPInputStream(new FileInputStream("src/test/data/record.bin"))) {
         	record.readFrom(stream);
-            try {
-            	assertNotNull(record.getHttpResponse());
-            	assertNotNull(record.getHttpResponse().getEntity());
-            	assertNotNull(record.getHttpResponse().getEntity().getContent());
-            } catch (IllegalStateException  | HttpException e) {
-            	throw new IOException(e);
-            }
+
+			assertNotNull(record.getHttpResponse());
+			assertNotNull(record.getHttpResponse().getEntity());
+			InputStream content = record.getHttpResponse().getEntity().getContent();
+			assertNotNull(content);
+			ByteArrayOutputStream outstr = new ByteArrayOutputStream();
+			IOUtils.copy(content, outstr);
+			byte[] data = outstr.toByteArray();
+			assertTrue(data.length > 1);
+
+			// had a problem that ArcRecord did leave a trailing newline in there
+			assertFalse(data[data.length-1] == '\n');
         }
 	}
 	
@@ -35,8 +40,6 @@ public class ArcRecordTest {
         try (InputStream stream = new GZIPInputStream(new FileInputStream("src/test/data/record.bin"))) {
             try (ARCRecord record = new ARCRecord(stream, "name", 0, true, true, true)) {
             	assertEquals(72, record.read());
-            } catch (IllegalStateException e) {
-            	throw new IOException(e);
             }
         }
 	}
