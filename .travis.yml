@@ -4,6 +4,9 @@ jdk:
  
 before_install:
  - chmod +x gradlew
-  
-after_success:
-- ./gradlew jacocoTestReport
+
+script: 
+- ./gradlew eclipse check jacocoTestReport javadoc
+
+after_failure:
+- cat build/test-results/*.xml
