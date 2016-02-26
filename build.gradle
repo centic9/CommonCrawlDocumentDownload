@@ -70,86 +70,91 @@ wrapper.finalizedBy adjustWrapperPropertiesFile
 test {
 	systemProperties = System.properties
 
-	// show standard out and standard error of the test JVM(s) on the console
-	//testLogging.showStandardStreams = true
+	// enable to show standard out and standard error of the test JVM(s) on the console
+	// testLogging.showStandardStreams = true
 
 	// http://forums.gradle.org/gradle/topics/jacoco_related_failure_in_multiproject_build
 	systemProperties['user.dir'] = workingDir
 }
 
 jacoco {
-	toolVersion = "0.7.5.201505241946"
+	toolVersion = '0.7.5.201505241946'
 }
 
+jacocoTestReport {
+    reports {
+        xml.enabled true
+	}
+}
 
 task sourcesJar(type: Jar) {
-	classifier = 'sources'
-	from sourceSets.main.allJava
+    classifier = 'sources'
+    from sourceSets.main.allJava
 }
 
 task javadocJar(type: Jar) {
-	classifier = 'javadoc'
-	from javadoc
+    classifier = 'javadoc'
+    from javadoc
 }
 
 artifacts {
-	archives javadocJar, sourcesJar
+    archives javadocJar, sourcesJar
 }
 
 signing {
-	sign configurations.archives
+    sign configurations.archives
 }
 
 //provide defaults so we do not need to specify them always
 if (!project.hasProperty("ossrhUsername")) {
-	ext.ossrhUsername = ""
+    ext.ossrhUsername = ""
 }
 if (!project.hasProperty("ossrhPassword")) {
-	ext.ossrhPassword = ""
+    ext.ossrhPassword = ""
 }
 
 uploadArchives {
-	repositories {
-		mavenDeployer {
-			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+  repositories {
+    mavenDeployer {
+      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-				authentication(userName: ossrhUsername, password: ossrhPassword)
-			}
+      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
 
-			snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-				authentication(userName: ossrhUsername, password: ossrhPassword)
-			}
+      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
 
 			pom.project {
 				name 'CommonCrawl Document Download'
-				packaging 'jar'
-				// optionally artifactId can be defined here
-				description 'Common utilities I find useful in many of my projects.'
+        packaging 'jar'
+        // optionally artifactId can be defined here 
+        description 'Common utilities I find useful in many of my projects.'
 				url 'https://github.com/centic9/CommonCrawlDocumentDownload'
 
-				scm {
+        scm {
 					connection 'scm:git@github.com:centic9/CommonCrawlDocumentDownload'
 					developerConnection 'scm:git@github.com:centic9/CommonCrawlDocumentDownload'
 					url 'https://github.com/centic9/CommonCrawlDocumentDownload'
-				}
+        }
 
-				licenses {
-					license {
-						name 'BSD 2-Clause License'
-						url 'http://www.opensource.org/licenses/bsd-license.php'
-					}
-				}
+        licenses {
+          license {
+            name 'BSD 2-Clause License'
+            url 'http://www.opensource.org/licenses/bsd-license.php'
+          }
+        }
 
-				developers {
-					developer {
-						id 'centic9	'
-						name 'Dominik Stadler'
-					}
-				}
-			}
-		}
-	}
+        developers {
+          developer {
+            id 'centic9	'
+            name 'Dominik Stadler'
+          }
+        }
+      }
+    }
+  }
 }
 
 afterReleaseBuild.dependsOn uploadArchives
