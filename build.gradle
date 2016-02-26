@@ -31,8 +31,8 @@ dependencies {
     compile 'log4j:log4j:1.2.17'
     compile 'org.jsoup:jsoup:1.8.1'
 
-	testCompile "junit:junit:4+"
-    testCompile 'org.dstadler:commons-test:1.0.0.+'
+	testCompile "junit:junit:[4.12,)"
+	testCompile 'org.dstadler:commons-test:1.0.0.10'
 }
 
 // work around unnecessary timestamp in generated file which always causes dirty files in version control

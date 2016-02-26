@@ -5,8 +5,8 @@ jdk:
 before_install:
  - chmod +x gradlew
 
-script: 
-- ./gradlew eclipse check jacocoTestReport javadoc
+install: ./gradlew checkSnapshotDependencies compileJava
+script: ./gradlew eclipse check jacocoTestReport javadoc
 
 after_failure:
 - cat build/test-results/*.xml
