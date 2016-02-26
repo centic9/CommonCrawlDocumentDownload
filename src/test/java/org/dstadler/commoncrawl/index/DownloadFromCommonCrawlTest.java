@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -73,6 +74,16 @@ public class DownloadFromCommonCrawlTest {
 				assertTrue(file.exists());
 				assertTrue(file.delete());
 			}
+		}
+	}
+
+
+	@Test
+	public void testReadStartPos() throws IOException {
+		try (final HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
+			Pair<Long, Long> startPos = Utils.readStartPos(client.getHttpClient());
+			assertTrue(startPos.getLeft() > 0);
+			assertTrue(startPos.getRight() > 0);
 		}
 	}
 }

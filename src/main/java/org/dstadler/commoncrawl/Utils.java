@@ -1,6 +1,5 @@
 package org.dstadler.commoncrawl;
 
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -59,7 +58,7 @@ public class Utils {
         return response.getEntity();
     }
 
-    public static Pair<Long, Long> readStartPos(CloseableHttpClient client) throws IOException, ClientProtocolException {
+    public static Pair<Long, Long> readStartPos(CloseableHttpClient client) throws IOException {
         log.info("Reading header from " + INDEX_URL);
         HttpGet httpGet = new HttpGet(INDEX_URL);
         try (CloseableHttpResponse response = client.execute(httpGet)) {
@@ -69,7 +68,7 @@ public class Utils {
                 try {
                     // try with the first few bytes initially
                     byte[] header = new byte[HEADER_BLOCK_SIZE];
-                    stream.read(header);
+                    IOUtils.read(stream, header);
 
                     HexDump.dump(header, 0, System.out, 0);
 
@@ -160,7 +159,7 @@ public class Utils {
     public static boolean isCorruptDownload(File file) throws IOException {
         try (InputStream stream = new FileInputStream(file)) {
             byte[] start = new byte[100];
-            stream.read(start);
+            IOUtils.read(stream, start);
             String string = new String(start, "UTF-8").trim().toLowerCase();
             if(string.startsWith("<!doctype html") ||
                     string.startsWith("<html") ||
@@ -192,7 +191,7 @@ public class Utils {
     }
 
 	public static File downloadFileFromCommonCrawl(CloseableHttpClient httpClient, String url, DocumentLocation header, boolean useWARC)
-			throws IOException, EOFException, ClientProtocolException {
+			throws IOException {
 		// check if we already have that file
         File destFile = Utils.computeDownloadFileName(url, MimeTypes.toExtension(header.getMime()));
         if(destFile.exists()) {
@@ -215,7 +214,7 @@ public class Utils {
 	}
 
 	public static void downloadFileFromCommonCrawl(CloseableHttpClient httpClient, String url, DocumentLocation header, boolean useWARC,
-			File destFile) throws IOException, EOFException, ClientProtocolException {
+			File destFile) throws IOException {
 		log.info("Reading file for " + url + " at " + header.getRangeHader() + " from " + header.getUrl() + " to " + destFile);
 
         // do a range-query for exactly this document in the Common Crawl dataset
