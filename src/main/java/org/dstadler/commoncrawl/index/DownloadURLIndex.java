@@ -1,13 +1,10 @@
 package org.dstadler.commoncrawl.index;
 
-import java.io.BufferedReader;
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.logging.Logger;
-
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.google.common.base.Preconditions;
+import com.google.common.io.CountingInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
@@ -24,17 +21,13 @@ import org.dstadler.commons.collections.MappedCounterImpl;
 import org.dstadler.commons.http.HttpClientWrapper;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.google.common.base.Preconditions;
-import com.google.common.io.CountingInputStream;
+import java.io.*;
+import java.util.logging.Logger;
 
 public class DownloadURLIndex {
     private static final Logger log = LoggerFactory.make();
 
-	private static final String CURRENT_CRAWL = "CC-MAIN-2015-48";
+	private static final String CURRENT_CRAWL = "CC-MAIN-2016-07";
 
 	private static final int START_INDEX = 0;
     private static final int END_INDEX = 299;
@@ -126,7 +119,7 @@ public class DownloadURLIndex {
 		} } }
 	}
 
-    private static void handleJSON(String json) throws JsonParseException, IOException {
+    private static void handleJSON(String json) throws IOException {
     	try (JsonParser jp = f.createParser(json)) {
 	    	while(jp.nextToken() != JsonToken.END_OBJECT) {
 	    		if(jp.getCurrentToken() == JsonToken.VALUE_STRING) {

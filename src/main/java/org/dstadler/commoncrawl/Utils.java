@@ -1,14 +1,7 @@
 package org.dstadler.commoncrawl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.logging.Logger;
-import java.util.zip.GZIPInputStream;
-
+import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -17,7 +10,6 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -29,9 +21,14 @@ import org.commoncrawl.hadoop.mapred.ArcRecord;
 import org.dstadler.commoncrawl.oldindex.BlockProcessor;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
 
-import com.google.common.base.Preconditions;
-
-import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
 
 
 public class Utils {

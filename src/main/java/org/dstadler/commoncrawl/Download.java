@@ -1,24 +1,19 @@
 package org.dstadler.commoncrawl;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.logging.Logger;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.dstadler.commoncrawl.oldindex.ProcessAndDownload;
 import org.dstadler.commons.http.HttpClientWrapper;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
+
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.logging.Logger;
 
 /**
  * Download files from a list of urls stored in a file, convert the reversed domain
@@ -37,7 +32,6 @@ public class Download {
         
         try (BufferedReader reader = new BufferedReader(new FileReader(Utils.COMMONURLS_PATH))) {
             try (HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
-                int index = 0;
                 while(true) {
                     String url = reader.readLine();
                     if(url == null) {
@@ -50,7 +44,7 @@ public class Download {
                         continue;
                     }
                     try {
-                        readURL(client.getHttpClient(), index, url);
+                        readURL(client.getHttpClient(), url);
                     } catch (IOException | URISyntaxException e) {
                         String msg = "Download failed for URL:" + url + ": " + e;
                         log.info(msg);
@@ -58,8 +52,6 @@ public class Download {
                     } catch (Exception e) {
                         throw new Exception("Failed for url " + url, e);
                     }
-                    
-                    index++;
                 }
             }
         }
@@ -67,7 +59,7 @@ public class Download {
         log.info("Done");
     }
 
-    private static void readURL(CloseableHttpClient client, int index, String urlStr) 
+    private static void readURL(CloseableHttpClient client, String urlStr)
             throws IllegalStateException, IOException, URISyntaxException {
         File destFile = Utils.computeDownloadFileName(urlStr, "");
         if(destFile.exists()) {
@@ -79,10 +71,10 @@ public class Download {
         URI url = Utils.convertUrl(urlStr);
         
         log.info("Reading file from " + url + " to " + destFile + " based on input " + urlStr);
-        download(client, index, urlStr, destFile, url);
+        download(client, urlStr, destFile, url);
     }
 
-    private static void download(CloseableHttpClient client, int index, String urlStr, File destFile, URI url) throws IOException, ClientProtocolException {
+    private static void download(CloseableHttpClient client, String urlStr, File destFile, URI url) throws IOException {
         HttpGet httpGet = new HttpGet(url);
         try (CloseableHttpResponse response = client.execute(httpGet)) {
             HttpEntity entity = Utils.checkAndFetch(response, url.toString());
@@ -110,6 +102,7 @@ public class Download {
         } finally {
             // usually not there any more, but ensure that we delete it in any case 
             if(file.exists() && !file.delete()) {
+                //noinspection ThrowFromFinallyBlock
                 throw new IllegalStateException("Could not delete temporary file " + file);
             }
         }
