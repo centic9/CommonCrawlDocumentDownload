@@ -81,6 +81,7 @@ vnd.openxmlformats-package.relationships+xml 	application/vnd.openxmlformats-pac
         MIME_TYPES.put(Pattern.compile("image/png"), ".png");
         MIME_TYPES.put(Pattern.compile("image/x-ms-bmp"), ".bmp");
         MIME_TYPES.put(Pattern.compile("image/x-pict"), ".pict");
+        MIME_TYPES.put(Pattern.compile("image/vnd.microsoft.icon"), ".ico");
         MIME_TYPES.put(Pattern.compile("application/x-msmetafile"), ".wmf");
         MIME_TYPES.put(Pattern.compile("image/svg\\+xml"), ".svg");
         MIME_TYPES.put(Pattern.compile("audio/x-wav"), ".wav");
@@ -101,6 +102,21 @@ vnd.openxmlformats-package.relationships+xml 	application/vnd.openxmlformats-pac
         MIME_TYPES.put(Pattern.compile("application/vnd.ms-xpsdocument"), ".xps");
         MIME_TYPES.put(Pattern.compile("application/x-msaccess"), ".mdb");
         MIME_TYPES.put(Pattern.compile("application/xhtml\\+xml"), ".html");
+        MIME_TYPES.put(Pattern.compile("application/x-sh"), ".sh");
+        MIME_TYPES.put(Pattern.compile("application/zlib"), ".zlib");  //??
+        MIME_TYPES.put(Pattern.compile("text/x-java-properties"), ".properties");
+        MIME_TYPES.put(Pattern.compile("application/java-vm"), ".class");
+        MIME_TYPES.put(Pattern.compile("text/css"), ".css");
+        MIME_TYPES.put(Pattern.compile("application/javascript"), ".js");
+        MIME_TYPES.put(Pattern.compile("application/java-archive"), ".jar");
+        MIME_TYPES.put(Pattern.compile("application/gzip"), ".tar.gz");
+        MIME_TYPES.put(Pattern.compile("application/rdf\\+xml"), ".rdf");
+        MIME_TYPES.put(Pattern.compile("text/x-java-source"), ".java");
+        MIME_TYPES.put(Pattern.compile("text/x-c\\+\\+src"), ".cpp");
+        MIME_TYPES.put(Pattern.compile("text/x-ruby"), ".rb");
+        MIME_TYPES.put(Pattern.compile("application/xml-dtd"), ".dtd");
+        MIME_TYPES.put(Pattern.compile("audio/x-mod"), ".mod");
+        MIME_TYPES.put(Pattern.compile("text/x-jsp"), ".jsp");
     }
     
     public static boolean matches(String mime) {
