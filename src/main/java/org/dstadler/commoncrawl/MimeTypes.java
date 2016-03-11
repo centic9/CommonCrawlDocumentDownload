@@ -85,6 +85,7 @@ vnd.openxmlformats-package.relationships+xml 	application/vnd.openxmlformats-pac
         MIME_TYPES.put(Pattern.compile("application/x-msmetafile"), ".wmf");
         MIME_TYPES.put(Pattern.compile("image/svg\\+xml"), ".svg");
         MIME_TYPES.put(Pattern.compile("audio/x-wav"), ".wav");
+        MIME_TYPES.put(Pattern.compile("audio/mpeg"), ".mp3");
         MIME_TYPES.put(Pattern.compile("application/x-emf"), ".emf");
         MIME_TYPES.put(Pattern.compile("application/rtf"), ".rtf");
         MIME_TYPES.put(Pattern.compile("text/html"), ".html");
@@ -117,8 +118,11 @@ vnd.openxmlformats-package.relationships+xml 	application/vnd.openxmlformats-pac
         MIME_TYPES.put(Pattern.compile("application/xml-dtd"), ".dtd");
         MIME_TYPES.put(Pattern.compile("audio/x-mod"), ".mod");
         MIME_TYPES.put(Pattern.compile("text/x-jsp"), ".jsp");
+
+        // mimetypes where I don't know the extension
+        MIME_TYPES.put(Pattern.compile("text/x-matlab"), ".unknown");
     }
-    
+
     public static boolean matches(String mime) {
         for(Pattern pattern : MIME_TYPES.keySet()) {
             if(pattern.matcher(mime).matches()) {
