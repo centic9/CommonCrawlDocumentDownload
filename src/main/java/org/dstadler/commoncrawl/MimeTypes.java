@@ -19,8 +19,8 @@ public class MimeTypes {
     	MIME_TYPES.put(Pattern.compile(".*ms-word.*"), ".doc");
     	// application/vnd.openxmlformats-officedocument.wordprocessingml.document
     	MIME_TYPES.put(Pattern.compile(".*wordprocessingml.*"), ".docx");
-    	
-    	// application/msexcel
+
+        // application/msexcel
     	MIME_TYPES.put(Pattern.compile(".*msexcel.*"), ".xls");
     	// application/vnd.ms-excel
     	MIME_TYPES.put(Pattern.compile(".*ms-excel.*"), ".xls");
@@ -31,10 +31,16 @@ public class MimeTypes {
     	// 
     	MIME_TYPES.put(Pattern.compile("application/vnd.ms-excel.sheet.binary.macroEnabled.12"), ".xlsb");
 
+        // application/vnd.ms-powerpoint
+        MIME_TYPES.put(Pattern.compile("application/vnd.ms-powerpoint.*"), ".ppt");
     	// application/vnd.openxmlformats-officedocument.presentationml.presentation
     	MIME_TYPES.put(Pattern.compile(".*presentationml.*"), ".pptx");
+        // application/vnd.ms-powerpoint.presentation.macroenabled.12
+        MIME_TYPES.put(Pattern.compile("application/vnd.ms-powerpoint.presentation.macroenabled.12"), ".pptm");
+        // application/vnd.ms-powerpoint.slideshow.macroenabled.12
+        MIME_TYPES.put(Pattern.compile("application/vnd.ms-powerpoint.slideshow.macroenabled.12"), ".ppsm");
 
-    	// application/vnd.ms-tnef
+        // application/vnd.ms-tnef
     	MIME_TYPES.put(Pattern.compile(".*ms-tnef.*"), ".msg");
     	
     	// application/vnd.openxmlformats-officedocument.drawingml.chart+xml
@@ -45,7 +51,18 @@ public class MimeTypes {
     	
     	// application/vnd.visio
     	MIME_TYPES.put(Pattern.compile(".*visio.*"), ".vsd");
-    	
+
+        // application/vnd.ms-outlook
+        MIME_TYPES.put(Pattern.compile("application/vnd.ms-outlook"), ".msg");
+
+        // application/x-mspublisher
+        MIME_TYPES.put(Pattern.compile("application/x-mspublisher"), ".pub");
+
+        MIME_TYPES.put(Pattern.compile("application/vnd.openxmlformats-officedocument"), ".ooxml");
+        MIME_TYPES.put(Pattern.compile("application/x-tika-ooxml"), ".ooxml");
+        MIME_TYPES.put(Pattern.compile("application/x-tika-ooxml-protected"), ".ooxml");
+        MIME_TYPES.put(Pattern.compile("application/x-tika-msoffice"), ".ole2");
+
 //    	MIME_TYPE_MATCHER.put(Pattern.compile(".*.*");
     	
     	/*
