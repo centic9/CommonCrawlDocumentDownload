@@ -51,6 +51,13 @@ public class MimeTypes {
     	
     	// application/vnd.visio
     	MIME_TYPES.put(Pattern.compile(".*visio.*"), ".vsd");
+        // Visio 2013
+        MIME_TYPES.put(Pattern.compile("application/vnd.ms-visio.drawing.main+xml"), ".vsdx");
+        MIME_TYPES.put(Pattern.compile("application/vnd.ms-visio.template.main+xml"), ".vstx");
+        MIME_TYPES.put(Pattern.compile("application/vnd.ms-visio.stencil.main+xml"), ".vssx");
+        MIME_TYPES.put(Pattern.compile("application/vnd.ms-visio.drawing.macroEnabled.main\\+xml"), ".vsdm");
+        MIME_TYPES.put(Pattern.compile("application/vnd.ms-visio.template.macroEnabled.main\\+xml"), ".vstm");
+        MIME_TYPES.put(Pattern.compile("application/vnd.ms-visio.stencil.macroEnabled.main\\+xml"), ".vssm");
 
         // application/vnd.ms-outlook
         MIME_TYPES.put(Pattern.compile("application/vnd.ms-outlook"), ".msg");
