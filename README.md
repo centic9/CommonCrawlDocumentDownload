@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/centic9/CommonCrawlDocumentDownload.svg)](https://travis-ci.org/centic9/CommonCrawlDocumentDownload) [![Gradle Status](https://gradleupdate.appspot.com/centic9/CommonCrawlDocumentDownload/status.svg?branch=master)](https://gradleupdate.appspot.com/centic9/CommonCrawlDocumentDownload/status)
-
+[![Tag](https://img.shields.io/github/tag/centic9/CommonCrawlDocumentDownload.svg)](https://github.com/centic9/CommonCrawlDocumentDownload/tags)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.dstadler/commoncrawldownload/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/org.dstadler/commoncrawldownload) [![Maven Central](https://img.shields.io/maven-central/v/org.dstadler/commoncrawldownload.svg)](https://maven-badges.herokuapp.com/maven-central/org.dstadler/commoncrawldownload)
 
 This is a small tool to find matching URLs and download the corresponding binary data from the CommonCrawl indexes.
