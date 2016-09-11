@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
@@ -34,7 +34,7 @@ public class TestDownloadFile {
     public static void main(String[] args) throws Exception {
     	HttpClientBuilder builder = HttpClients.custom();
 
-    	builder = builder.setHostnameVerifier(new AllowAllHostnameVerifier());
+    	builder = builder.setSSLHostnameVerifier(new NoopHostnameVerifier());
 
         try (CloseableHttpClient httpClient = builder.build()) {
         	System.out.println("Loading data from " + URL);
