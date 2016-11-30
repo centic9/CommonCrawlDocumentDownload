@@ -20,7 +20,7 @@ import org.dstadler.commons.logging.jdk.LoggerFactory;
 public class DownloadFromCommonCrawl {
 	private static final Logger log = LoggerFactory.make();
 
-	private static final File COMMONCRAWL_FILE = new File("commoncrawl.txt");
+	private static final File COMMONCRAWL_FILE = new File("commoncrawl-CC-MAIN-2016-44.txt");
 
     public static void main(String[] args) throws Exception {
         Utils.ensureDownloadDir();
@@ -32,7 +32,7 @@ public class DownloadFromCommonCrawl {
     			while(true) {
     				String line = reader.readLine();
     				if(line == null) {
-    					log.info("End of file reached after " + count + " items");
+    					log.info("End of file " + COMMONCRAWL_FILE + " reached after " + count + " items");
     					break;
     				}
 
@@ -44,7 +44,6 @@ public class DownloadFromCommonCrawl {
 
     				bytes+=line.length()+1;
     				count++;
-
     			}
     		}
     	}
