@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -35,17 +34,16 @@ public class ReadTestData {
 //            Pair<Long, Long> values = readStartPos(client.getHttpClient());
 //            long startPos = values.getRight();
 //            int blockSize = values.getLeft().intValue();
-            int blockSize = Utils.BLOCK_SIZE; 
-            long startPos = (long)Utils.HEADER_BLOCK_SIZE + (blockSize * Utils.INDEX_BLOCK_COUNT) + ((long)blockSize * SKIP_BLOCKS); 
+            int blockSize = Utils.BLOCK_SIZE;
+            long startPos = (long)Utils.HEADER_BLOCK_SIZE + (blockSize * Utils.INDEX_BLOCK_COUNT) + ((long)blockSize * SKIP_BLOCKS);
 
-            readTestData(client.getHttpClient(), startPos, blockSize);
+            readTestData(client.getHttpClient(), startPos);
         }
-        
+
         log.info("Done");
     }
 
-    public static void readTestData(CloseableHttpClient client, 
-            long startPos, int blockSize) throws IOException, ClientProtocolException {
+    public static void readTestData(CloseableHttpClient client, long startPos) throws IOException {
         log.info("Reading data starting at " + startPos + " from " + Utils.INDEX_URL);
         HttpGet httpGet = new HttpGet(Utils.INDEX_URL);
         httpGet.addHeader("Range", "bytes=" + startPos + "-");

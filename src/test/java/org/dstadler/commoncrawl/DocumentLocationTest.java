@@ -11,7 +11,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.poi.util.HexDump;
 import org.apache.poi.util.LittleEndian;
 import org.junit.Test;
-import org.dstadler.commoncrawl.DocumentLocation;
 import org.dstadler.commoncrawl.oldindex.BlockProcessor;
 import org.dstadler.commons.net.UrlUtils;
 
@@ -90,6 +89,6 @@ public class DocumentLocationTest {
         
 //        System.out.println(BlockHeader.getLong(array, offset));
         
-        assertEquals(1346876860817l, LittleEndian.getLong(array, offset));
+        assertEquals(1346876860817L, LittleEndian.getLong(array, offset));
     }
 }

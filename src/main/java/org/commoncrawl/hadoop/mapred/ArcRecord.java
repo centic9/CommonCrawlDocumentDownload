@@ -82,9 +82,9 @@ public class ArcRecord
   }
 
   private String _readLine(InputStream in)
-      throws IOException, EOFException {
+      throws IOException {
 
-    StringBuffer line = new StringBuffer(128);
+    StringBuilder line = new StringBuilder(128);
 
     // read a line of content
     int b = in.read();
@@ -118,7 +118,7 @@ public class ArcRecord
    * @return TRUE if the ARC record was parsed and loaded successfully, FALSE if not.
    */
   public boolean readFrom(InputStream in)
-      throws IOException, EOFException {
+      throws IOException {
 
     if (in == null) {
       LOG.error("ArcRecord cannot be created from NULL/missing input stream.");
@@ -185,7 +185,7 @@ public class ArcRecord
     this._ipAddress      =  metadata[1];
     this._archiveDate    =  format.parse(metadata[2]);
     this._contentType    =  metadata[3];
-    this._contentLength  = (new Integer(metadata[4])).intValue();
+    this._contentLength  = new Integer(metadata[4]);
   }
 
   /**
@@ -427,6 +427,7 @@ public String toString() {
    *
    * @return The offset of the end of HTTP headers, after the last CRLF.
    */
+  @SuppressWarnings("ConstantConditions")
   private int _searchForCRLFCRLF(byte[] data) {
 
     final byte CR = (byte)'\r';

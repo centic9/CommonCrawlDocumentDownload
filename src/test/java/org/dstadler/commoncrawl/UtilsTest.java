@@ -149,7 +149,7 @@ public class UtilsTest {
         int SKIP_BLOCKS = 2116400;
         int blockSize = 65536;
         long startPos = (long)Utils.HEADER_BLOCK_SIZE + (blockSize * 2644) + ((long)blockSize * SKIP_BLOCKS);
-        Utils.logProgress(startPos, blockSize, SKIP_BLOCKS, System.currentTimeMillis()-5000, SKIP_BLOCKS + 500, 20, 233689120776l);
+        Utils.logProgress(startPos, blockSize, SKIP_BLOCKS, System.currentTimeMillis()-5000, SKIP_BLOCKS + 500, 20, 233689120776L);
 
         // results not easily testable...
     }

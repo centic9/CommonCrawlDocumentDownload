@@ -67,7 +67,7 @@ public class ReadAndDownload {
     }
 
     private static void readBlocks(CloseableHttpClient client,
-            long startPos, int blockSize, int startBlock) throws IOException, ClientProtocolException {
+            long startPos, int blockSize, int startBlock) throws IOException {
         Preconditions.checkArgument(startPos > 0);
 
         log.info("Reading blocks starting at " + startPos + " from " + Utils.INDEX_URL + ", skipping " + startBlock + " blocks");
@@ -81,7 +81,7 @@ public class ReadAndDownload {
             try (InputStream stream = entity.getContent()) {
                 try (BlockProcessor processor = new ProcessAndDownload(Utils.COMMONURLS_PATH, true)){
                     while(true) {
-                        Utils.logProgress(startPos, blockSize, startBlock, startTs, blockIndex, 20, 233689120776l);
+                        Utils.logProgress(startPos, blockSize, startBlock, startTs, blockIndex, 20, 233689120776L);
 
                         if(!Utils.handleBlock(blockIndex, blockSize, stream, processor)) {
                             break;

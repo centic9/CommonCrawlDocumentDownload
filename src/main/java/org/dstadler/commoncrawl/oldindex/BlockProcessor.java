@@ -12,7 +12,7 @@ import java.io.Closeable;
  */
 public interface BlockProcessor extends Closeable {
 
-    public static final int ITEM_DATA_SIZE = 32;
+    int ITEM_DATA_SIZE = 32;
 
-    public abstract void offer(byte[] block, long blockIndex);
+    void offer(byte[] block, long blockIndex);
 }

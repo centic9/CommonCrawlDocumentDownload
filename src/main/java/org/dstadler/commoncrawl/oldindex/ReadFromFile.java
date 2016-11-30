@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
-import org.apache.http.client.ClientProtocolException;
 import org.dstadler.commoncrawl.Utils;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
 
@@ -35,7 +34,7 @@ public class ReadFromFile {
         readBlocks(startPos, blockSize);
     }
 
-    private static void readBlocks(long startPos, int blockSize) throws IOException, ClientProtocolException {
+    private static void readBlocks(long startPos, int blockSize) throws IOException {
         Preconditions.checkArgument(startPos > 0);
 
         log.info("Reading blocks starting at " + startPos + " from " + DATA_FILE);
@@ -45,7 +44,11 @@ public class ReadFromFile {
         // 10MB => 485blocks per second
         try (InputStream stream = new BufferedInputStream(new FileInputStream(DATA_FILE), 10*1024*1024)) {
             try (BlockProcessor processor = new ProcessAndDownload(Utils.COMMONURLS_PATH, false)){
-                stream.skip(startPos);
+                long skipped = stream.skip(startPos);
+                if(skipped != startPos) {
+                    throw new IOException("Tried to skip " + startPos + " bytes, but could only skip " + skipped +
+                            " bytes while reading file " + DATA_FILE);
+                }
                 for(long blockIndex = SKIP_BLOCKS;true;blockIndex++) {
                     Utils.logProgress(startPos, blockSize, SKIP_BLOCKS, startTs, blockIndex, 500, fileLength);
                     if(!Utils.handleBlock(blockIndex, blockSize, stream, processor)) {

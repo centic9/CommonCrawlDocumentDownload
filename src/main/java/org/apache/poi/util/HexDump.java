@@ -17,15 +17,9 @@
 
 package org.apache.poi.util;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.util.Locale;
 
@@ -178,187 +172,6 @@ public class HexDump {
         }
         return charB;
     }
-    
-    /**
-     * Converts the parameter to a hex value.
-     *
-     * @param value     The value to convert
-     * @return          A String representing the array of bytes
-     */
-    public static String toHex(final byte[] value)
-    {
-        StringBuilder retVal = new StringBuilder();
-        retVal.append('[');
-        if (value != null && value.length > 0)
-        {
-            for(int x = 0; x < value.length; x++)
-            {
-                if (x>0) {
-                    retVal.append(", ");
-                }
-                retVal.append(toHex(value[x]));
-            }
-        }
-        retVal.append(']');
-        return retVal.toString();
-    }
-
-    /**
-     * Converts the parameter to a hex value.
-     *
-     * @param value     The value to convert
-     * @return          A String representing the array of shorts
-     */
-    public static String toHex(final short[] value)
-    {
-        StringBuilder retVal = new StringBuilder();
-        retVal.append('[');
-        for(int x = 0; x < value.length; x++)
-        {
-            if (x>0) {
-                retVal.append(", ");
-            }
-            retVal.append(toHex(value[x]));
-        }
-        retVal.append(']');
-        return retVal.toString();
-    }
-
-    /**
-     * <p>Converts the parameter to a hex value breaking the results into
-     * lines.</p>
-     *
-     * @param value        The value to convert
-     * @param bytesPerLine The maximum number of bytes per line. The next byte
-     *                     will be written to a new line
-     * @return             A String representing the array of bytes
-     */
-    public static String toHex(final byte[] value, final int bytesPerLine) {
-        if (value.length == 0) {
-            return ": 0";
-        }
-        final int digits = (int) Math.round(Math.log(value.length) / Math.log(10) + 0.5);
-        StringBuilder retVal = new StringBuilder();
-        retVal.append(xpad(0, digits, ""));
-        retVal.append(": ");
-        for(int x=0, i=-1; x < value.length; x++) {
-            if (++i == bytesPerLine) {
-                retVal.append('\n');
-                retVal.append(xpad(x, digits, ""));
-                retVal.append(": ");
-                i = 0;
-            } else if (x>0) {
-                retVal.append(", ");
-            }
-            retVal.append(toHex(value[x]));
-        }
-        return retVal.toString();
-    }
-
-    /**
-     * Converts the parameter to a hex value.
-     *
-     * @param value     The value to convert
-     * @return          The result right padded with 0
-     */
-    public static String toHex(short value) {
-        return xpad(value & 0xFFFF, 4, "");
-    }
-
-    /**
-     * Converts the parameter to a hex value.
-     *
-     * @param value     The value to convert
-     * @return          The result right padded with 0
-     */
-    public static String toHex(byte value) {
-        return xpad(value & 0xFF, 2, "");
-    }
-
-    /**
-     * Converts the parameter to a hex value.
-     *
-     * @param value     The value to convert
-     * @return          The result right padded with 0
-     */
-    public static String toHex(int value) {
-        return xpad(value & 0xFFFFFFFF, 8, "");
-    }
-
-    /**
-     * Converts the parameter to a hex value.
-     *
-     * @param value     The value to convert
-     * @return          The result right padded with 0
-     */
-    public static String toHex(long value) {
-        return xpad(value, 16, "");
-    }
-    
-    /**
-     * Dumps <code>bytesToDump</code> bytes to an output stream.
-     *
-     * @param in          The stream to read from
-     * @param out         The output stream
-     * @param start       The index to use as the starting position for the left hand side label
-     * @param bytesToDump The number of bytes to output.  Use -1 to read until the end of file.
-     */
-    public static void dump( InputStream in, PrintStream out, int start, int bytesToDump ) throws IOException
-    {
-        ByteArrayOutputStream buf = new ByteArrayOutputStream();
-        if (bytesToDump == -1)
-        {
-            int c = in.read();
-            while (c != -1)
-            {
-                buf.write(c);
-                c = in.read();
-            }
-        }
-        else
-        {
-            int bytesRemaining = bytesToDump;
-            while (bytesRemaining-- > 0)
-            {
-                int c = in.read();
-                if (c == -1) {
-                    break;
-                }
-                buf.write(c);
-            }
-        }
-
-        byte[] data = buf.toByteArray();
-        dump(data, 0, out, start, data.length);
-    }
-
-    /**
-     * @return string of 16 (zero padded) uppercase hex chars and prefixed with '0x'
-     */
-    public static String longToHex(long value) {
-        return xpad(value, 16, "0x");
-    }
-    
-    /**
-     * @return string of 8 (zero padded) uppercase hex chars and prefixed with '0x'
-     */
-    public static String intToHex(int value) {
-        return xpad(value & 0xFFFFFFFFL, 8, "0x");
-    }
-    
-    /**
-     * @return string of 4 (zero padded) uppercase hex chars and prefixed with '0x'
-     */
-    public static String shortToHex(int value) {
-        return xpad(value & 0xFFFFL, 4, "0x");
-    }
-    
-    /**
-     * @return string of 2 (zero padded) uppercase hex chars and prefixed with '0x'
-     */
-    public static String byteToHex(int value) {
-        return xpad(value & 0xFFL, 2, "0x");
-    }
 
     private static String xpad(long value, int pad, String prefix) {
         String sv = Long.toHexString(value).toUpperCase(Locale.ROOT);
@@ -374,14 +187,5 @@ public class HexDump {
             sb.append(sv);
         }
         return sb.toString();
-    }
-    
-    public static void main(String[] args) throws Exception {
-        File file = new File(args[0]);
-        InputStream in = new BufferedInputStream(new FileInputStream(file));
-        byte[] b = new byte[(int)file.length()];
-        in.read(b);
-        System.out.println(HexDump.dump(b, 0, 0));
-        in.close();
     }
 }

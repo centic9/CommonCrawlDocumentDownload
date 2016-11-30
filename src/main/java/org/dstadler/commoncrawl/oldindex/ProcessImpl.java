@@ -88,7 +88,7 @@ public class ProcessImpl implements BlockProcessor {
                 try {
                     Pair<byte[],Long> item = queue.poll(1, TimeUnit.SECONDS);
                     if(item != null) {
-                        splitBlock(item.getLeft(), item.getRight().longValue());
+                        splitBlock(item.getLeft(), item.getRight());
                     } else if(shouldStop) {     // only stop if there are no more blocks to handle...
                         return;
                     } else {
