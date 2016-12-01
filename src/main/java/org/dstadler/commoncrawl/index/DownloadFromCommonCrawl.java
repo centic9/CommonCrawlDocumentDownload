@@ -25,7 +25,7 @@ public class DownloadFromCommonCrawl {
     public static void main(String[] args) throws Exception {
         Utils.ensureDownloadDir();
 
-    	try (final HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
+    	try (final HttpClientWrapper client = new HttpClientWrapper("", null, 600_000)) {
     		try (BufferedReader reader = new BufferedReader(new FileReader(COMMONCRAWL_FILE), 1024*1024)) {
     			int count = 0;
     			long bytes = 0;

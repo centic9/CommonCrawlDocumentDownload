@@ -42,7 +42,7 @@ public class DownloadURLIndex {
 
     public static void main(String[] args) throws Exception {
         log.info("Processing index files starting from index " + START_INDEX + " with pattern " + URL_FORMAT);
-        try (HttpClientWrapper client = new HttpClientWrapper("", null, 120_000)) {
+        try (HttpClientWrapper client = new HttpClientWrapper("", null, 600_000)) {
             for(int index = START_INDEX;index <= END_INDEX;index++) {
                 String indexStr = String.format("%05d", index);
             	String url = String.format(URL_FORMAT, indexStr);
