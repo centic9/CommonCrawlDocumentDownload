@@ -45,7 +45,7 @@ task adjustEclipseSettingsFile << {
 task sortEclipseSettingsFile << {
 	new File(project.projectDir, '.settings/org.eclipse.jdt.core.prefs').with { it.text = it.readLines().findAll { it }.sort().join('\n') }
 	new File(project.projectDir, '.classpath').with { it.text = it.readLines().findAll { it }.unique().join('\n') }
-	File file = new File(project.projectDir, '.settings/com.google.gdt.eclipse.core.prefs');
+	File file = new File(project.projectDir, '.settings/com.google.gdt.eclipse.core.prefs')
 	if(file.exists()) {
 		file.with { it.text = it.readLines().findAll { it }.sort().join('\n') }
 	}
@@ -78,7 +78,7 @@ test {
 }
 
 jacoco {
-	toolVersion = '0.7.7.201606060606'
+	toolVersion = '0.7.8'
 }
 
 jacocoTestReport {
@@ -126,17 +126,17 @@ uploadArchives {
         authentication(userName: ossrhUsername, password: ossrhPassword)
       }
 
-			pom.project {
-				name 'CommonCrawl Document Download'
+    pom.project {
+        name 'CommonCrawl Document Download'
         packaging 'jar'
         // optionally artifactId can be defined here 
         description 'Common utilities I find useful in many of my projects.'
 				url 'https://github.com/centic9/CommonCrawlDocumentDownload'
 
         scm {
-					connection 'scm:git@github.com:centic9/CommonCrawlDocumentDownload'
-					developerConnection 'scm:git@github.com:centic9/CommonCrawlDocumentDownload'
-					url 'https://github.com/centic9/CommonCrawlDocumentDownload'
+            connection 'scm:git@github.com:centic9/CommonCrawlDocumentDownload'
+            developerConnection 'scm:git@github.com:centic9/CommonCrawlDocumentDownload'
+            url 'https://github.com/centic9/CommonCrawlDocumentDownload'
         }
 
         licenses {
