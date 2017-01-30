@@ -20,7 +20,7 @@ import org.dstadler.commons.logging.jdk.LoggerFactory;
 public class DownloadFromCommonCrawl {
 	private static final Logger log = LoggerFactory.make();
 
-	private static final File COMMONCRAWL_FILE = new File("commoncrawl-CC-MAIN-2016-44.txt");
+	private static final File COMMONCRAWL_FILE = new File("commoncrawl-CC-MAIN-2016-50.txt");
 
     public static void main(String[] args) throws Exception {
         Utils.ensureDownloadDir();
