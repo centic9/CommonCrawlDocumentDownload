@@ -1,6 +1,6 @@
 plugins {
 	// https://github.com/researchgate/gradle-release
-	id 'net.researchgate.release' version '2.3.5'
+	id 'net.researchgate.release' version '2.5.0'
 }
 
 apply plugin: 'java'
