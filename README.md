@@ -65,8 +65,8 @@ locally, which will avoid using too much disk-space
 
 The new index announced at http://blog.commoncrawl.org/2015/04/announcing-the-common-crawl-index/ is supported now
 
-Indexes are available at s3://aws-publicdatasets/common-crawl/cc-index/collections/[CC-MAIN-YYYY-WW], 
-e.g. https://aws-publicdatasets.s3.amazonaws.com/common-crawl/cc-index/collections/CC-MAIN-2015-11/metadata.yaml
+Indexes are available at s3://commoncrawl/cc-index/collections/[CC-MAIN-YYYY-WW], 
+e.g. https://commoncrawl.s3.amazonaws.com/cc-index/collections/CC-MAIN-2015-11/metadata.yaml
 
 Indexing is done via https://github.com/ikreymer/webarchive-indexing
 
@@ -76,7 +76,7 @@ CDX file format is described at https://github.com/ikreymer/webarchive-indexing#
 
 For example, if you have the query result from http://index.commoncrawl.org/CC-MAIN-2015-11-index?url=commoncrawl.org&output=json&limit=1
 
-    {"urlkey": "org,commoncrawl)/", "timestamp": "20150302032705", "url": "http://commoncrawl.org/", "length": "2526", "filename": "common-crawl/crawl-data/CC-MAIN-2015-11/segments/1424936462700.28/warc/CC-MAIN-20150226074102-00159-ip-10-28-5-156.ec2.internal.warc.gz", "digest": "QE4UUUWUJWEZBBK6PUG3CHFAGEKDMDBZ", "offset": "53235662"}
+    {"urlkey": "org,commoncrawl)/", "timestamp": "20150302032705", "url": "http://commoncrawl.org/", "length": "2526", "filename": "crawl-data/CC-MAIN-2015-11/segments/1424936462700.28/warc/CC-MAIN-20150226074102-00159-ip-10-28-5-156.ec2.internal.warc.gz", "digest": "QE4UUUWUJWEZBBK6PUG3CHFAGEKDMDBZ", "offset": "53235662"}
 
 You can access the original resource via this url, using curl or wget:
 
@@ -96,7 +96,7 @@ This replay serves the original response http headers as well, which may not be 
 
 Actually it looks like awscli knows how to output to stdout now too.  Here's a one-liner which will generate a pseudo-random ~1% sample of the first shard in the March 2015 index.  It runs in under 3 minutes on my laptop (using ~25 Mb/s download bandwidth).
 
- time aws s3 cp --no-sign-request s3://aws-publicdatasets/common-crawl/cc-index/collections/CC-MAIN-2015-14/indexes/cdx-00000.gz - | gunzip | cut -f 4 -d '"' | awk 'BEGIN {srand()} !/^$/ { if (rand() <= .01) print $0}' | gzip > cdx-00000-url-1pct.txt.gz
+ time aws s3 cp --no-sign-request s3://commoncrawl/cc-index/collections/CC-MAIN-2015-14/indexes/cdx-00000.gz - | gunzip | cut -f 4 -d '"' | awk 'BEGIN {srand()} !/^$/ { if (rand() <= .01) print $0}' | gzip > cdx-00000-url-1pct.txt.gz
 
 You can adjust this by changing the probability threshold from .01 to something else or by tossing a grep stage into the pipe to filter on URLs matching certain patterns.
 
@@ -134,14 +134,14 @@ which should filter out results that had a content type of text/html only. This 
 
 Those fields are 'offset' and 'length' in the current index, and correspond to the WARC offset and compressed length that you would use as part of the range request.
 
-{"urlkey": "org,commoncrawl)/", "timestamp": "20150302032705", "url": "http://commoncrawl.org/", "length": "2526", "filename": "common-crawl/crawl-data/CC-MAIN-2015-11/segments/1424936462700.28/warc/CC-MAIN-20150226074102-00159-ip-10-28-5-156.ec2.internal.warc.gz", "digest": "QE4UUUWUJWEZBBK6PUG3CHFAGEKDMDBZ", "offset": "53235662"}
+{"urlkey": "org,commoncrawl)/", "timestamp": "20150302032705", "url": "http://commoncrawl.org/", "length": "2526", "filename": "crawl-data/CC-MAIN-2015-11/segments/1424936462700.28/warc/CC-MAIN-20150226074102-00159-ip-10-28-5-156.ec2.internal.warc.gz", "digest": "QE4UUUWUJWEZBBK6PUG3CHFAGEKDMDBZ", "offset": "53235662"}
 
 
 53238187=53235662+2526-1
 
 You could then do:
 
-curl -r 53235662-53238187 https://aws-publicdatasets.s3.amazonaws.com/common-crawl/crawl-data/CC-MAIN-2015-11/segments/1424936462700.28/warc/CC-MAIN-20150226074102-00159-ip-10-28-5-156.ec2.internal.warc.gz | zcat | less
+curl -r 53235662-53238187 https://commoncrawl.s3.amazonaws.com/crawl-data/CC-MAIN-2015-11/segments/1424936462700.28/warc/CC-MAIN-20150226074102-00159-ip-10-28-5-156.ec2.internal.warc.gz | zcat | less
 
 to get the full WARC record.
 

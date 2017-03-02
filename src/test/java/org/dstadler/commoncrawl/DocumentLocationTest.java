@@ -27,7 +27,7 @@ public class DocumentLocationTest {
 	
 	        DocumentLocation header = DocumentLocation.readFromOldIndexBlock(block, index+1);
 	
-	        assertEquals("https://aws-publicdatasets.s3.amazonaws.com/common-crawl/parse-output/segment/1346876860779/1346958145255_226.arc.gz", 
+	        assertEquals("https://commoncrawl.s3.amazonaws.com/parse-output/segment/1346876860779/1346958145255_226.arc.gz", 
 	                header.getUrl());
 	
 	        assertEquals("bytes=77856771-77862431", header.getRangeHader());
@@ -57,7 +57,7 @@ public class DocumentLocationTest {
 	            count--;
 	            if(count >= 0) {
 	                assertTrue(UrlUtils.isAvailable(
-	                        "https://aws-publicdatasets.s3.amazonaws.com/common-crawl/parse-output/segment/1346876860609/1346967937731_3908.arc.gz", 
+	                        "https://commoncrawl.s3.amazonaws.com/parse-output/segment/1346876860609/1346967937731_3908.arc.gz", 
 	                        false, 10_000));
 	            }
 	

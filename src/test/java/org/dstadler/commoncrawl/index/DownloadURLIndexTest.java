@@ -28,7 +28,7 @@ public class DownloadURLIndexTest {
 	public void testRead() throws Exception {
         try (HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
 
-        	String url = "https://aws-publicdatasets.s3.amazonaws.com/common-crawl/cc-index/collections/CC-MAIN-2015-48/indexes/cdx-00000.gz";
+        	String url = "https://commoncrawl.s3.amazonaws.com/cc-index/collections/CC-MAIN-2015-48/indexes/cdx-00000.gz";
         	log.info("Loading data from " + url);
 
         	final HttpGet httpGet = new HttpGet(url);
@@ -95,7 +95,7 @@ public class DownloadURLIndexTest {
 	public void testReadDirectly() throws Exception {
         try (HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
 
-        	String url = "https://aws-publicdatasets.s3.amazonaws.com/common-crawl/cc-index/collections/CC-MAIN-2015-48/indexes/cdx-00000.gz";
+        	String url = "https://commoncrawl.s3.amazonaws.com/cc-index/collections/CC-MAIN-2015-48/indexes/cdx-00000.gz";
         	log.info("Loading data from " + url);
 
         	final HttpGet httpGet = new HttpGet(url);

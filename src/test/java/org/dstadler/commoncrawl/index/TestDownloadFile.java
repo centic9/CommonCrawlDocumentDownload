@@ -29,7 +29,7 @@ import org.dstadler.commoncrawl.Utils;
 @SuppressWarnings("deprecation")
 public class TestDownloadFile {
     private static final String URL =
-    		"https://aws-publicdatasets.s3.amazonaws.com/common-crawl/cc-index/collections/CC-MAIN-2015-48/indexes/cdx-00000.gz";
+    		"https://commoncrawl.s3.amazonaws.com/cc-index/collections/CC-MAIN-2015-48/indexes/cdx-00000.gz";
 
     public static void main(String[] args) throws Exception {
     	HttpClientBuilder builder = HttpClients.custom();
