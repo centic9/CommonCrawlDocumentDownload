@@ -20,8 +20,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 public class DownloadFromCommonCrawlTest {
-	private static final String line = "{\"url\": \"http://www.gjk.gov.al/include_php/previewdoc.php?id_kerkesa_vendimi=1359&nr_vendim=1\", \"mime\": \"application/msword\", \"status\": \"200\", \"digest\": \"FMRMNDSLHYJCIYGOPKBLYQDFE5LJB4SS\", \"length\": \"12298\", \"offset\": \"460161775\", \"filename\": \"common-crawl/crawl-data/CC-MAIN-2015-35/segments/1440645199297.56/warc/CC-MAIN-20150827031319-00038-ip-10-171-96-226.ec2.internal.warc.gz\"}";
-	private static final String line_2015_48 = "{\"url\": \"http://ddp.org.za/programme-events/local-government/conference/2008/Municipal%20Services%20Partnerships%20Local%20Perspective.doc/\", \"mime\": \"application/msword\", \"status\": \"200\", \"digest\": \"QVDVT5WG6SWRQBISUEXRNX6RAEXKX26K\", \"length\": \"32901\", \"offset\": \"62916137\", \"filename\": \"common-crawl/crawl-data/CC-MAIN-2015-48/segments/1448398468971.92/warc/CC-MAIN-20151124205428-00118-ip-10-71-132-137.ec2.internal.warc.gz\"}";
+	private static final String line = "{\"url\": \"http://www.gjk.gov.al/include_php/previewdoc.php?id_kerkesa_vendimi=1359&nr_vendim=1\", \"mime\": \"application/msword\", \"status\": \"200\", \"digest\": \"FMRMNDSLHYJCIYGOPKBLYQDFE5LJB4SS\", \"length\": \"12298\", \"offset\": \"460161775\", \"filename\": \"crawl-data/CC-MAIN-2015-35/segments/1440645199297.56/warc/CC-MAIN-20150827031319-00038-ip-10-171-96-226.ec2.internal.warc.gz\"}";
+	private static final String line_2015_48 = "{\"url\": \"http://ddp.org.za/programme-events/local-government/conference/2008/Municipal%20Services%20Partnerships%20Local%20Perspective.doc/\", \"mime\": \"application/msword\", \"status\": \"200\", \"digest\": \"QVDVT5WG6SWRQBISUEXRNX6RAEXKX26K\", \"length\": \"32901\", \"offset\": \"62916137\", \"filename\": \"crawl-data/CC-MAIN-2015-48/segments/1448398468971.92/warc/CC-MAIN-20151124205428-00118-ip-10-71-132-137.ec2.internal.warc.gz\"}";
 
 	@Ignore("Just for local testing")
 	@Test

@@ -29,7 +29,7 @@ public class CDXItem {
 		/*
 {"url": "http://www.malthus.com.br/rw/forense/o_alcoolismo_e_a_lei.ppt", "mime": "application/vnd.ms-powerpoint", "status": "200",
 "digest": "PRKAHBCWKV2357EMC4H5Q2I56SSL34KB", "length": "474522", "offset": "548823139",
-"filename": "common-crawl/crawl-data/CC-MAIN-2015-35/segments/1440645293619.80/warc/CC-MAIN-20150827031453-00044-ip-10-171-96-226.ec2.internal.warc.gz"}		 */
+"filename": "crawl-data/CC-MAIN-2015-35/segments/1440645293619.80/warc/CC-MAIN-20150827031453-00044-ip-10-171-96-226.ec2.internal.warc.gz"}		 */
 		CDXItem item = new CDXItem();
 
     	try (JsonParser jp = f.createParser(json)) {

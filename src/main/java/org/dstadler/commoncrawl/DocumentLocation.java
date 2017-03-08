@@ -33,17 +33,9 @@ public class DocumentLocation {
     
     public String getUrl() {
     	if(filename != null) {
-    		//"filename": "common-crawl/crawl-data/CC-MAIN-2015-35/segments/1440645293619.80/warc/CC-MAIN-20150827031453-00044-ip-10-171-96-226.ec2.internal.warc.gz"}		 */
-            // in newer crawls:
-            //"filename": "crawl-data/CC-MAIN-2016-18/segments/1461860111838.20/warc/CC-MAIN-20160428161511-00162-ip-10-239-7-51.ec2.internal.warc.gz"
-            if(filename.replaceAll(".*(CC-MAIN-\\d{4}-\\d{2}).*", "$1").compareTo("CC-MAIN-2016-18") >= 0) {
-                // changed URL for the files
-                return "https://commoncrawl.s3.amazonaws.com/" + filename;
-            } else {
-                return "https://aws-publicdatasets.s3.amazonaws.com/" + filename;
-            }
+            return "https://commoncrawl.s3.amazonaws.com/" + filename;
     	}
-        return "https://aws-publicdatasets.s3.amazonaws.com/common-crawl/parse-output/segment/" + 
+        return "https://commoncrawl.s3.amazonaws.com/parse-output/segment/" + 
                 segmentId + "/" + arcCreationDate + "_" + arcFilePartition + ".arc.gz";
     }
 
