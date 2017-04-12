@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 public class DownloadURLIndex {
     private static final Logger log = LoggerFactory.make();
 
-	private static final String CURRENT_CRAWL = "CC-MAIN-2016-50";
+	private static final String CURRENT_CRAWL = "CC-MAIN-2017-13";
 	private static final File COMMON_CRAWL_MATCHES = new File("commoncrawl-" + CURRENT_CRAWL + ".txt");
 
 	private static final int START_INDEX = 0;
@@ -105,7 +105,7 @@ public class DownloadURLIndex {
 		            //System.out.print('.');
 		            if(count % 100000 == 0 || lastLog < (System.currentTimeMillis() - 10000)) {
 		            	log.info("File " + index + ": " + count + " lines, compressed bytes: " + content.getCount() + " of " + length +
-		            			", bytes: " + uncompressedStream.getCount() + ": " +
+		            			"(" + String.format("%.2f", ((double)content.getCount())/length) + "%), bytes: " + uncompressedStream.getCount() + ": " +
 		            			StringUtils.abbreviate(FOUND_MIME_TYPES.sortedMap().toString(), 100));
 		            	lastLog = System.currentTimeMillis();
 		            }
@@ -131,13 +131,13 @@ public class DownloadURLIndex {
 
 		    			if(MimeTypes.matches(mimeType)) {
 		    				log.info("Found-Mimetype: " + json);
-		    				FileUtils.writeStringToFile(COMMON_CRAWL_MATCHES, json + "\n", true);
+		    				FileUtils.writeStringToFile(COMMON_CRAWL_MATCHES, json + "\n", "UTF-8", true);
 		    			}
 		    		} else if("url".equals(jp.getCurrentName())) {
 		    			String url = jp.getValueAsString().toLowerCase();
 		    			if(Extensions.matches(url)) {
 		    				log.info("Found-URL: " + json);
-		    				FileUtils.writeStringToFile(COMMON_CRAWL_MATCHES, json + "\n", true);
+		    				FileUtils.writeStringToFile(COMMON_CRAWL_MATCHES, json + "\n", "UTF-8", true);
 		    			}
 		    		}
 	    		}

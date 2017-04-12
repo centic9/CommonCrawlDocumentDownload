@@ -20,14 +20,14 @@ import org.dstadler.commons.logging.jdk.LoggerFactory;
 public class DownloadFromCommonCrawl {
 	private static final Logger log = LoggerFactory.make();
 
-	private static final File COMMONCRAWL_FILE = new File("commoncrawl-CC-MAIN-2016-50.txt");
+	private static final File COMMONCRAWL_FILE = new File("commoncrawl-CC-MAIN-2017-13.txt");
 
     public static void main(String[] args) throws Exception {
         Utils.ensureDownloadDir();
 
     	try (final HttpClientWrapper client = new HttpClientWrapper("", null, 600_000)) {
     		try (BufferedReader reader = new BufferedReader(new FileReader(COMMONCRAWL_FILE), 1024*1024)) {
-    			int count = 0;
+    			int count = 0, downloaded = 0;
     			long bytes = 0;
     			while(true) {
     				String line = reader.readLine();
@@ -37,12 +37,15 @@ public class DownloadFromCommonCrawl {
     				}
 
     				double percentage = (double)(bytes)/COMMONCRAWL_FILE.length()*100;
-    				log.info("Downloading line " + (count+1) + ": " + String.format("%.4f", percentage) + "%: " + StringUtils.abbreviate(line, 50));
+    				log.info("Downloading line " + (count+1) + ": " + String.format("%.4f", percentage) + "%, having " + downloaded + " downloaded: " + StringUtils.abbreviate(line, 50));
     				CDXItem item = CDXItem.parse(line);
 
-    				Utils.downloadFileFromCommonCrawl(client.getHttpClient(), item.url, item.getDocumentLocation(), true);
+					File file = Utils.downloadFileFromCommonCrawl(client.getHttpClient(), item.url, item.getDocumentLocation(), true);
+					if(file != null) {
+						downloaded++;
+					}
 
-    				bytes+=line.length()+1;
+					bytes+=line.length()+1;
     				count++;
     			}
     		}
