@@ -22,7 +22,7 @@ configurations.all {
 }
 
 dependencies {
-    compile 'org.dstadler:commons-dost:1.0.0.22'
+    compile 'org.dstadler:commons-dost:1.0.0.23'
     compile 'org.apache.httpcomponents:httpclient:4.5.3'
     compile 'org.netpreserve.commons:webarchive-commons:1.1.7'
     compile 'com.fasterxml.jackson.core:jackson-core:2.8.7'
@@ -32,7 +32,7 @@ dependencies {
     compile 'org.jsoup:jsoup:1.10.2'
 
 	testCompile "junit:junit:4.12"
-	testCompile 'org.dstadler:commons-test:1.0.0.12'
+	testCompile 'org.dstadler:commons-test:1.0.0.13'
 }
 
 // work around unnecessary timestamp in generated file which always causes dirty files in version control
