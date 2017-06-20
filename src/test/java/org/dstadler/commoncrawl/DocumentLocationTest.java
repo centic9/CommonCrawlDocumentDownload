@@ -8,13 +8,11 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.poi.util.HexDump;
+import org.apache.commons.io.HexDump;
 import org.apache.poi.util.LittleEndian;
 import org.junit.Test;
 import org.dstadler.commoncrawl.oldindex.BlockProcessor;
 import org.dstadler.commons.net.UrlUtils;
-
-
 
 public class DocumentLocationTest {
     @Test
@@ -30,7 +28,7 @@ public class DocumentLocationTest {
 	        assertEquals("https://commoncrawl.s3.amazonaws.com/parse-output/segment/1346876860779/1346958145255_226.arc.gz", 
 	                header.getUrl());
 	
-	        assertEquals("bytes=77856771-77862431", header.getRangeHader());
+	        assertEquals("bytes=77856771-77862431", header.getRangeHeader());
 	    }
 
     @Test
@@ -51,7 +49,7 @@ public class DocumentLocationTest {
 	            System.out.println("URL: " + new String(block, offset, (index-offset), Charset.forName("ASCII")));
 	            DocumentLocation header = DocumentLocation.readFromOldIndexBlock(block, index+1);
 	            System.out.println("Download: " + header.getUrl());
-	            System.out.println("Range (" + header.arcFileOffset + "/" + header.arcFileSize + "): " + header.getRangeHader());
+	            System.out.println("Range (" + header.arcFileOffset + "/" + header.arcFileSize + "): " + header.getRangeHeader());
 	            
 	            // only do a few Url-Requests to make the test run quickly
 	            count--;
@@ -70,9 +68,9 @@ public class DocumentLocationTest {
 	    }
     
     @Test
-    public void testGetLong() {
+    public void testGetLong() throws IOException {
         byte[] array = new byte[] { (byte)0x91, (byte)0xE9, 0x1D, (byte)0x98, 0x39, 0x01, 0x00, 0x00 };
-        System.out.println(HexDump.dump(array, 0, 0));
+        HexDump.dump(array, 0, System.out, 0);
 
         int offset = 0;
 //        System.out.println(((long) (array[offset + 7] & 0xff) << 56));

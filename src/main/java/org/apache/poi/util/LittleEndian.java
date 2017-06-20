@@ -24,7 +24,9 @@ package org.apache.poi.util;
  * @author Marc Johnson (mjohnson at apache dot org)
  * @author Andrew Oliver (acoliver at apache dot org)
  */
-public class LittleEndian implements LittleEndianConsts {
+public class LittleEndian {
+    private static final int LONG_SIZE   = 8;
+
     /**
      * get an int value from a byte array
      * 

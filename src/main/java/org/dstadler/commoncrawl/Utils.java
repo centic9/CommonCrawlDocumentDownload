@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.HexDump;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -13,7 +14,6 @@ import org.apache.http.HttpException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.poi.util.HexDump;
 import org.apache.poi.util.LittleEndian;
 import org.archive.io.warc.WARCRecord;
 import org.archive.util.LaxHttpParser;
@@ -212,11 +212,11 @@ public class Utils {
 
 	public static void downloadFileFromCommonCrawl(CloseableHttpClient httpClient, String url, DocumentLocation header, boolean useWARC,
 			File destFile) throws IOException {
-		log.info("Reading file for " + url + " at " + header.getRangeHader() + " from " + header.getUrl() + " to " + destFile);
+		log.info("Reading file for " + url + " at " + header.getRangeHeader() + " from " + header.getUrl() + " to " + destFile);
 
         // do a range-query for exactly this document in the Common Crawl dataset
         HttpGet httpGet = new HttpGet(header.getUrl());
-        httpGet.addHeader("Range", header.getRangeHader());
+        httpGet.addHeader("Range", header.getRangeHeader());
         try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
             HttpEntity entity = Utils.checkAndFetch(response, header.getUrl());
 

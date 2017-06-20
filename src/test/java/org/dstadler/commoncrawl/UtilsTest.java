@@ -96,27 +96,27 @@ public class UtilsTest {
             assertFalse(Utils.isCorruptDownload(file));
 
             // some data
-            FileUtils.writeStringToFile(file, "somedata");
+            FileUtils.writeStringToFile(file, "somedata", "UTF-8");
             assertFalse(Utils.isCorruptDownload(file));
 
             // specific data
-            FileUtils.writeStringToFile(file, "<!DOCTYPE HTML");
+            FileUtils.writeStringToFile(file, "<!DOCTYPE HTML", "UTF-8");
             assertTrue(Utils.isCorruptDownload(file));
 
-            FileUtils.writeStringToFile(file, "<!DOCTYPE html");
+            FileUtils.writeStringToFile(file, "<!DOCTYPE html", "UTF-8");
             assertTrue(Utils.isCorruptDownload(file));
 
-            FileUtils.writeStringToFile(file, "<!DOCTYPE html>");
+            FileUtils.writeStringToFile(file, "<!DOCTYPE html>", "UTF-8");
             assertTrue(Utils.isCorruptDownload(file));
 
-            FileUtils.writeStringToFile(file, "<!doctype html");
+            FileUtils.writeStringToFile(file, "<!doctype html", "UTF-8");
             assertTrue(Utils.isCorruptDownload(file));
 
-            FileUtils.writeStringToFile(file, "<html");
+            FileUtils.writeStringToFile(file, "<html", "UTF-8");
             assertTrue(Utils.isCorruptDownload(file));
-            FileUtils.writeStringToFile(file, "\n<html");
+            FileUtils.writeStringToFile(file, "\n<html", "UTF-8");
             assertTrue(Utils.isCorruptDownload(file));
-            FileUtils.writeStringToFile(file, "<!--[if IE");
+            FileUtils.writeStringToFile(file, "<!--[if IE", "UTF-8");
             assertTrue(Utils.isCorruptDownload(file));
 
 //            FileUtils.writeByteArrayToFile(file, ArrayUtils.addAll(new byte[] { 0xEF, 0xBB, 0xBF }, "<!doctype html".getBytes("ASCII")));
@@ -161,7 +161,7 @@ public class UtilsTest {
                 HttpGet httpGet = new HttpGet("http://localhost:" + server.getPort());
                 try (CloseableHttpResponse response = client.getHttpClient().execute(httpGet)) {
                     HttpEntity entity = Utils.checkAndFetch(response, "http://localhost:" + server.getPort());
-                    assertEquals("Ok", IOUtils.toString(entity.getContent()));
+                    assertEquals("Ok", IOUtils.toString(entity.getContent(), "UTF-8"));
                 }
             }
         }

@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * Download files from a list of urls stored in a file, convert the reversed domain
  * to normal URLs and try to download them.
  * 
- *  Note: This is now superseeded by reading the binary data directly 
+ *  Note: This is now superseded by reading the binary data directly
  *  from the Common Crawl archive via {@link ProcessAndDownload}. 
  *
  * @author dominik.stadler
@@ -48,7 +48,7 @@ public class Download {
                     } catch (IOException | URISyntaxException e) {
                         String msg = "Download failed for URL:" + url + ": " + e;
                         log.info(msg);
-                        FileUtils.write(failedFile, msg + "\n" + ExceptionUtils.getStackTrace(e));
+                        FileUtils.write(failedFile, msg + "\n" + ExceptionUtils.getStackTrace(e), "UTF-8");
                     } catch (Exception e) {
                         throw new Exception("Failed for url " + url, e);
                     }
@@ -93,7 +93,7 @@ public class Download {
             if(Utils.isCorruptDownload(file)) {
                 String msg = "URL " + urlStr + " was corrupt after downloading";
                 log.warning(msg);
-                FileUtils.write(Utils.computeDownloadFileName(urlStr, ".failed"), msg);
+                FileUtils.write(Utils.computeDownloadFileName(urlStr, ".failed"), msg, "UTF-8");
                 return;
             }
 

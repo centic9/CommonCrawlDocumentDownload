@@ -42,7 +42,7 @@ public class DownloadFromCommonCrawlTest {
 		
     	try (final HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
 	        HttpGet httpGet = new HttpGet(header.getUrl());
-	        httpGet.addHeader("Range", header.getRangeHader());
+	        httpGet.addHeader("Range", header.getRangeHeader());
 	        try (CloseableHttpResponse response = client.getHttpClient().execute(httpGet)) {
 	            HttpEntity entity = Utils.checkAndFetch(response, header.getUrl());
 	            

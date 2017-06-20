@@ -39,7 +39,7 @@ public class DocumentLocation {
                 segmentId + "/" + arcCreationDate + "_" + arcFilePartition + ".arc.gz";
     }
 
-    public String getRangeHader() {
+    public String getRangeHeader() {
         return "bytes=" + arcFileOffset + "-" + (arcFileOffset+arcFileSize-1);
     }
     
