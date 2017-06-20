@@ -105,7 +105,7 @@ public class DownloadURLIndex {
 		            //System.out.print('.');
 		            if(count % 100000 == 0 || lastLog < (System.currentTimeMillis() - 10000)) {
 		            	log.info("File " + index + ": " + count + " lines, compressed bytes: " + content.getCount() + " of " + length +
-		            			"(" + String.format("%.2f", ((double)content.getCount())/length) + "%), bytes: " + uncompressedStream.getCount() + ": " +
+		            			"(" + String.format("%.2f", ((double)content.getCount())/length*100) + "%), bytes: " + uncompressedStream.getCount() + ": " +
 		            			StringUtils.abbreviate(FOUND_MIME_TYPES.sortedMap().toString(), 100));
 		            	lastLog = System.currentTimeMillis();
 		            }

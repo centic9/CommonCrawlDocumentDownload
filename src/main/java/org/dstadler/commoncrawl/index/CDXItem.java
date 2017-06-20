@@ -25,6 +25,7 @@ public class CDXItem {
 	public long offset;
 	public String filename;
 
+	@SuppressWarnings("StatementWithEmptyBody")
 	public static CDXItem parse(String json) throws IOException {
 		/*
 {"url": "http://www.malthus.com.br/rw/forense/o_alcoolismo_e_a_lei.ppt", "mime": "application/vnd.ms-powerpoint", "status": "200",
@@ -50,6 +51,8 @@ public class CDXItem {
 	    				item.offset = jp.getValueAsLong();
 	    			} else if ("filename".equals(name)) {
 	    				item.filename = jp.getValueAsString();
+					} else if ("mime-detected".equals(name)) {
+						// ignored for now
 	    			} else {
 	    				throw new IllegalStateException("Unknown field found: " + name);
 	    			}
