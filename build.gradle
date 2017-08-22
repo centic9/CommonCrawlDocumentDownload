@@ -24,8 +24,8 @@ configurations.all {
 dependencies {
     compile 'org.dstadler:commons-dost:1.0.0.23'
     compile 'org.apache.httpcomponents:httpclient:4.5.3'
-    compile 'org.netpreserve.commons:webarchive-commons:1.1.7'
-    compile 'com.fasterxml.jackson.core:jackson-core:2.8.7'
+    compile 'org.netpreserve.commons:webarchive-commons:1.1.8'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.8.9'
 
     // for commoncrawl-source
     compile 'log4j:log4j:1.2.17'
