@@ -20,10 +20,12 @@ import org.dstadler.commons.logging.jdk.LoggerFactory;
 public class DownloadFromCommonCrawl {
 	private static final Logger log = LoggerFactory.make();
 
-	private static final File COMMONCRAWL_FILE = new File("commoncrawl-CC-MAIN-2017-22.txt");
+	private static final File COMMONCRAWL_FILE = new File("commoncrawl-CC-MAIN-2017-34.txt");
 
     public static void main(String[] args) throws Exception {
-        Utils.ensureDownloadDir();
+		LoggerFactory.initLogging();
+
+		Utils.ensureDownloadDir();
 
     	try (final HttpClientWrapper client = new HttpClientWrapper("", null, 600_000)) {
     		try (BufferedReader reader = new BufferedReader(new FileReader(COMMONCRAWL_FILE), 1024*1024)) {

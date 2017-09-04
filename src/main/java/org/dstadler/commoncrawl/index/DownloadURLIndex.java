@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 public class DownloadURLIndex {
     private static final Logger log = LoggerFactory.make();
 
-	private static final String CURRENT_CRAWL = "CC-MAIN-2017-22";
+	private static final String CURRENT_CRAWL = "CC-MAIN-2017-34";
 	private static final File COMMON_CRAWL_MATCHES = new File("commoncrawl-" + CURRENT_CRAWL + ".txt");
 
 	private static final int START_INDEX = 0;
@@ -41,7 +41,9 @@ public class DownloadURLIndex {
     private static final MappedCounter<String> FOUND_MIME_TYPES = new MappedCounterImpl<>();
 
     public static void main(String[] args) throws Exception {
-        log.info("Processing index files starting from index " + START_INDEX + " with pattern " + URL_FORMAT);
+		LoggerFactory.initLogging();
+
+		log.info("Processing index files starting from index " + START_INDEX + " with pattern " + URL_FORMAT);
         try (HttpClientWrapper client = new HttpClientWrapper("", null, 600_000)) {
             for(int index = START_INDEX;index <= END_INDEX;index++) {
                 String indexStr = String.format("%05d", index);

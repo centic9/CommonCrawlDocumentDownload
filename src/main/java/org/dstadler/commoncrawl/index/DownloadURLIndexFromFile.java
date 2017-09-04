@@ -20,6 +20,8 @@ public class DownloadURLIndexFromFile {
     private static final int END_INDEX = 1;
 
 	public static void main(String[] args) throws Exception {
+		LoggerFactory.initLogging();
+
 		for(int i = START_INDEX;i <= END_INDEX;i++) {
 			File file = new File(String.format("cdx-%05d.gz", i));
 

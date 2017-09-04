@@ -39,6 +39,10 @@ public class MimeTypes {
         MIME_TYPES.put(Pattern.compile("application/vnd.ms-powerpoint.presentation.macroenabled.12"), ".pptm");
         // application/vnd.ms-powerpoint.slideshow.macroenabled.12
         MIME_TYPES.put(Pattern.compile("application/vnd.ms-powerpoint.slideshow.macroenabled.12"), ".ppsm");
+        // application/vnd.openxmlformats-officedocument.presentationml.template
+        MIME_TYPES.put(Pattern.compile("application/vnd.openxmlformats-officedocument.presentationml.template"), ".potx");
+        // application/vnd.ms-officetheme
+        MIME_TYPES.put(Pattern.compile("application/vnd.ms-officetheme"), ".thmx");
 
         // application/vnd.ms-tnef
     	MIME_TYPES.put(Pattern.compile(".*ms-tnef.*"), ".msg");

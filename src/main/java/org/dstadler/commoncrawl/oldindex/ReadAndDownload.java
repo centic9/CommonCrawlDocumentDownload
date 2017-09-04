@@ -38,6 +38,8 @@ public class ReadAndDownload {
     private static int blockIndex = SKIP_BLOCKS;
 
     public static void main(String[] args) throws IllegalStateException, IOException {
+        LoggerFactory.initLogging();
+
         try (HttpClientWrapper client = new HttpClientWrapper("", null, 1800_000)) {
             // TODO: disabled until new data is published to save us one additional HTTP Request during startup
 //            Pair<Long, Long> values = readStartPos(client.getHttpClient());

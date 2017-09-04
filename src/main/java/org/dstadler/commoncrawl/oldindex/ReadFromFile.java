@@ -28,6 +28,8 @@ public class ReadFromFile {
     private static final int SKIP_BLOCKS = 0;
 
     public static void main(String[] args) throws IllegalStateException, IOException {
+        LoggerFactory.initLogging();
+
         int blockSize = Utils.BLOCK_SIZE;
         long startPos = (long)Utils.HEADER_BLOCK_SIZE + (blockSize * Utils.INDEX_BLOCK_COUNT) + ((long)blockSize * SKIP_BLOCKS);
 

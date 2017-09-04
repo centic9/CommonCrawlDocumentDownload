@@ -28,6 +28,8 @@ public class Download {
     private final static Logger log = LoggerFactory.make();
     
     public static void main(String[] args) throws Exception {
+        LoggerFactory.initLogging();
+
         Utils.ensureDownloadDir();
         
         try (BufferedReader reader = new BufferedReader(new FileReader(Utils.COMMONURLS_PATH))) {
