@@ -79,22 +79,21 @@ public class ReadAndDownload {
 
             long startTs = System.currentTimeMillis();
             //try (InputStream stream = new BufferedInputStream(entity.getContent(), 5*blockSize)) {
-            try (InputStream stream = entity.getContent()) {
-                try (BlockProcessor processor = new ProcessAndDownload(Utils.COMMONURLS_PATH, true)){
-                    while(true) {
-                        Utils.logProgress(startPos, blockSize, startBlock, startTs, blockIndex, 20, 233689120776L);
+            try (InputStream stream = entity.getContent();
+                BlockProcessor processor = new ProcessAndDownload(Utils.COMMONURLS_PATH, true)) {
+                while(true) {
+                    Utils.logProgress(startPos, blockSize, startBlock, startTs, blockIndex, 20, 233689120776L);
 
-                        if(!Utils.handleBlock(blockIndex, blockSize, stream, processor)) {
-                            break;
-                        }
-
-                        blockIndex++;
+                    if(!OldIndexUtils.handleBlock(blockIndex, blockSize, stream, processor)) {
+                        break;
                     }
-                } finally {
-                    // always abort reading here inside the finally block of the InputStream as
-                    // otherwise HttpClient tries to read the stream fully, which is at least 270GB...
-                    httpGet.abort();
+
+                    blockIndex++;
                 }
+            } finally {
+                // always abort reading here inside the finally block of the InputStream as
+                // otherwise HttpClient tries to read the stream fully, which is at least 270GB...
+                httpGet.abort();
             }
         }
     }

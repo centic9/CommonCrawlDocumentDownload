@@ -2,8 +2,6 @@ package org.dstadler.commoncrawl.oldindex;
 
 import java.io.Closeable;
 
-
-
 /**
  * Interface for handling one block of data from the 
  * Common Crawl URL index.

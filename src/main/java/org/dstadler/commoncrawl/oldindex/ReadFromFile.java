@@ -19,7 +19,6 @@ import com.google.common.base.Preconditions;
  *
  *  Note: This is now superseded by reading the binary data directly
  *  from the Common Crawl archive via {@link ProcessAndDownload}.
- *
  */
 public class ReadFromFile {
     private final static Logger log = LoggerFactory.make();
@@ -44,18 +43,17 @@ public class ReadFromFile {
         long startTs = System.currentTimeMillis();
         long fileLength = DATA_FILE.length();
         // 10MB => 485blocks per second
-        try (InputStream stream = new BufferedInputStream(new FileInputStream(DATA_FILE), 10*1024*1024)) {
-            try (BlockProcessor processor = new ProcessAndDownload(Utils.COMMONURLS_PATH, false)){
-                long skipped = stream.skip(startPos);
-                if(skipped != startPos) {
-                    throw new IOException("Tried to skip " + startPos + " bytes, but could only skip " + skipped +
-                            " bytes while reading file " + DATA_FILE);
-                }
-                for(long blockIndex = SKIP_BLOCKS;true;blockIndex++) {
-                    Utils.logProgress(startPos, blockSize, SKIP_BLOCKS, startTs, blockIndex, 500, fileLength);
-                    if(!Utils.handleBlock(blockIndex, blockSize, stream, processor)) {
-                        break;
-                    }
+        try (InputStream stream = new BufferedInputStream(new FileInputStream(DATA_FILE), 10*1024*1024);
+            BlockProcessor processor = new ProcessAndDownload(Utils.COMMONURLS_PATH, false)) {
+            long skipped = stream.skip(startPos);
+            if(skipped != startPos) {
+                throw new IOException("Tried to skip " + startPos + " bytes, but could only skip " + skipped +
+                        " bytes while reading file " + DATA_FILE);
+            }
+            for(long blockIndex = SKIP_BLOCKS;true;blockIndex++) {
+                Utils.logProgress(startPos, blockSize, SKIP_BLOCKS, startTs, blockIndex, 500, fileLength);
+                if(!OldIndexUtils.handleBlock(blockIndex, blockSize, stream, processor)) {
+                    break;
                 }
             }
         }

@@ -73,9 +73,9 @@ public class DownloadURLIndex {
 
 	protected static void handleInputStream(Closeable httpClient, String url, InputStream stream, int index, long length)
 			throws IOException {
-		try (CountingInputStream content = new CountingInputStream(stream)) {
-		try (CountingInputStream uncompressedStream = new CountingInputStream(new GZIPMembersInputStream(content))) {
-		try (BufferedReader reader = new BufferedReader(
+		try (CountingInputStream content = new CountingInputStream(stream);
+			CountingInputStream uncompressedStream = new CountingInputStream(new GZIPMembersInputStream(content));
+			BufferedReader reader = new BufferedReader(
 				new InputStreamReader(uncompressedStream), 1024*1024)) {
 			try {
 		    	int count = 0;
@@ -119,7 +119,7 @@ public class DownloadURLIndex {
 
 				throw e;
 			}
-		} } }
+		}
 	}
 
     private static void handleJSON(String json) throws IOException {

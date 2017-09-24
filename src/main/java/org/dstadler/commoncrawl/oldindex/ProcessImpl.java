@@ -40,10 +40,7 @@ public class ProcessImpl implements BlockProcessor {
         processor = new Processor();
         processor.start();
     }
-    
-    /* (non-Javadoc)
-     * @see org.dstadler.commoncrawl.BlockProcessor#add(byte[], long)
-     */
+
     @Override
     public void offer(byte[] block, long blockIndex) {
         // offer with timeout to print out "w"s whenever the queue is full and 
@@ -95,7 +92,7 @@ public class ProcessImpl implements BlockProcessor {
                         // indicate in the output whenever we are idle
                         System.out.print("z");
                     }
-                } catch (@SuppressWarnings("unused") InterruptedException e) {
+                } catch (InterruptedException e) {
                     // no action needed
                 } catch (Exception e) {
                     log.log(Level.WARNING, "Had Exception while handling block", e);
@@ -166,9 +163,6 @@ public class ProcessImpl implements BlockProcessor {
         // NOP here
     }
 
-    /* (non-Javadoc)
-     * @see org.dstadler.commoncrawl.BlockProcessor#close()
-     */
     @Override
     public void close() throws IOException {
         processor.shouldStop();

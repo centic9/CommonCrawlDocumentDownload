@@ -14,8 +14,8 @@ import static org.dstadler.commoncrawl.index.DownloadURLIndex.COMMON_CRAWL_FILE;
 
 /**
  * Specialized Processor which reads the position in the Common Crawl
- * from a file 'commoncrawl.txt' and uses the information to download
- * and unwrap the actual document in one go.
+ * from a file 'commoncrawl-CC-MAIN-<year>-<crawl>.txt' and uses the information
+ * to download and unwrap the actual document in one go.
  *
  * @author dominik.stadler
  */
@@ -27,30 +27,29 @@ public class DownloadFromCommonCrawl {
 
 		Utils.ensureDownloadDir();
 
-    	try (final HttpClientWrapper client = new HttpClientWrapper("", null, 600_000)) {
-    		try (BufferedReader reader = new BufferedReader(new FileReader(COMMON_CRAWL_FILE), 1024*1024)) {
-    			int count = 0, downloaded = 0;
-    			long bytes = 0;
-    			while(true) {
-    				String line = reader.readLine();
-    				if(line == null) {
-    					log.info("End of file " + COMMON_CRAWL_FILE + " reached after " + count + " items");
-    					break;
-    				}
+    	try (final HttpClientWrapper client = new HttpClientWrapper("", null, 600_000);
+    		BufferedReader reader = new BufferedReader(new FileReader(COMMON_CRAWL_FILE), 1024*1024)) {
+			int count = 0, downloaded = 0;
+			long bytes = 0;
+			while(true) {
+				String line = reader.readLine();
+				if(line == null) {
+					log.info("End of file " + COMMON_CRAWL_FILE + " reached after " + count + " items");
+					break;
+				}
 
-    				double percentage = (double)(bytes)/COMMON_CRAWL_FILE.length()*100;
-    				log.info("Downloading line " + (count+1) + ": " + String.format("%.4f", percentage) + "%, having " + downloaded + " downloaded: " + StringUtils.abbreviate(line, 50));
-    				CDXItem item = CDXItem.parse(line);
+				double percentage = (double)(bytes)/COMMON_CRAWL_FILE.length()*100;
+				log.info("Downloading line " + (count+1) + ": " + String.format("%.4f", percentage) + "%, having " + downloaded + " downloaded: " + StringUtils.abbreviate(line, 50));
+				CDXItem item = CDXItem.parse(line);
 
-					File file = Utils.downloadFileFromCommonCrawl(client.getHttpClient(), item.url, item.getDocumentLocation(), true);
-					if(file != null) {
-						downloaded++;
-					}
+				File file = Utils.downloadFileFromCommonCrawl(client.getHttpClient(), item.url, item.getDocumentLocation(), true);
+				if(file != null) {
+					downloaded++;
+				}
 
-					bytes+=line.length()+1;
-    				count++;
-    			}
-    		}
+				bytes+=line.length()+1;
+				count++;
+			}
     	}
     }
 }

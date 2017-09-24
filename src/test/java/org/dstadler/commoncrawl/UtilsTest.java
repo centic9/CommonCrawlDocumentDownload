@@ -221,32 +221,4 @@ public class UtilsTest {
     public void testPrivateConstructor() throws Exception {
         org.dstadler.commons.testing.PrivateConstructorCoverage.executePrivateConstructor(Utils.class);
     }
-
-    @Test
-    public void testHandleBlock() throws IOException {
-        byte[] block = FileUtils.readFileToByteArray(new File("src/test/data/block0.bin"));
-
-        final AtomicBoolean called = new AtomicBoolean();
-        try (BlockProcessor processor = new BlockProcessor() {
-
-            @Override
-            public void close() throws IOException {
-                // nothing needed here
-            }
-
-            @Override
-            public void offer(byte[] array, long blockIndex) {
-                assertEquals(Utils.BLOCK_SIZE, array.length);
-                assertEquals(0, blockIndex);
-
-                called.set(true);
-            }
-        }) {
-            assertTrue(Utils.handleBlock(0, Utils.BLOCK_SIZE, new ByteArrayInputStream(block), processor));
-        }
-
-        assertTrue(called.get());
-
-        assertFalse(Utils.handleBlock(0, Utils.BLOCK_SIZE, new ByteArrayInputStream(new byte[0]), null));
-    }
 }

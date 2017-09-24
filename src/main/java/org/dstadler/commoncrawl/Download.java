@@ -32,28 +32,27 @@ public class Download {
 
         Utils.ensureDownloadDir();
         
-        try (BufferedReader reader = new BufferedReader(new FileReader(Utils.COMMONURLS_PATH))) {
-            try (HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
-                while(true) {
-                    String url = reader.readLine();
-                    if(url == null) {
-                        break;
-                    }
-                    
-                    File failedFile = Utils.computeDownloadFileName(url, ".failed");
-                    if(failedFile.exists()) {
-                        log.info("Skipping download that failed before:" + url);
-                        continue;
-                    }
-                    try {
-                        readURL(client.getHttpClient(), url);
-                    } catch (IOException | URISyntaxException e) {
-                        String msg = "Download failed for URL:" + url + ": " + e;
-                        log.info(msg);
-                        FileUtils.write(failedFile, msg + "\n" + ExceptionUtils.getStackTrace(e), "UTF-8");
-                    } catch (Exception e) {
-                        throw new Exception("Failed for url " + url, e);
-                    }
+        try (BufferedReader reader = new BufferedReader(new FileReader(Utils.COMMONURLS_PATH));
+            HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
+            while(true) {
+                String url = reader.readLine();
+                if(url == null) {
+                    break;
+                }
+
+                File failedFile = Utils.computeDownloadFileName(url, ".failed");
+                if(failedFile.exists()) {
+                    log.info("Skipping download that failed before:" + url);
+                    continue;
+                }
+                try {
+                    readURL(client.getHttpClient(), url);
+                } catch (IOException | URISyntaxException e) {
+                    String msg = "Download failed for URL:" + url + ": " + e;
+                    log.info(msg);
+                    FileUtils.write(failedFile, msg + "\n" + ExceptionUtils.getStackTrace(e), "UTF-8");
+                } catch (Exception e) {
+                    throw new Exception("Failed for url " + url, e);
                 }
             }
         }
