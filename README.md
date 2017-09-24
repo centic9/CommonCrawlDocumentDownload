@@ -25,11 +25,11 @@ amount of time and lots of disk-space if the data is stored locally!
 
     ./gradlew lookupURLs
     
-Reads the current Common Crawl URL index data and extracts all URLs for interesting mime-types or file extensions, stores the URLs in a file called `commoncrawl.txt`
+Reads the current Common Crawl URL index data and extracts all URLs for interesting mime-types or file extensions, stores the URLs in a file called `commoncrawl-CC-MAIN-<year>-<crawl>.txt`
         
     ./gradlew downloadDocuments
 
-Uses the URLs listed in `commoncrawl.txt` to download the documents from the Common Crawl
+Uses the URLs listed in `commoncrawl-CC-MAIN-<year>-<crawl>.txt` to download the documents from the Common Crawl
 
     ./gradlew downloadOldIndex
 
@@ -51,9 +51,9 @@ Run unit tests
 
 There are a few things that you can tweak:
 
-* The file-extensions that are detcted as download-able files are handled in the class `Extensions`.
-* The mime-types that are detcted as download-able files isare handled in the class `MimeTypes`.
-* The starting file-index (of the aprox. 300 cdx-files) is currently set as constant in class `org.dstadler.commoncrawl.index.DownloadURLIndex`, this way you can also re-start a download that was interrupted before.
+* The file-extensions that are detected as download-able files are handled in the class `Extensions`.
+* The mime-types that are detected as download-able files isare handled in the class `MimeTypes`.
+* The starting file-index (of the approximately 300 cdx-files) is currently set as constant in class `org.dstadler.commoncrawl.index.DownloadURLIndex`, this way you can also re-start a download that was interrupted before.
 
 ### Ideas
 
@@ -75,6 +75,8 @@ locally, which will avoid using too much disk-space
 
 ### Related projects/pages
 
+* http://commoncrawl.org/
+* http://commoncrawl.org/the-data/examples/
 * https://github.com/trivio/common_crawl_index
 * https://github.com/wiseman/common_crawl_index
 * https://github.com/ikreymer/cc-index-server
