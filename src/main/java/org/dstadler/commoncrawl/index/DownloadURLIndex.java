@@ -27,8 +27,8 @@ import java.util.logging.Logger;
 public class DownloadURLIndex {
     private static final Logger log = LoggerFactory.make();
 
-	private static final String CURRENT_CRAWL = "CC-MAIN-2017-34";
-	private static final File COMMON_CRAWL_MATCHES = new File("commoncrawl-" + CURRENT_CRAWL + ".txt");
+	public static final String CURRENT_CRAWL = "CC-MAIN-2017-34";
+	public static final File COMMON_CRAWL_FILE = new File("commoncrawl-" + CURRENT_CRAWL + ".txt");
 
 	private static final int START_INDEX = 0;
     private static final int END_INDEX = 299;
@@ -133,13 +133,13 @@ public class DownloadURLIndex {
 
 		    			if(MimeTypes.matches(mimeType)) {
 		    				log.info("Found-Mimetype: " + json);
-		    				FileUtils.writeStringToFile(COMMON_CRAWL_MATCHES, json + "\n", "UTF-8", true);
+		    				FileUtils.writeStringToFile(COMMON_CRAWL_FILE, json + "\n", "UTF-8", true);
 		    			}
 		    		} else if("url".equals(jp.getCurrentName())) {
 		    			String url = jp.getValueAsString().toLowerCase();
 		    			if(Extensions.matches(url)) {
 		    				log.info("Found-URL: " + json);
-		    				FileUtils.writeStringToFile(COMMON_CRAWL_MATCHES, json + "\n", "UTF-8", true);
+		    				FileUtils.writeStringToFile(COMMON_CRAWL_FILE, json + "\n", "UTF-8", true);
 		    			}
 		    		}
 	    		}
