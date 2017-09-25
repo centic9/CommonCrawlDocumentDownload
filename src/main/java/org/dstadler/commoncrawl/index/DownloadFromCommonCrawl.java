@@ -14,7 +14,7 @@ import static org.dstadler.commoncrawl.index.DownloadURLIndex.COMMON_CRAWL_FILE;
 
 /**
  * Specialized Processor which reads the position in the Common Crawl
- * from a file 'commoncrawl-CC-MAIN-<year>-<crawl>.txt' and uses the information
+ * from a file 'commoncrawl-CC-MAIN-&lt;year>-&lt;crawl>.txt' and uses the information
  * to download and unwrap the actual document in one go.
  *
  * @author dominik.stadler
