@@ -22,48 +22,58 @@ configurations.all {
 }
 
 dependencies {
-    compile 'org.dstadler:commons-dost:1.0.0.23'
-    compile 'org.apache.httpcomponents:httpclient:4.5.3'
+    compile 'org.dstadler:commons-dost:1.0.0.25'
+    compile 'org.apache.httpcomponents:httpclient:4.5.5'
     compile 'org.netpreserve.commons:webarchive-commons:1.1.8'
-    compile 'com.fasterxml.jackson.core:jackson-core:2.8.9'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.9.6'
 
     // for commoncrawl-source
     compile 'log4j:log4j:1.2.17'
-    compile 'org.jsoup:jsoup:1.10.2'
+    compile 'org.jsoup:jsoup:1.11.3'
 
 	testCompile "junit:junit:4.12"
-	testCompile 'org.dstadler:commons-test:1.0.0.13'
+	testCompile 'org.dstadler:commons-test:1.0.0.15'
 }
 
 // work around unnecessary timestamp in generated file which always causes dirty files in version control
 // https://issues.gradle.org/browse/GRADLE-2293
-task adjustEclipseSettingsFile << {
-	ant.replaceregexp(match:'^#.*', replace:'', flags:'g', byline:true) {
-		fileset(dir: project.projectDir, includes: '.settings/org.eclipse.jdt.core.prefs,.settings/com.google.gdt.eclipse.core.prefs')
-	}
+task adjustEclipseSettingsFile {
+    doLast {
+        ant.replaceregexp(match: '^#.*', replace: '', flags: 'g', byline: true) {
+            fileset(dir: project.projectDir, includes: '.settings/org.eclipse.jdt.core.prefs,.settings/com.google.gdt.eclipse.core.prefs')
+        }
+    }
 }
-task sortEclipseSettingsFile << {
-	new File(project.projectDir, '.settings/org.eclipse.jdt.core.prefs').with { it.text = it.readLines().findAll { it }.sort().join('\n') }
-	new File(project.projectDir, '.classpath').with { it.text = it.readLines().findAll { it }.unique().join('\n') }
-	File file = new File(project.projectDir, '.settings/com.google.gdt.eclipse.core.prefs')
-	if(file.exists()) {
-		file.with { it.text = it.readLines().findAll { it }.sort().join('\n') }
-	}
-	ant.fixcrlf(srcDir: '.settings', eol: 'lf')
+task sortEclipseSettingsFile {
+    doLast {
+        new File(project.projectDir, '.settings/org.eclipse.jdt.core.prefs').with {
+            it.text = it.readLines().findAll { it }.sort().join('\n')
+        }
+        new File(project.projectDir, '.classpath').with { it.text = it.readLines().findAll { it }.unique().join('\n') }
+        File file = new File(project.projectDir, '.settings/com.google.gdt.eclipse.core.prefs')
+        if (file.exists()) {
+            file.with { it.text = it.readLines().findAll { it }.sort().join('\n') }
+        }
+        ant.fixcrlf(srcDir: '.settings', eol: 'lf')
+    }
 }
 eclipseJdt.finalizedBy adjustEclipseSettingsFile
 eclipseJdt.finalizedBy sortEclipseSettingsFile
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.4.1'
+    gradleVersion = '4.6'
 }
 
-task adjustWrapperPropertiesFile << {
-	ant.replaceregexp(match:'^#.*', replace:'', flags:'g', byline:true) {
-		fileset(dir: project.projectDir, includes: 'gradle/wrapper/gradle-wrapper.properties')
-	}
-	new File(project.projectDir, 'gradle/wrapper/gradle-wrapper.properties').with { it.text = it.readLines().findAll { it }.sort().join('\n') }
-	ant.fixcrlf(file: 'gradle/wrapper/gradle-wrapper.properties', eol: 'lf')
+task adjustWrapperPropertiesFile {
+    doLast {
+        ant.replaceregexp(match: '^#.*', replace: '', flags: 'g', byline: true) {
+            fileset(dir: project.projectDir, includes: 'gradle/wrapper/gradle-wrapper.properties')
+        }
+        new File(project.projectDir, 'gradle/wrapper/gradle-wrapper.properties').with {
+            it.text = it.readLines().findAll { it }.sort().join('\n')
+        }
+        ant.fixcrlf(file: 'gradle/wrapper/gradle-wrapper.properties', eol: 'lf')
+    }
 }
 wrapper.finalizedBy adjustWrapperPropertiesFile
 
@@ -78,7 +88,7 @@ test {
 }
 
 jacoco {
-	toolVersion = '0.7.8'
+	toolVersion = '0.8.1'
 }
 
 jacocoTestReport {
@@ -116,9 +126,10 @@ if (!project.hasProperty("ossrhPassword")) {
 uploadArchives {
   repositories {
     mavenDeployer {
-      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+        //noinspection GrUnresolvedAccess
+        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+        repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
         authentication(userName: ossrhUsername, password: ossrhPassword)
       }
 
