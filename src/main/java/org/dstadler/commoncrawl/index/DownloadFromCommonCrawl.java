@@ -3,6 +3,7 @@ package org.dstadler.commoncrawl.index;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +30,7 @@ public class DownloadFromCommonCrawl {
 
     	try (final HttpClientWrapper client = new HttpClientWrapper("", null, 600_000);
     		BufferedReader reader = new BufferedReader(new FileReader(COMMON_CRAWL_FILE), 1024*1024)) {
-			int count = 0, downloaded = 0;
+			int count = 0, downloaded = 0, fileNameTooLong = 0;
 			long bytes = 0;
 			while(true) {
 				String line = reader.readLine();
@@ -39,12 +40,25 @@ public class DownloadFromCommonCrawl {
 				}
 
 				double percentage = (double)(bytes)/COMMON_CRAWL_FILE.length()*100;
-				log.info("Downloading line " + (count+1) + ": " + String.format("%.4f", percentage) + "%, having " + downloaded + " downloaded: " + StringUtils.abbreviate(line, 50));
+				log.info("Downloading line " + (count+1) + ": " + String.format("%.4f", percentage) + "%, having " +
+                        downloaded + " downloaded: " + StringUtils.abbreviate(line, 50) +
+                        ", " + fileNameTooLong + " file-names too long");
 				CDXItem item = CDXItem.parse(line);
 
-				File file = Utils.downloadFileFromCommonCrawl(client.getHttpClient(), item.url, item.getDocumentLocation(), true);
-				if(file != null) {
-					downloaded++;
+				try {
+					File file = Utils.downloadFileFromCommonCrawl(client.getHttpClient(), item.url, item.getDocumentLocation(), true);
+					if (file != null) {
+						downloaded++;
+					}
+				} catch (IOException e) {
+					// skip files that we cannot store locally,
+					// Exception text is provided by the OS and thus is localized
+					// for me, add your own translation if you run into this as well
+					if(e.getMessage().contains("Der Dateiname ist zu lang")) {
+                        fileNameTooLong++;
+                    } else {
+						throw e;
+					}
 				}
 
 				bytes+=line.length()+1;
