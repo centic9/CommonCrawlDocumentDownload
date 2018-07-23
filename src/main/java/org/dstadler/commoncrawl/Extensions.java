@@ -8,56 +8,12 @@ package org.dstadler.commoncrawl;
 public class Extensions {
 
     private static final String[] EXTENSIONS = new String[] {
-        // Excel
-        ".xls",
-        ".xlsx",
-        ".xlsm",
-        ".xltx",
-        ".xlsb",
-
-        // Word
-        ".doc",
-        ".docx",
-        ".dotx",
-        ".docm",
-        ".ooxml",
-
-        // Powerpoint
-        ".ppt",
-        ".pptx",
-        ".pptm",
-        ".ppsm",
-        ".ppsx",
-        ".thmx",
-
-        // Outlook
-        ".msg",
-
-        // Publisher
-        ".pub",
-
-        // Visio - binary
-        ".vsd",
-        ".vss",
-        ".vst",
-        ".vsw",
-        
-        // Visio - ooxml (currently unsupported)
-        ".vsdm",
-        ".vsdx",
-        ".vssm",
-        ".vssx",
-        ".vstm",
-        ".vstx",
-
-        // POIFS
-        ".ole2",
-
-        // Microsoft Admin Template?
-        ".adm",
-
-        // Microsoft TNEF
-        // ".dat", new HMEFFileHandler());
+        // Microsoft Access
+        ".mdb",
+        ".mde",
+        ".accdb",
+        ".accdr",
+        ".accdt",
     };
     
     public static boolean matches(String url) {
