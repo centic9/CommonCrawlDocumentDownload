@@ -50,6 +50,9 @@ public class DownloadURLIndex {
             	String url = String.format(URL_FORMAT, indexStr);
 
             	handleCDXFile(client.getHttpClient(), url, index);
+
+            	FileUtils.writeStringToFile(new File("mimetypes.txt"),
+						FOUND_MIME_TYPES.sortedMap().toString().replace(",", "\n"), "UTF-8");
             }
         }
     }
@@ -63,7 +66,18 @@ public class DownloadURLIndex {
 
 		    log.info("File " + index + " has " + entity.getContentLength()  + " bytes");
 		    try {
-		    	handleInputStream(httpClient, url, entity.getContent(), index, entity.getContentLength());
+		    	try {
+					handleInputStream(url, entity.getContent(), index, entity.getContentLength());
+				} catch (IOException e) {
+		    		log.info("Retry once for file " + index + ": " + e);
+					handleInputStream(url, entity.getContent(), index, entity.getContentLength());
+				}
+			} catch (Exception e) {
+				// try to stop processing in case of Exceptions in order to not download the whole file
+				// in the implicit close()
+				httpClient.close();
+
+				throw e;
 			} finally {
 				// ensure all content is taken out to free resources
 				EntityUtils.consume(entity);
@@ -71,19 +85,18 @@ public class DownloadURLIndex {
 		}
 	}
 
-	protected static void handleInputStream(Closeable httpClient, String url, InputStream stream, int index, long length)
+	protected static void handleInputStream(String url, InputStream stream, int index, long length)
 			throws IOException {
 		try (CountingInputStream content = new CountingInputStream(stream);
 			CountingInputStream uncompressedStream = new CountingInputStream(new GZIPMembersInputStream(content));
 			BufferedReader reader = new BufferedReader(
 				new InputStreamReader(uncompressedStream), 1024*1024)) {
-			try {
-		    	int count = 0;
-		    	long lastLog = System.currentTimeMillis();
-		        while(true) {
-		            String line = reader.readLine();
-		            if(line == null) {
-		            	log.info("End of stream reached for " + url + " after " + count + " lines, ");
+			int count = 0;
+			long lastLog = System.currentTimeMillis();
+			while(true) {
+				String line = reader.readLine();
+				if(line == null) {
+					log.info("End of stream reached for " + url + " after " + count + " lines, ");
 //		            	log.info(content.available() + " available, "
 //		            			+ content.getCount() + " compressed bytes, "
 //		            			+ content.read() + " read, "
@@ -92,32 +105,25 @@ public class DownloadURLIndex {
 //		            			+ uncompressedStream.read() + " read, "
 //		            			);
 
-		                break;
-		            }
+					break;
+				}
 
-		            int endOfUrl = line.indexOf(' ');
-		            Preconditions.checkState(endOfUrl != -1, "could not find end of url");
-		            int endOfTimestamp = line.indexOf(' ', endOfUrl+1);
-		            Preconditions.checkState(endOfTimestamp != -1, "could not find end of timestamp");
-		            String json = line.substring(endOfTimestamp+1);
+				int endOfUrl = line.indexOf(' ');
+				Preconditions.checkState(endOfUrl != -1, "could not find end of url");
+				int endOfTimestamp = line.indexOf(' ', endOfUrl+1);
+				Preconditions.checkState(endOfTimestamp != -1, "could not find end of timestamp");
+				String json = line.substring(endOfTimestamp+1);
 
-		            handleJSON(json);
+				handleJSON(json);
 
-		            count++;
-		            //System.out.print('.');
-		            if(count % 100000 == 0 || lastLog < (System.currentTimeMillis() - 10000)) {
-		            	log.info("File " + index + ": " + count + " lines, compressed bytes: " + content.getCount() + " of " + length +
-		            			"(" + String.format("%.2f", ((double)content.getCount())/length*100) + "%), bytes: " + uncompressedStream.getCount() + ": " +
-		            			StringUtils.abbreviate(FOUND_MIME_TYPES.sortedMap().toString(), 100));
-		            	lastLog = System.currentTimeMillis();
-		            }
-		        }
-			} catch (Exception e) {
-				// try to stop processing in case of Exceptions in order to not download the whole file
-				// in the implicit close()
-				httpClient.close();
-
-				throw e;
+				count++;
+				//System.out.print('.');
+				if(count % 100000 == 0 || lastLog < (System.currentTimeMillis() - 10000)) {
+					log.info("File " + index + ": " + count + " lines, compressed bytes: " + content.getCount() + " of " + length +
+							"(" + String.format("%.2f", ((double)content.getCount())/length*100) + "%), bytes: " + uncompressedStream.getCount() + ": " +
+							StringUtils.abbreviate(FOUND_MIME_TYPES.sortedMap().toString(), 100));
+					lastLog = System.currentTimeMillis();
+				}
 			}
 		}
 	}

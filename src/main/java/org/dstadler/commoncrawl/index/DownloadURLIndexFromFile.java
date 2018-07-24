@@ -27,7 +27,7 @@ public class DownloadURLIndexFromFile {
 
 	    	log.info("Loading data from " + file + " which has " + file.length()  + " bytes");
 		    try (InputStream stream = new FileInputStream(file)) {
-		    	DownloadURLIndex.handleInputStream(stream, file.getAbsolutePath(), stream, i, file.length());
+		    	DownloadURLIndex.handleInputStream(file.getAbsolutePath(), stream, i, file.length());
 	        }
 		}
 	}
