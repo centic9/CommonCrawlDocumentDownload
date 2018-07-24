@@ -1,33 +1,34 @@
 package org.dstadler.commoncrawl;
 
-import static org.junit.Assert.*;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URI;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.dstadler.commoncrawl.oldindex.BlockProcessor;
 import org.dstadler.commons.http.HttpClientWrapper;
 import org.dstadler.commons.http.NanoHTTPD;
 import org.dstadler.commons.testing.MockRESTServer;
 import org.dstadler.commons.testing.TestHelpers;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 
 public class UtilsTest {
     //private final static Logger log = LoggerFactory.make();
 
     @Test
-    public void testReverseDomain() throws Exception {
+    public void testReverseDomain() {
         assertEquals("www.actualicese.com", Utils.reverseDomain("com.actualicese.www"));
         assertEquals("a", Utils.reverseDomain("a"));
         assertEquals("a.b", Utils.reverseDomain("b.a"));
@@ -37,7 +38,7 @@ public class UtilsTest {
         assertEquals("www.ac_tualicese.-.com", Utils.reverseDomain("com.-.ac_tualicese.www"));
 
         assertEquals("", Utils.reverseDomain(""));
-        assertEquals(null, Utils.reverseDomain(null));
+        assertNull(Utils.reverseDomain(null));
     }
 
     @Test
@@ -137,7 +138,7 @@ public class UtilsTest {
     }
 
     @Test
-    public void testLogProgress() throws Exception {
+    public void testLogProgress() {
         // no output
         Utils.logProgress(1, 2, 3, 4, 5, 6, 12322);
 

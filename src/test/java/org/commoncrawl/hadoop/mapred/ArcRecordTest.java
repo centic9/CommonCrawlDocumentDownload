@@ -24,13 +24,13 @@ public class ArcRecordTest {
 			assertNotNull(record.getHttpResponse().getEntity());
 			InputStream content = record.getHttpResponse().getEntity().getContent();
 			assertNotNull(content);
-			ByteArrayOutputStream outstr = new ByteArrayOutputStream();
-			IOUtils.copy(content, outstr);
-			byte[] data = outstr.toByteArray();
+			ByteArrayOutputStream outStr = new ByteArrayOutputStream();
+			IOUtils.copy(content, outStr);
+			byte[] data = outStr.toByteArray();
 			assertTrue(data.length > 1);
 
 			// had a problem that ArcRecord did leave a trailing newline in there
-			assertFalse(data[data.length-1] == '\n');
+			assertNotEquals('\n', data[data.length - 1]);
         }
 	}
 	

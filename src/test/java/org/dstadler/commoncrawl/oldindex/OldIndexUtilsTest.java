@@ -20,7 +20,7 @@ public class OldIndexUtilsTest {
         try (BlockProcessor processor = new BlockProcessor() {
 
             @Override
-            public void close() throws IOException {
+            public void close() {
                 // nothing needed here
             }
 

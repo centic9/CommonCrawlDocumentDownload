@@ -9,7 +9,7 @@ import org.junit.Test;
 public class ExtensionsTest {
 
     @Test
-    public void testMatches() throws Exception {
+    public void testMatches() {
         assertFalse(Extensions.matches(""));
         assertFalse(Extensions.matches("12345"));
         assertFalse(Extensions.matches("abc.ds"));
