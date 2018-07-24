@@ -53,6 +53,8 @@ There are a few things that you can tweak:
 
 * The file-extensions that are detected as download-able files are handled in the class `Extensions`.
 * The mime-types that are detected as download-able files isare handled in the class `MimeTypes`.
+* Adjust the name of the list of found files in `DownloadURLIndex.COMMON_CRAWL_FILE`.
+* Adjust the location where files are downloaded to in `Utils.DOWNLOAD_DIR`.
 * The starting file-index (of the approximately 300 cdx-files) is currently set as constant in class `org.dstadler.commoncrawl.index.DownloadURLIndex`, this way you can also re-start a download that was interrupted before.
 
 ### Ideas
