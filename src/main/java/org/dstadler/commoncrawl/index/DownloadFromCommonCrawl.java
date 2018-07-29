@@ -42,7 +42,7 @@ public class DownloadFromCommonCrawl {
 				double percentage = (double)(bytes)/COMMON_CRAWL_FILE.length()*100;
 				log.info("Downloading line " + (count+1) + ": " + String.format("%.4f", percentage) + "%, having " +
                         downloaded + " downloaded: " + StringUtils.abbreviate(line, 50) +
-                        ", " + fileNameTooLong + " file-names too long");
+						(fileNameTooLong > 0 ? ", " + fileNameTooLong + " file-names too long" : ""));
 				CDXItem item = CDXItem.parse(line);
 
 				try {
