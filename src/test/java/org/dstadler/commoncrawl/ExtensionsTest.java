@@ -20,9 +20,9 @@ public class ExtensionsTest {
         assertFalse(Extensions.matches("bdcsdoc"));
         assertFalse(Extensions.matches("bdcs_doc"));
         
-        assertTrue(Extensions.matches("1.xls"));
-        assertTrue(Extensions.matches(".xlsx"));
-        assertTrue(Extensions.matches("a/b/c/d/s/%20/.ads.doc.sawe.dlaasd.pptx"));
+        assertTrue(Extensions.matches("1.mdb"));
+        assertTrue(Extensions.matches(".accdb"));
+        assertTrue(Extensions.matches("a/b/c/d/s/%20/.ads.doc.sawe.dlaasd.mde"));
     }
 
     // helper method to get coverage of the unused constructor
