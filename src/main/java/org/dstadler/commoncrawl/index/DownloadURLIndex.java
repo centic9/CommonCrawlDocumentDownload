@@ -40,25 +40,38 @@ public class DownloadURLIndex {
 
     private static final MappedCounter<String> FOUND_MIME_TYPES = new MappedCounterImpl<>();
 
+    private static int index = START_INDEX;
+
     public static void main(String[] args) throws Exception {
 		LoggerFactory.initLogging();
 
-		log.info("Processing index files starting from index " + START_INDEX + " with pattern " + URL_FORMAT);
-        try (HttpClientWrapper client = new HttpClientWrapper("", null, 600_000)) {
-            for(int index = START_INDEX;index <= END_INDEX;index++) {
-                String indexStr = String.format("%05d", index);
-            	String url = String.format(URL_FORMAT, indexStr);
-
-            	handleCDXFile(client.getHttpClient(), url, index);
-
-            	FileUtils.writeStringToFile(new File("mimetypes.txt"),
-						FOUND_MIME_TYPES.sortedMap().toString().replace(",", "\n"), "UTF-8");
-            }
-        }
+		run();
     }
 
-    private static void handleCDXFile(CloseableHttpClient httpClient, String url, int index) throws Exception {
-    	log.info("Loading file " + index + " from " + url);
+	public static void run() throws IOException, InterruptedException {
+		log.info("Processing index files starting from index " + index + " with pattern " + URL_FORMAT);
+		for(; index <= END_INDEX; index++) {
+			try {
+				try (HttpClientWrapper client = new HttpClientWrapper("", null, 600_000)) {
+					handleCDXFile(client.getHttpClient(), index);
+				}
+			} catch (IOException e) {
+				log.info("Retry once starting at file " + index + ": " + e);
+
+				Thread.sleep(10_000);
+
+				try (HttpClientWrapper client = new HttpClientWrapper("", null, 600_000)) {
+					handleCDXFile(client.getHttpClient(), index);
+				}
+			}
+		}
+	}
+
+	private static void handleCDXFile(CloseableHttpClient httpClient, int index) throws IOException {
+		String indexStr = String.format("%05d", index);
+		String url = String.format(URL_FORMAT, indexStr);
+
+		log.info("Loading file " + index + " from " + url);
 
     	final HttpGet httpGet = new HttpGet(url);
 		try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
@@ -66,12 +79,7 @@ public class DownloadURLIndex {
 
 		    log.info("File " + index + " has " + entity.getContentLength()  + " bytes");
 		    try {
-		    	try {
-					handleInputStream(url, entity.getContent(), index, entity.getContentLength());
-				} catch (IOException e) {
-		    		log.info("Retry once for file " + index + ": " + e);
-					handleInputStream(url, entity.getContent(), index, entity.getContentLength());
-				}
+				handleInputStream(url, entity.getContent(), index, entity.getContentLength());
 			} catch (Exception e) {
 				// try to stop processing in case of Exceptions in order to not download the whole file
 				// in the implicit close()
@@ -83,6 +91,9 @@ public class DownloadURLIndex {
 				EntityUtils.consume(entity);
 			}
 		}
+
+		FileUtils.writeStringToFile(new File("mimetypes.txt"),
+				FOUND_MIME_TYPES.sortedMap().toString().replace(",", "\n"), "UTF-8");
 	}
 
 	protected static void handleInputStream(String url, InputStream stream, int index, long length)
