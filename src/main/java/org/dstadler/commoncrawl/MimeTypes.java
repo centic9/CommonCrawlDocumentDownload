@@ -33,7 +33,7 @@ public class MimeTypes {
     }
     
     public static String toExtension(String mime) {
-    	if(mime == null || !mime.startsWith("application/")) {
+    	if(mime == null) {
     		return "";
     	}
 

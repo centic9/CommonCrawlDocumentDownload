@@ -32,6 +32,6 @@ public class MimeTypesTest {
         assertEquals(".emf", MimeTypes.toExtension("application/emf"));
         assertEquals(".emf", MimeTypes.toExtension("application/x-emf"));
         assertEquals(".emf", MimeTypes.toExtension("image/x-emf"));
-        assertEquals(".mdb", MimeTypes.toExtension("image/x-mgx-emf"));
+        assertEquals(".emf", MimeTypes.toExtension("image/x-mgx-emf"));
     }
 }
