@@ -9,4 +9,4 @@ install: ./gradlew checkSnapshotDependencies compileJava
 script: ./gradlew eclipse check jacocoTestReport javadoc
 
 after_failure:
-- cat build/test-results/*.xml
+- cat build/test-results/test/*.xml
