@@ -1,4 +1,4 @@
-package org.apache.poi.util;
+package org.dstadler.poi.util;
 /* ====================================================================
    Licensed to the Apache Software Foundation (ASF) under one or more
    contributor license agreements.  See the NOTICE file distributed with
@@ -20,7 +20,7 @@ package org.apache.poi.util;
  * a utility class for handling little-endian numbers, which the 80x86 world is
  * replete with. The methods are all static, and input/output is from/to byte
  * arrays, or from InputStreams.
- * 
+ *
  * @author Marc Johnson (mjohnson at apache dot org)
  * @author Andrew Oliver (acoliver at apache dot org)
  */
@@ -29,7 +29,7 @@ public class LittleEndian {
 
     /**
      * get an int value from a byte array
-     * 
+     *
      * @param data
      *            the byte array
      * @param offset
@@ -48,7 +48,7 @@ public class LittleEndian {
 
     /**
      * get a long value from a byte array
-     * 
+     *
      * @param data
      *            the byte array
      * @param offset
@@ -69,7 +69,7 @@ public class LittleEndian {
 
     /**
      * get an unsigned int value from a byte array
-     * 
+     *
      * @param data
      *            the byte array
      * @param offset

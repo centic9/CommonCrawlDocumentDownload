@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
@@ -41,7 +42,7 @@ public class DownloadURLIndexTest {
     	        InputStream content = entity.getContent();
     			InputStream uncompressedStream = new GZIPInputStream(content);
     			try (BufferedReader reader = new BufferedReader(
-    	        		new InputStreamReader(uncompressedStream, "UTF-8"), 1024*1024)) {
+    	        		new InputStreamReader(uncompressedStream, StandardCharsets.UTF_8), 1024*1024)) {
     				try {
     		        	int count = 0;
     		        	long length = 0;
@@ -163,7 +164,7 @@ public class DownloadURLIndexTest {
         try (CountingInputStream content = new CountingInputStream(new FileInputStream(file))) {
         	CountingInputStream uncompressedStream = new CountingInputStream(new GZIPInputStream(content));
 			try (BufferedReader reader = new BufferedReader(
-        		new InputStreamReader(uncompressedStream, "UTF-8"), 1024*1024)) {
+        		new InputStreamReader(uncompressedStream, StandardCharsets.UTF_8), 1024*1024)) {
 	        	long count = 0;
 	        	long length = 0;
 	        	long lastLog = System.currentTimeMillis();

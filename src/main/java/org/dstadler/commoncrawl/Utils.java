@@ -14,7 +14,7 @@ import org.apache.http.HttpException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.poi.util.LittleEndian;
+import org.dstadler.poi.util.LittleEndian;
 import org.archive.io.warc.WARCRecord;
 import org.archive.util.LaxHttpParser;
 import org.commoncrawl.hadoop.mapred.ArcRecord;
@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
@@ -139,7 +140,7 @@ public class Utils {
         try (InputStream stream = new FileInputStream(file)) {
             byte[] start = new byte[100];
             IOUtils.read(stream, start);
-            String string = new String(start, "UTF-8").trim().toLowerCase();
+            String string = new String(start, StandardCharsets.UTF_8).trim().toLowerCase();
             if(string.startsWith("<!doctype html") ||
                     string.startsWith("<html") ||
                     string.startsWith("<!--[if ie")) {

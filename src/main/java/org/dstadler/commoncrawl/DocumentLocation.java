@@ -1,6 +1,6 @@
 package org.dstadler.commoncrawl;
 
-import org.apache.poi.util.LittleEndian;
+import org.dstadler.poi.util.LittleEndian;
 
 
 /**

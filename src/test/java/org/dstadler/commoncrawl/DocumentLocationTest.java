@@ -9,7 +9,7 @@ import java.nio.charset.Charset;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.HexDump;
-import org.apache.poi.util.LittleEndian;
+import org.dstadler.poi.util.LittleEndian;
 import org.junit.Test;
 import org.dstadler.commoncrawl.oldindex.BlockProcessor;
 import org.dstadler.commons.net.UrlUtils;
