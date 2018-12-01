@@ -53,6 +53,10 @@ public class CDXItem {
 	    				item.filename = jp.getValueAsString();
 					} else if ("mime-detected".equals(name)) {
 						// ignored for now
+					} else if ("charset".equals(name)) {
+						// ignored for now
+					} else if ("languages".equals(name)) {
+						// ignored for now
 	    			} else {
 	    				throw new IllegalStateException("Unknown field found: " + name);
 	    			}
