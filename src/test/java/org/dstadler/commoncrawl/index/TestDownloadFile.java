@@ -26,7 +26,6 @@ import org.dstadler.commoncrawl.Utils;
  * @author dstadler
  *
  */
-@SuppressWarnings("deprecation")
 public class TestDownloadFile {
     private static final String URL =
     		"https://commoncrawl.s3.amazonaws.com/cc-index/collections/CC-MAIN-2015-48/indexes/cdx-00000.gz";
@@ -34,7 +33,7 @@ public class TestDownloadFile {
     public static void main(String[] args) throws Exception {
     	HttpClientBuilder builder = HttpClients.custom();
 
-    	builder = builder.setSSLHostnameVerifier(new NoopHostnameVerifier());
+    	builder.setSSLHostnameVerifier(new NoopHostnameVerifier());
 
         try (CloseableHttpClient httpClient = builder.build()) {
         	System.out.println("Loading data from " + URL);
