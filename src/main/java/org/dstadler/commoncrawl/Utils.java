@@ -41,6 +41,7 @@ public class Utils {
     public static final String INDEX_URL = "https://commoncrawl.s3.amazonaws.com/projects/url-index/url-index.1356128792";
     public static final int HEADER_BLOCK_SIZE = 8;
     public static File DOWNLOAD_DIR = new File("../download");
+    public static File BACKUP_DIR = new File("../backup");
     public static final File COMMONURLS_PATH = new File("commonurls.txt");
 
     public static HttpEntity checkAndFetch(CloseableHttpResponse response, String url) throws IOException {
@@ -151,6 +152,10 @@ public class Utils {
     }
 
     public static File computeDownloadFileName(String urlStr, String postfix) {
+        return computeDownloadFileName(DOWNLOAD_DIR, urlStr, postfix);
+    }
+
+    public static File computeDownloadFileName(File rootDir, String urlStr, String postfix) {
         // try to simply use the full url with only slashes replaced
     	String replace = StringUtils.removeStart(urlStr, "http://");
     	replace = StringUtils.removeStart(replace, "https://");
@@ -167,15 +172,17 @@ public class Utils {
             }
 			replace = replace.substring(0, 240) + "..." + extension;
         }
-        return new File(DOWNLOAD_DIR, replace.endsWith(postfix) ? replace : replace + postfix);
+        return new File(rootDir, replace.endsWith(postfix) ? replace : replace + postfix);
     }
 
 	public static File downloadFileFromCommonCrawl(CloseableHttpClient httpClient, String url, DocumentLocation header, boolean useWARC)
 			throws IOException {
 		// check if we already have that file
         File destFile = Utils.computeDownloadFileName(url, MimeTypes.toExtension(header.getMime()));
-        if(destFile.exists()) {
-            log.info("File " + destFile + " already downloaded");
+        // also look in the directory where we store duplicates
+        File backupFile = Utils.computeDownloadFileName(BACKUP_DIR, url, MimeTypes.toExtension(header.getMime()));
+        if(destFile.exists() || backupFile.exists()) {
+            log.info("File " + destFile + " already downloaded: " + destFile.exists() + "/" + backupFile.exists());
             return null;
         }
 
