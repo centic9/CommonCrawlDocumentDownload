@@ -4,7 +4,6 @@ plugins {
 }
 
 apply plugin: 'java'
-apply plugin: 'eclipse'
 apply plugin: 'jacoco'
 apply plugin: 'maven'
 apply plugin: 'signing'
@@ -34,31 +33,6 @@ dependencies {
 	testCompile "junit:junit:4.12"
 	testCompile 'org.dstadler:commons-test:1.0.0.15'
 }
-
-// work around unnecessary timestamp in generated file which always causes dirty files in version control
-// https://issues.gradle.org/browse/GRADLE-2293
-task adjustEclipseSettingsFile {
-    doLast {
-        ant.replaceregexp(match: '^#.*', replace: '', flags: 'g', byline: true) {
-            fileset(dir: project.projectDir, includes: '.settings/org.eclipse.jdt.core.prefs,.settings/com.google.gdt.eclipse.core.prefs')
-        }
-    }
-}
-task sortEclipseSettingsFile {
-    doLast {
-        new File(project.projectDir, '.settings/org.eclipse.jdt.core.prefs').with {
-            it.text = it.readLines().findAll { it }.sort().join('\n')
-        }
-        new File(project.projectDir, '.classpath').with { it.text = it.readLines().findAll { it }.unique().join('\n') }
-        File file = new File(project.projectDir, '.settings/com.google.gdt.eclipse.core.prefs')
-        if (file.exists()) {
-            file.with { it.text = it.readLines().findAll { it }.sort().join('\n') }
-        }
-        ant.fixcrlf(srcDir: '.settings', eol: 'lf')
-    }
-}
-eclipseJdt.finalizedBy adjustEclipseSettingsFile
-eclipseJdt.finalizedBy sortEclipseSettingsFile
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.6'
