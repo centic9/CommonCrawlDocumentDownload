@@ -9,6 +9,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.http.ConnectionClosedException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -73,6 +74,18 @@ public class Utils {
                     long blockSize = LittleEndian.getUInt(header, 0);
                     long indexBlockCount = LittleEndian.getUInt(header, 4);
                     log.info("Header: blockSize " + blockSize + ", indexBlockCount: " + indexBlockCount);
+
+                    // JDK 11: abort and close here to be able to return successfully even when the expeted exception
+                    // is thrown
+                    httpGet.abort();
+                    try {
+                        stream.close();
+                    } catch (ConnectionClosedException e) {
+                        // ignore exception thrown because of the aborting
+                        if(!e.getMessage().contains("Premature end of Content-Length")) {
+                            throw e;
+                        }
+                    }
 
                     return ImmutablePair.of(blockSize, HEADER_BLOCK_SIZE + (blockSize * indexBlockCount));
                 } finally {
