@@ -89,6 +89,10 @@ locally, which will avoid using too much disk-space
 * https://github.com/ikreymer/pywb
 * http://decalage.info/download_mso_files
 
+### Release it
+
+    ./gradlew release closeAndReleaseRepository
+
 ### Licensing
 
 * CommonCrawlDocumentDownload is licensed under the [BSD 2-Clause License].
