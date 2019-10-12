@@ -35,9 +35,9 @@ public class DownloadURLIndex {
     private static final int END_INDEX = 299;
 
     private static final String URL_FORMAT =
-    		"https://commoncrawl.s3.amazonaws.com/cc-index/collections/" + CURRENT_CRAWL + "/indexes/cdx-%s.gz";
+    		"https://commoncrawl.s3.amazonaws.com/cc-index/collections/" + CURRENT_CRAWL + "/indexes/cdx-%05d.gz";
 
-	private static final JsonFactory f = new JsonFactory();
+	private static final JsonFactory JSON_FACTORY = new JsonFactory();
 
     private static final MappedCounter<String> FOUND_MIME_TYPES = new MappedCounterImpl<>();
 
@@ -46,10 +46,6 @@ public class DownloadURLIndex {
     public static void main(String[] args) throws Exception {
 		LoggerFactory.initLogging();
 
-		run();
-    }
-
-	public static void run() throws IOException, InterruptedException {
 		log.info("Processing index files starting from index " + index + " with pattern " + URL_FORMAT);
 		for(; index <= END_INDEX; index++) {
 			try {
@@ -69,8 +65,7 @@ public class DownloadURLIndex {
 	}
 
 	private static void handleCDXFile(CloseableHttpClient httpClient, int index) throws IOException {
-		String indexStr = String.format("%05d", index);
-		String url = String.format(URL_FORMAT, indexStr);
+		String url = String.format(URL_FORMAT, index);
 
 		log.info("Loading file " + index + " from " + url);
 
@@ -130,7 +125,6 @@ public class DownloadURLIndex {
 				handleJSON(json);
 
 				count++;
-				//System.out.print('.');
 				if(count % 100000 == 0 || lastLog < (System.currentTimeMillis() - 10000)) {
 					log.info("File " + index + ": " + count + " lines, compressed bytes: " + content.getCount() + " of " + length +
 							"(" + String.format("%.2f", ((double)content.getCount())/length*100) + "%), bytes: " + uncompressedStream.getCount() + ": " +
@@ -142,7 +136,7 @@ public class DownloadURLIndex {
 	}
 
     private static void handleJSON(String json) throws IOException {
-    	try (JsonParser jp = f.createParser(json)) {
+    	try (JsonParser jp = JSON_FACTORY.createParser(json)) {
 	    	while(jp.nextToken() != JsonToken.END_OBJECT) {
 	    		if(jp.getCurrentToken() == JsonToken.VALUE_STRING) {
 	    			/* JSON: url, mime, status, digest, length, offset, filename */
