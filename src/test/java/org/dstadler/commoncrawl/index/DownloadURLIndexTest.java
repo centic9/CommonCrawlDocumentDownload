@@ -153,7 +153,8 @@ public class DownloadURLIndexTest {
 	}
 
 
-    @Ignore("Not an actual unit-test...")
+    @SuppressWarnings("UnstableApiUsage")
+	@Ignore("Not an actual unit-test...")
 	@Test
 	public void testReadFromFile() throws Exception {
 		File file = new File("cdx-00000.gz");

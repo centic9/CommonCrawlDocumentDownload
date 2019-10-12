@@ -97,6 +97,7 @@ public class DownloadURLIndex {
 				FOUND_MIME_TYPES.sortedMap().toString().replace(",", "\n"), "UTF-8");
 	}
 
+	@SuppressWarnings("UnstableApiUsage")
 	protected static void handleInputStream(String url, InputStream stream, int index, long length)
 			throws IOException {
 		try (CountingInputStream content = new CountingInputStream(stream);

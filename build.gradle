@@ -32,7 +32,10 @@ dependencies {
     compile 'log4j:log4j:1.2.17'
     compile 'org.jsoup:jsoup:1.11.3'
 
-	testCompile "junit:junit:4.12"
+    // for @Nullable
+    compile 'com.google.code.findbugs:jsr305:3.0.1'
+
+    testCompile "junit:junit:4.12"
 	testCompile 'org.dstadler:commons-test:1.0.0.18'
 }
 
