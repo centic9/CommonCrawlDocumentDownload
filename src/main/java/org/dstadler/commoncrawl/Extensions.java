@@ -24,11 +24,13 @@ public class Extensions {
 
         // Powerpoint
         ".ppt",
+        ".pot",
         ".pptx",
         ".pptm",
         ".ppsm",
         ".ppsx",
         ".thmx",
+        ".potx",
 
         // Outlook
         ".msg",
