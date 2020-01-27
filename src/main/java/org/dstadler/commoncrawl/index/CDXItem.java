@@ -59,6 +59,8 @@ public class CDXItem {
 						// ignored for now
 					} else if ("truncated".equals(name)) {
 						// ignored for now
+					} else if ("redirect".equals(name)) {
+						// ignored for now
 	    			} else {
 	    				throw new IllegalStateException("Unknown field found: " + name);
 	    			}
