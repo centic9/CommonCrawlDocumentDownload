@@ -1,14 +1,16 @@
-# Use xenial to still have OpenJDK 8 available
-dist: xenial
+dist: bionic
 language: java
 jdk:
   - openjdk8
   - openjdk11
- 
-before_install:
- - chmod +x gradlew
 
-install: ./gradlew checkSnapshotDependencies compileJava
+before_install:
+ - chmod +x gradlew gradle/wrapper/gradle-wrapper.jar
+
+install: 
+- gradle wrapper
+- ./gradlew checkSnapshotDependencies compileJava
+
 script: ./gradlew check jacocoTestReport javadoc javadocJar sourcesJar checkSnapshotDependencies
 
 after_failure:
