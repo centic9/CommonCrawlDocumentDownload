@@ -11,14 +11,14 @@ apply plugin: 'signing'
 apply plugin: 'io.codearte.nexus-staging'
 
 sourceCompatibility = 1.8
-group = "org.dstadler"
-archivesBaseName = "commoncrawldownload"
+group = 'org.dstadler'
+archivesBaseName = 'commoncrawldownload'
 
 repositories {
 	mavenCentral()
 }
 
-configurations.all { 
+configurations.all {
 	all*.exclude group: 'org.apache.hadoop'		// not found on Maven Central?
 }
 
@@ -35,7 +35,7 @@ dependencies {
     // for @Nullable
     compile 'com.google.code.findbugs:jsr305:3.0.1'
 
-    testCompile "junit:junit:4.12"
+    testCompile 'junit:junit:4.13'
 	testCompile 'org.dstadler:commons-test:1.0.0.18'
 }
 
@@ -82,11 +82,11 @@ signing {
 }
 
 //provide defaults so we do not need to specify them always
-if (!project.hasProperty("ossrhUsername")) {
-    ext.ossrhUsername = ""
+if (!project.hasProperty('ossrhUsername')) {
+    ext.ossrhUsername = ''
 }
-if (!project.hasProperty("ossrhPassword")) {
-    ext.ossrhPassword = ""
+if (!project.hasProperty('ossrhPassword')) {
+    ext.ossrhPassword = ''
 }
 
 uploadArchives {
@@ -95,18 +95,18 @@ uploadArchives {
         //noinspection GrUnresolvedAccess
         beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-        repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+        repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
         authentication(userName: ossrhUsername, password: ossrhPassword)
       }
 
-      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+      snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
         authentication(userName: ossrhUsername, password: ossrhPassword)
       }
 
     pom.project {
         name 'CommonCrawl Document Download'
         packaging 'jar'
-        // optionally artifactId can be defined here 
+        // optionally artifactId can be defined here
         description 'Common utilities I find useful in many of my projects.'
 				url 'https://github.com/centic9/CommonCrawlDocumentDownload'
 
