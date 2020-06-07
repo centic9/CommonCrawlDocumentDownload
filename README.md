@@ -97,4 +97,4 @@ locally, which will avoid using too much disk-space
 
 * CommonCrawlDocumentDownload is licensed under the [BSD 2-Clause License].
 
-[BSD 2-Clause License]: http://www.opensource.org/licenses/bsd-license.php
+[BSD 2-Clause License]: https://www.opensource.org/licenses/bsd-license.php
