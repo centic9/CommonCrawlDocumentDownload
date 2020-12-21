@@ -13,6 +13,7 @@ import java.util.Date;
 
 import org.apache.commons.io.IOUtils;
 // Apache HTTP Components classes
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
@@ -33,7 +34,7 @@ import org.jsoup.nodes.Document;
 
 /**
  * An entry in an ARC (Internet Archive) data file.
- * 
+ *
  * Note: This file was taken from https://github.com/commoncrawl/commoncrawl-examples/blob/master/src/java/org/commoncrawl/hadoop/mapred/ArcRecord.java
  * Changes include removing dependency on Hadoop and using IOUtils.read() in order to read all data in all cases
  *
@@ -148,7 +149,7 @@ public class ArcRecord
 
   /**
    * Parses and sets the ARC record header fields.
-   * 
+   *
    * Currently, this method expects the ARC record header string to contain
    * the following fields, in order, separated by space:
    * <ul>
@@ -243,7 +244,7 @@ public class ArcRecord
    */
   @Override
 public String toString() {
-    return this._url + " - " + this._archiveDate.toString() + " - " + this._contentType;
+    return this._url + " - " + DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.format(this._archiveDate) + " - " + this._contentType;
   }
 
   /**
@@ -526,8 +527,8 @@ public String toString() {
     if (_payload.length > 0 && _payload[_payload.length-1]=='\n') {
       entityLength--;
     }
-    InputStreamEntity entity = new InputStreamEntity(new ByteArrayInputStream(this._payload, end, entityLength), entityLength);
-    entity.setContentType(this._httpResponse.getFirstHeader("Content-Type"));
+    InputStreamEntity entity = new InputStreamEntity(new ByteArrayInputStream(this._payload, end, entityLength),
+            entityLength, ContentType.create(this._httpResponse.getFirstHeader("Content-Type").getValue()));
     entity.setContentEncoding(this._httpResponse.getFirstHeader("Content-Encoding"));
     this._httpResponse.setEntity(entity);
 
@@ -554,22 +555,22 @@ public String toString() {
       this.getHttpResponse();
     }
     catch (HttpException ex) {
-      LOG.error("Unable to parse HTML: Exception during HTTP response parsing", ex); 
+      LOG.error("Unable to parse HTML: Exception during HTTP response parsing", ex);
       return null;
     }
 
     if (this._httpResponse == null) {
-      LOG.error("Unable to parse HTML: Exception during HTTP response parsing"); 
+      LOG.error("Unable to parse HTML: Exception during HTTP response parsing");
       return null;
     }
 
     if (this._httpResponse.getEntity() == null) {
-      LOG.error("Unable to parse HTML: No HTTP response entity found"); 
+      LOG.error("Unable to parse HTML: No HTTP response entity found");
       return null;
     }
 
     if (!this._contentType.toLowerCase().contains("html")) {
-      LOG.warn("Unable to parse HTML: Content is not HTML"); 
+      LOG.warn("Unable to parse HTML: Content is not HTML");
       return null;
     }
 

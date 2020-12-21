@@ -1,0 +1,182 @@
+#
+# This file contains API signatures which should not be called.
+#
+# See https://github.com/policeman-tools/forbidden-apis/ for a description of this file
+#
+
+@ignoreMissingClasses
+@defaultMessage Forbidden APIs
+
+java.lang.System#gc() @ Please do not try to stop the world
+java.lang.Throwable#printStackTrace() @ Please use Logger for reporting exceptions
+# these are usually ok: java.lang.Throwable#printStackTrace(java.io.PrintStream) @ Please use Logger for reporting exceptions
+# these are usually ok: java.lang.Throwable#printStackTrace(java.io.PrintWriter) @ Please use Logger for reporting exceptions
+
+# Too many occurrences currently
+# Locale related interfaces which we want to avoid to not have code which depends on the locale of the current machine
+java.util.Locale#getDefault() @ Do not use methods that depend on the current Locale, either use Locale.ROOT or let the user define the local
+java.util.Locale#setDefault(java.util.Locale) @ Do not use methods that depend on the current Locale, either use Locale.ROOT or let the user define the local
+java.util.TimeZone#getDefault() @ Do not use methods that depend on the current Locale, either use Locale.ROOT or let the user define the local
+java.util.Date#toString() @ Do not use methods that depend on the current Locale, either use Locale.ROOT or let the user define the local
+
+# Disallow reflection on private object fields/methods
+java.lang.Class#getDeclaredClasses() @ Do not violate java's access system: Use getClasses() instead
+java.lang.Class#getDeclaredConstructor(java.lang.Class[]) @ Do not violate java's access system: Use getConstructor() instead
+java.lang.Class#getDeclaredConstructors() @ Do not violate java's access system: Use getConstructors() instead
+java.lang.Class#getDeclaredField(java.lang.String) @ Do not violate java's access system: Use getField() instead
+java.lang.Class#getDeclaredFields() @ Do not violate java's access system: Use getFields() instead
+java.lang.Class#getDeclaredMethod(java.lang.String, java.lang.Class[]) @ Do not violate java's access system: Use getMethod() instead
+java.lang.Class#getDeclaredMethods() @ Do not violate java's access system: Use getMethods() instead
+
+# too many occurrences for now: java.text.DecimalFormatSymbols#<init>() @ use DecimalFormatSymbols.getInstance()
+# too many occurrences for now: java.text.DecimalFormatSymbols#<init>(java.util.Locale) @ use DecimalFormatSymbols.getInstance()
+
+# the following are taken from the Elasticsearch source at https://github.com/elastic/elasticsearch/tree/master/buildSrc/src/main/resources/forbidden
+
+# too many cases to fix right now
+@defaultMessage Convert to URI
+java.net.URL#getPath()
+java.net.URL#getFile()
+
+@defaultMessage Usage of getLocalHost is discouraged
+java.net.InetAddress#getLocalHost()
+
+# some occurrences, we should discuss if want to rely on the global temporary directory: @defaultMessage It is usually better to specify a location for the temp file/directory and not rely on the default temporary directory
+java.nio.file.Files#createTempDirectory(java.lang.String,java.nio.file.attribute.FileAttribute[])
+java.nio.file.Files#createTempFile(java.lang.String,java.lang.String,java.nio.file.attribute.FileAttribute[])
+
+# Some violations exist, we have not decided yet if we want to avoid this completely: @defaultMessage Don't use java serialization
+java.io.ObjectOutputStream
+java.io.ObjectOutput
+java.io.ObjectInputStream
+java.io.ObjectInput
+
+@defaultMessage Resolve hosts explicitly to the address(es) you want with InetAddress.
+java.net.InetSocketAddress#<init>(java.lang.String,int)
+java.net.Socket#<init>(java.lang.String,int)
+java.net.Socket#<init>(java.lang.String,int,java.net.InetAddress,int)
+
+@defaultMessage Don't bind to wildcard addresses. Be specific.
+java.net.DatagramSocket#<init>()
+java.net.DatagramSocket#<init>(int)
+java.net.InetSocketAddress#<init>(int)
+java.net.MulticastSocket#<init>()
+java.net.MulticastSocket#<init>(int)
+java.net.ServerSocket#<init>(int)
+java.net.ServerSocket#<init>(int,int)
+
+@defaultMessage use NetworkAddress format/formatAddress to print IP or IP+ports
+java.net.InetAddress#toString()
+java.net.InetAddress#getHostAddress()
+java.net.Inet4Address#getHostAddress()
+java.net.Inet6Address#getHostAddress()
+java.net.InetSocketAddress#toString()
+
+@defaultMessage avoid DNS lookups by accident: if you have a valid reason, then @SuppressWarnings with that reason so its completely clear
+java.net.InetAddress#getHostName()
+java.net.InetAddress#getCanonicalHostName()
+
+java.net.InetSocketAddress#getHostName() @ Use getHostString() instead, which avoids a DNS lookup
+
+@defaultMessage this method needs special permission
+java.lang.Thread#getAllStackTraces()
+
+@defaultMessage Avoid unchecked warnings by using Collections#empty(List|Map|Set) methods. You might need to use the following notation to make type-inference work: Collections.<SyntheticDeviceNetworkConditionDto>emptyList()
+java.util.Collections#EMPTY_LIST
+java.util.Collections#EMPTY_MAP
+java.util.Collections#EMPTY_SET
+
+@defaultMessage spawns threads with vague names; use a custom thread factory and name threads so that you can tell (by its name) which executor it is associated with
+java.util.concurrent.Executors#newFixedThreadPool(int)
+java.util.concurrent.Executors#newSingleThreadExecutor()
+java.util.concurrent.Executors#newCachedThreadPool()
+java.util.concurrent.Executors#newSingleThreadScheduledExecutor()
+java.util.concurrent.Executors#newScheduledThreadPool(int)
+java.util.concurrent.Executors#defaultThreadFactory()
+java.util.concurrent.Executors#privilegedThreadFactory()
+
+java.lang.Character#codePointBefore(char[],int) @ Implicit start offset is error-prone when the char[] is a buffer and the first chars are random chars
+java.lang.Character#codePointAt(char[],int) @ Implicit end offset is error-prone when the char[] is a buffer and the last chars are random chars
+
+@defaultMessage Only use wait / notify when really needed, try to use concurrency primitives, latches or callbacks instead.
+java.lang.Object#wait()
+java.lang.Object#wait(long)
+java.lang.Object#wait(long,int)
+java.lang.Object#notify()
+java.lang.Object#notifyAll()
+
+
+@defaultMessage Don't use MethodHandles in slow ways, don't be lenient in tests.
+java.lang.invoke.MethodHandle#invoke(java.lang.Object[])
+java.lang.invoke.MethodHandle#invokeWithArguments(java.lang.Object[])
+java.lang.invoke.MethodHandle#invokeWithArguments(java.util.List)
+
+@defaultMessage non-public internal runtime class
+com.oracle.webservices.internal.**
+com.oracle.xmlns.internal.**
+com.sun.activation.registries.**
+com.sun.browser.**
+com.sun.corba.se.**
+com.sun.glass.**
+com.sun.imageio.**
+com.sun.istack.internal.**
+com.sun.javafx.**
+com.sun.jmx.**
+com.sun.media.**
+com.sun.media.sound.**
+com.sun.naming.internal.**
+com.sun.openpisces.**
+com.sun.org.apache.bcel.internal.**
+com.sun.org.apache.regexp.internal.**
+com.sun.org.apache.xalan.internal.extensions.**
+com.sun.org.apache.xalan.internal.lib.**
+com.sun.org.apache.xalan.internal.res.**
+com.sun.org.apache.xalan.internal.templates.**
+com.sun.org.apache.xalan.internal.utils.**
+com.sun.org.apache.xalan.internal.xslt.**
+com.sun.org.apache.xalan.internal.xsltc.cmdline.**
+com.sun.org.apache.xalan.internal.xsltc.compiler.**
+com.sun.org.apache.xalan.internal.xsltc.trax.**
+com.sun.org.apache.xalan.internal.xsltc.util.**
+com.sun.org.apache.xerces.internal.**
+com.sun.org.apache.xml.internal.res.**
+com.sun.org.apache.xml.internal.security.**
+com.sun.org.apache.xml.internal.serializer.utils.**
+com.sun.org.apache.xml.internal.utils.**
+com.sun.org.apache.xpath.internal.**
+com.sun.org.glassfish.**
+com.sun.pisces.**
+com.sun.prism.**
+com.sun.proxy.**
+com.sun.scenario.**
+com.sun.t2k.**
+com.sun.webkit.**
+com.sun.xml.internal.**
+jdk.internal.**
+jdk.management.resource.internal.**
+jdk.nashorn.internal.**
+jdk.nashorn.tools.**
+oracle.jrockit.jfr.**
+org.jcp.xml.dsig.internal.**
+sun.**
+
+@defaultMessage Please do not terminate the application
+java.lang.System#exit(int)
+java.lang.Runtime#exit(int)
+java.lang.Runtime#halt(int)
+
+@defaultMessage Treat system properties as immutable
+java.lang.System#setProperties(java.util.Properties)
+# some uses: java.lang.System#setProperty(java.lang.String,java.lang.String)
+java.lang.System#clearProperty(java.lang.String)
+
+@defaultMessage Globally discouraged functionality based on Architecture Meeting discussions/decisions, see https://dev-wiki.dynatrace.org/display/ruxit/guidelines+for+java+8+language+features
+java.util.Collection#parallelStream() @parallelStream internally starts additional thread pools/threads in an uncontrollable way
+
+@defaultMessage Do not include Assertions from junit, mockito or assertj in Production code
+org.assertj.core.api.*
+org.assertj.guava.api.*
+org.junit.*
+junit.*
+org.mockito.*
+org.powermock.*
