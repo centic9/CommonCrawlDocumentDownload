@@ -91,9 +91,16 @@ locally, which will avoid using too much disk-space
 
 ### Release it
 
-    ./gradlew release closeAndReleaseRepository
+    ./gradlew --console=plain release && ./gradlew closeAndReleaseRepository
+    
+* This should automatically release the new version on MavenCentral
+* Afterwards go to the [Github releases page](https://github.com/centic9/commons-dost/releases) and add release-notes
 
-### Licensing
+## Support this project
+
+If you find this library useful and would like to support it, you can [Sponsor the author](https://github.com/sponsors/centic9)
+
+## Licensing
 
 * CommonCrawlDocumentDownload is licensed under the [BSD 2-Clause License].
 
