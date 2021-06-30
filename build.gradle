@@ -39,7 +39,7 @@ forbiddenApisMain {
 }
 
 dependencies {
-    implementation 'org.dstadler:commons-dost:1.0.0.32'
+    implementation 'org.dstadler:commons-dost:1.0.0.33'
     implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 
     // version '0.20.2-cdh3u4' is referenced by webarchive-commons, but "vanished"...
