@@ -10,6 +10,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.io.IOUtils;
 // Apache HTTP Components classes
@@ -24,11 +26,8 @@ import org.apache.http.impl.io.AbstractSessionInputBuffer;
 import org.apache.http.impl.io.DefaultHttpResponseParser;
 import org.apache.http.message.BasicLineParser;
 import org.apache.http.params.BasicHttpParams;
-// Hadoop classes
-//import org.apache.hadoop.io.Writable;
-// Apache log4j classes
-import org.apache.log4j.Logger;
 // Jsoup classes
+import org.dstadler.commons.logging.jdk.LoggerFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -45,7 +44,7 @@ public class ArcRecord
     //implements Writable
     {
 
-  private static final Logger LOG = Logger.getLogger(ArcRecord.class);
+  private final static Logger LOG = LoggerFactory.make();
 
   // ARC v1 metadata
   private String _url;
@@ -122,7 +121,7 @@ public class ArcRecord
       throws IOException {
 
     if (in == null) {
-      LOG.error("ArcRecord cannot be created from NULL/missing input stream.");
+      LOG.severe("ArcRecord cannot be created from NULL/missing input stream.");
       return false;
     }
 
@@ -140,7 +139,7 @@ public class ArcRecord
       throw ex;
     }
     catch (Exception ex) {
-      LOG.error("Exception thrown while parsing ARC record", ex);
+      LOG.log(Level.SEVERE, "Exception thrown while parsing ARC record", ex);
       return false;
     }
 
@@ -186,7 +185,7 @@ public class ArcRecord
     this._ipAddress      =  metadata[1];
     this._archiveDate    =  format.parse(metadata[2]);
     this._contentType    =  metadata[3];
-    this._contentLength  = new Integer(metadata[4]);
+    this._contentLength  = Integer.valueOf(metadata[4]);
   }
 
   /**
@@ -195,7 +194,7 @@ public class ArcRecord
    * @param in An input stream positioned at the start of the ARC record payload.
    */
   public void setPayload(InputStream in)
-      throws IllegalArgumentException, ParseException, IOException {
+      throws IllegalArgumentException, IOException {
 
     if (in == null) {
         throw new IllegalArgumentException("ArcRecord cannot be created from NULL/missing input stream.");
@@ -208,7 +207,7 @@ public class ArcRecord
     int n = IOUtils.read(in, this._payload, 0, this._payload.length);
 
     if (n < this._payload.length) {
-      LOG.warn("Expecting "+bufferSize+" bytes in ARC record payload, found "+n+" bytes.  Performing array copy.");
+      LOG.warning("Expecting "+bufferSize+" bytes in ARC record payload, found "+n+" bytes.  Performing array copy.");
       this._payload = Arrays.copyOf(this._payload, n);
     }
 
@@ -222,7 +221,7 @@ public class ArcRecord
 
   public void addToPayload(byte[] data, int length) {
 
-    LOG.warn("Content Length must have been incorrect - someone needed to add more data to the payload.");
+    LOG.warning("Content Length must have been incorrect - someone needed to add more data to the payload.");
 
     if (this._payload == null) {
       this._payload = Arrays.copyOf(data, length);
@@ -489,11 +488,11 @@ public String toString() {
     }
 
     if (this._payload == null) {
-      LOG.error("Unable to parse HTTP response: Payload has not been set"); return null;
+      LOG.severe("Unable to parse HTTP response: Payload has not been set"); return null;
     }
 
     if (this._url != null && !this._url.startsWith("http://") && !this._url.startsWith("https://")) {
-      LOG.error("Unable to parse HTTP response: URL protocol is not HTTP"); return null;
+      LOG.severe("Unable to parse HTTP response: URL protocol is not HTTP"); return null;
     }
 
     this._httpResponse = null;
@@ -502,7 +501,7 @@ public String toString() {
     int end = this._searchForCRLFCRLF(this._payload);
 
     if (end == -1) {
-      LOG.error("Unable to parse HTTP response: End of HTTP headers not found"); return null;
+      LOG.severe("Unable to parse HTTP response: End of HTTP headers not found"); return null;
     }
 
     // Parse the HTTP status line and headers
@@ -517,7 +516,7 @@ public String toString() {
     this._httpResponse = parser.parse();
 
     if (this._httpResponse == null) {
-      LOG.error("Unable to parse HTTP response"); return null;
+      LOG.severe("Unable to parse HTTP response"); return null;
     }
 
     // Set the reset of the payload as the HTTP entity.  Use an InputStreamEntity
@@ -546,7 +545,7 @@ public String toString() {
       throws IOException {
 
     if (this._url == null) {
-      LOG.error("Unable to parse HTML: URL from ARC header has not been set");
+      LOG.severe("Unable to parse HTML: URL from ARC header has not been set");
       return null;
     }
 
@@ -555,22 +554,22 @@ public String toString() {
       this.getHttpResponse();
     }
     catch (HttpException ex) {
-      LOG.error("Unable to parse HTML: Exception during HTTP response parsing", ex);
+      LOG.log(Level.SEVERE, "Unable to parse HTML: Exception during HTTP response parsing", ex);
       return null;
     }
 
     if (this._httpResponse == null) {
-      LOG.error("Unable to parse HTML: Exception during HTTP response parsing");
+      LOG.severe("Unable to parse HTML: Exception during HTTP response parsing");
       return null;
     }
 
     if (this._httpResponse.getEntity() == null) {
-      LOG.error("Unable to parse HTML: No HTTP response entity found");
+      LOG.severe("Unable to parse HTML: No HTTP response entity found");
       return null;
     }
 
     if (!this._contentType.toLowerCase().contains("html")) {
-      LOG.warn("Unable to parse HTML: Content is not HTML");
+      LOG.warning("Unable to parse HTML: Content is not HTML");
       return null;
     }
 
@@ -593,4 +592,3 @@ public String toString() {
     return Jsoup.parse(this._httpResponse.getEntity().getContent(), charset, this._url);
   }
 }
-
