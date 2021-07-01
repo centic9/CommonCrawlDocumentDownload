@@ -23,17 +23,26 @@ amount of time and lots of disk-space if the data is stored locally!
 
 ### Run it
 
+#### Fetch a list of interesting documents
+
     ./gradlew lookupURLs
     
-Reads the current Common Crawl URL index data and extracts all URLs for interesting mime-types or file extensions, stores the URLs in a file called `commoncrawl-CC-MAIN-<year>-<crawl>.txt`
+Reads the current Common Crawl URL index data and extracts all URLs for 
+interesting mime-types or file extensions, stores the URLs in a file 
+called `commoncrawl-CC-MAIN-<year>-<crawl>.txt`
         
+#### Download documents
+
     ./gradlew downloadDocuments
 
-Uses the URLs listed in `commoncrawl-CC-MAIN-<year>-<crawl>.txt` to download the documents from the Common Crawl
+Uses the URLs listed in `commoncrawl-CC-MAIN-<year>-<crawl>.txt` to 
+download the documents from the Common Crawl
 
+#### Deprecated: Download documents from the old-index
     ./gradlew downloadOldIndex
 
-Starts downloading the URL index files from the old index and looks at each URL, downloading binary data from the common crawl archives.
+Starts downloading the URL index files from the old index and looks 
+at each URL, downloading binary data from the common crawl archives.
 
 ## The longer stuff
 
