@@ -97,6 +97,11 @@ artifacts {
 }
 
 signing {
+	setRequired {
+		// signing is only required if this is a release version
+		// and the artifacts are to be published
+		gradle.taskGraph.allTasks.any { it instanceof PublishToMavenRepository }
+	}
     sign configurations.archives
 }
 
