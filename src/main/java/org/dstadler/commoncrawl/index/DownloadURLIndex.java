@@ -95,10 +95,10 @@ public class DownloadURLIndex {
 	@SuppressWarnings("UnstableApiUsage")
 	protected static void handleInputStream(String url, InputStream stream, int index, long length)
 			throws IOException {
-		try (CountingInputStream content = new CountingInputStream(stream);
+		// use buffered reading to read large chunks of data at once
+		try (CountingInputStream content = new CountingInputStream(new BufferedInputStream(stream, 10*1024*1024));
 			CountingInputStream uncompressedStream = new CountingInputStream(new GZIPMembersInputStream(content));
-			BufferedReader reader = new BufferedReader(
-				new InputStreamReader(uncompressedStream), 1024*1024)) {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(uncompressedStream), 1024*1024)) {
 			int count = 0;
 			long lastLog = System.currentTimeMillis();
 			while(true) {
@@ -116,6 +116,7 @@ public class DownloadURLIndex {
 					break;
 				}
 
+				// 107,42,163,148)/dewalink/sarangkartu 20211204015133 {"url": "http://148.163.42.107/dewalink/sarangkartu/", "mime": "text/html", "mime-detected": "text/html", "status": "200", "digest": "VVYPAWNGX5TLK5GHYY5GBEQZ2535FWRJ", "length": "16889", "offset": "138135", "filename": "crawl-data/CC-MAIN-2021-49/segments/1637964362923.11/warc/CC-MAIN-20211204003045-20211204033045-00629.warc.gz", "charset": "UTF-8", "languages": "ind"}
 				int endOfUrl = line.indexOf(' ');
 				Preconditions.checkState(endOfUrl != -1, "could not find end of url");
 				int endOfTimestamp = line.indexOf(' ', endOfUrl+1);
@@ -139,7 +140,7 @@ public class DownloadURLIndex {
     	try (JsonParser jp = JSON_FACTORY.createParser(json)) {
 	    	while(jp.nextToken() != JsonToken.END_OBJECT) {
 	    		if(jp.getCurrentToken() == JsonToken.VALUE_STRING) {
-	    			/* JSON: url, mime, status, digest, length, offset, filename */
+	    			/* JSON: url, mime, mime-detected, status, digest, length, offset, filename, charset, language */
 		    		if("mime".equals(jp.getCurrentName())) {
 		    			String mimeType = jp.getValueAsString().toLowerCase();
 						FOUND_MIME_TYPES.addInt(mimeType, 1);
