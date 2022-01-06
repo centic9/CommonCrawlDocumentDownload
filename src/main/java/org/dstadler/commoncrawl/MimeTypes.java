@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 /**
  * A list of patterns of mimetypes that we are interested in.
- * 
+ *
  *
  * @author dominik.stadler
  */
@@ -24,9 +24,9 @@ public class MimeTypes {
 
     	// application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
     	MIME_TYPES.add(Pair.of(Pattern.compile(".*spreadsheetml.*"), ".xlsx"));
-    	// 
+    	//
     	MIME_TYPES.add(Pair.of(Pattern.compile("application/vnd.ms-excel.addin.macroEnabled.12"), ".xlsm"));
-    	// 
+    	//
     	MIME_TYPES.add(Pair.of(Pattern.compile("application/vnd.ms-excel.sheet.binary.macroEnabled.12"), ".xlsb"));
         // application/msexcel, application/vnd.ms-excel
         MIME_TYPES.add(Pair.of(Pattern.compile(".*(?:msexcel|ms-excel).*"), ".xls"));
@@ -46,11 +46,11 @@ public class MimeTypes {
 
         // application/vnd.ms-tnef
     	MIME_TYPES.add(Pair.of(Pattern.compile(".*ms-tnef.*"), ".msg"));
-    	
+
     	// application/vnd.openxmlformats-officedocument.drawingml.chart+xml
         // application/vnd.openxmlformats-officedocument.vmlDrawing
     	MIME_TYPES.add(Pair.of(Pattern.compile(".*(?:drawingml|vmlDrawing).*"), ".dwg"));
-    	
+
         // Visio 2013
         MIME_TYPES.add(Pair.of(Pattern.compile("application/vnd.ms-visio.drawing.main\\+xml"), ".vsdx"));
         MIME_TYPES.add(Pair.of(Pattern.compile("application/vnd.ms-visio.template.main\\+xml"), ".vstx"));
@@ -67,38 +67,45 @@ public class MimeTypes {
         // application/x-mspublisher
         MIME_TYPES.add(Pair.of(Pattern.compile("application/x-mspublisher"), ".pub"));
 
-        MIME_TYPES.add(Pair.of(Pattern.compile("(?:application/vnd.openxmlformats-officedocument|" +
-                "application/x-tika-ooxml|" +
-                "application/x-tika-ooxml-protected)"), ".ooxml"));
+        MIME_TYPES.add(Pair.of(Pattern.compile("application/" +
+				"(?:vnd.openxmlformats-officedocument|" +
+                "x-tika-ooxml|" +
+                "x-tika-ooxml-protected)"), ".ooxml"));
         MIME_TYPES.add(Pair.of(Pattern.compile("application/x-tika-msoffice"), ".ole2"));
 
 //    	MIME_TYPE_MATCHER.put(Pattern.compile(".*.*"));
-    	
+
     	/*
-vnd.openxmlformats-officedocument.custom-properties+xml 	application/vnd.openxmlformats-officedocument.custom-properties+xml 	
-vnd.openxmlformats-officedocument.customXmlProperties+xml 	application/vnd.openxmlformats-officedocument.customXmlProperties+xml 	
-vnd.openxmlformats-officedocument.drawing+xml 	application/vnd.openxmlformats-officedocument.drawing+xml 	
-vnd.openxmlformats-officedocument.extended-properties+xml 	application/vnd.openxmlformats-officedocument.extended-properties+xml 	
-vnd.openxmlformats-officedocument.theme+xml 	application/vnd.openxmlformats-officedocument.theme+xml 	
-vnd.openxmlformats-officedocument.themeOverride+xml 	application/vnd.openxmlformats-officedocument.themeOverride+xml 	 	
-vnd.openxmlformats-package.core-properties+xml 	application/vnd.openxmlformats-package.core-properties+xml 	
-vnd.openxmlformats-package.digital-signature-xmlsignature+xml 	application/vnd.openxmlformats-package.digital-signature-xmlsignature+xml 	
+vnd.openxmlformats-officedocument.custom-properties+xml 	application/vnd.openxmlformats-officedocument.custom-properties+xml
+vnd.openxmlformats-officedocument.customXmlProperties+xml 	application/vnd.openxmlformats-officedocument.customXmlProperties+xml
+vnd.openxmlformats-officedocument.drawing+xml 	application/vnd.openxmlformats-officedocument.drawing+xml
+vnd.openxmlformats-officedocument.extended-properties+xml 	application/vnd.openxmlformats-officedocument.extended-properties+xml
+vnd.openxmlformats-officedocument.theme+xml 	application/vnd.openxmlformats-officedocument.theme+xml
+vnd.openxmlformats-officedocument.themeOverride+xml 	application/vnd.openxmlformats-officedocument.themeOverride+xml
+vnd.openxmlformats-package.core-properties+xml 	application/vnd.openxmlformats-package.core-properties+xml
+vnd.openxmlformats-package.digital-signature-xmlsignature+xml 	application/vnd.openxmlformats-package.digital-signature-xmlsignature+xml
 vnd.openxmlformats-package.relationships+xml 	application/vnd.openxmlformats-package.relationships+xml
     	 */
     }
-    
+
     public static boolean matches(String mime) {
-        for(Pair<Pattern,String> entry : MIME_TYPES) {
+		// optimize to exclude most of the values before even using a regex
+		if(mime == null || !mime.startsWith("application/")) {
+			return false;
+		}
+
+		for(Pair<Pattern,String> entry : MIME_TYPES) {
             if(entry.getKey().matcher(mime).matches()) {
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     public static String toExtension(String mime) {
-    	if(mime == null || !mime.startsWith("application/")) {
+		// optimize to exclude most of the values before even using a regex
+		if(mime == null || !mime.startsWith("application/")) {
     		return "";
     	}
 
@@ -107,7 +114,7 @@ vnd.openxmlformats-package.relationships+xml 	application/vnd.openxmlformats-pac
             	return entry.getValue();
             }
         }
-        
+
         return "";
     }
 }
