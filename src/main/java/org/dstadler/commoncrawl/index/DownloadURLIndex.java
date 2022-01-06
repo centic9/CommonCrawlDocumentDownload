@@ -100,6 +100,7 @@ public class DownloadURLIndex {
 			CountingInputStream uncompressedStream = new CountingInputStream(new GZIPMembersInputStream(content));
 			BufferedReader reader = new BufferedReader(new InputStreamReader(uncompressedStream), 1024*1024)) {
 			int count = 0;
+			long start = System.currentTimeMillis();
 			long lastLog = System.currentTimeMillis();
 			while(true) {
 				String line = reader.readLine();
@@ -127,8 +128,11 @@ public class DownloadURLIndex {
 
 				count++;
 				if(count % 100000 == 0 || lastLog < (System.currentTimeMillis() - 10000)) {
+					long linesPerSecond = count/((System.currentTimeMillis() - start)/1000);
+
 					log.info("File " + index + ": " + count + " lines, compressed bytes: " + content.getCount() + " of " + length +
-							"(" + String.format("%.2f", ((double)content.getCount())/length*100) + "%), bytes: " + uncompressedStream.getCount() + ": " +
+							" (" + String.format("%.2f", ((double)content.getCount())/length*100) + "%), bytes: " + uncompressedStream.getCount() + ": " +
+							"linesPerSecond: " + linesPerSecond + ": " +
 							StringUtils.abbreviate(FOUND_MIME_TYPES.sortedMap().toString(), 95));
 					lastLog = System.currentTimeMillis();
 				}
