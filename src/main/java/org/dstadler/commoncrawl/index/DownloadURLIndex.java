@@ -148,7 +148,7 @@ public class DownloadURLIndex {
 	    			/* JSON: url, mime, mime-detected, status, digest, length, offset, filename, charset, language */
 		    		if("mime".equals(jp.getCurrentName())) {
 		    			String mimeType = jp.getValueAsString().toLowerCase();
-						FOUND_MIME_TYPES.addInt(mimeType, 1);
+						FOUND_MIME_TYPES.inc(mimeType);
 
 		    			if(MimeTypes.matches(mimeType)) {
 		    				log.info("Found-Mimetype: " + json);
