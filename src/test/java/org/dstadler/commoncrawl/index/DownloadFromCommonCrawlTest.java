@@ -75,13 +75,4 @@ public class DownloadFromCommonCrawlTest {
 			}
 		}
 	}
-
-	@Test
-	public void testReadStartPos() throws IOException {
-		try (final HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
-			Pair<Long, Long> startPos = Utils.readStartPos(client.getHttpClient());
-			assertTrue(startPos.getLeft() > 0);
-			assertTrue(startPos.getRight() > 0);
-		}
-	}
 }

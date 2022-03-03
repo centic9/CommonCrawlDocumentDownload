@@ -61,46 +61,6 @@ public class Utils {
         return response.getEntity();
     }
 
-    public static Pair<Long, Long> readStartPos(CloseableHttpClient client) throws IOException {
-        log.info("Reading header from " + INDEX_URL);
-        HttpGet httpGet = new HttpGet(INDEX_URL);
-        try (CloseableHttpResponse response = client.execute(httpGet)) {
-            HttpEntity entity = Utils.checkAndFetch(response, INDEX_URL);
-
-            try (InputStream stream = entity.getContent()) {
-                try {
-                    // try with the first few bytes initially
-                    byte[] header = new byte[HEADER_BLOCK_SIZE];
-                    IOUtils.read(stream, header);
-
-                    HexDump.dump(header, 0, System.out, 0);
-
-                    long blockSize = LittleEndian.getUInt(header, 0);
-                    long indexBlockCount = LittleEndian.getUInt(header, 4);
-                    log.info("Header: blockSize " + blockSize + ", indexBlockCount: " + indexBlockCount);
-
-                    // JDK 11: abort and close here to be able to return successfully even when the expeted exception
-                    // is thrown
-                    httpGet.abort();
-                    try {
-                        stream.close();
-                    } catch (ConnectionClosedException e) {
-                        // ignore exception thrown because of the aborting
-                        if(!e.getMessage().contains("Premature end of Content-Length")) {
-                            throw e;
-                        }
-                    }
-
-                    return ImmutablePair.of(blockSize, HEADER_BLOCK_SIZE + (blockSize * indexBlockCount));
-                } finally {
-                    // always abort reading here inside the finally block of the InputStream as
-                    // otherwise HttpClient tries to read the stream fully, which is at least 270GB...
-                    httpGet.abort();
-                }
-            }
-        }
-    }
-
     public static String reverseDomain(String host) {
         if(StringUtils.isEmpty(host)) {
             return host;
