@@ -1,5 +1,7 @@
 package org.dstadler.commoncrawl.index;
 
+import static org.dstadler.commoncrawl.Utils.COMMON_CRAWL_URL;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,7 +30,7 @@ import org.dstadler.commoncrawl.Utils;
  */
 public class TestDownloadFile {
     private static final String URL =
-    		"https://commoncrawl.s3.amazonaws.com/cc-index/collections/CC-MAIN-2015-48/indexes/cdx-00000.gz";
+			COMMON_CRAWL_URL + "cc-index/collections/CC-MAIN-2015-48/indexes/cdx-00000.gz";
 
     public static void main(String[] args) throws Exception {
     	HttpClientBuilder builder = HttpClients.custom();
@@ -53,12 +55,7 @@ public class TestDownloadFile {
     				            String line = reader.readLine();
     				            if(line == null) {
     				            	System.out.println("End of stream reached for " + URL + " after " + count + " lines, ");
-    				            	System.out.println(//stream.available() + " available, "
-    				            			//+ content.getCount() + " compressed bytes, "
-    				            			//+ stream.read() + " read, "
-    				            			//+ uncompressedStream.available() + " available, "
-    				            			//+ uncompressedStream.getCount() + " uncompressed bytes, "
-    				            			+ uncompressedStream.read() + " read, "
+    				            	System.out.println(uncompressedStream.read() + " read, "
     				            			);
 
     				            	// TODO: close the client here for now until we find out why it stops before the stream
@@ -71,10 +68,7 @@ public class TestDownloadFile {
     				            count++;
     				            //System.out.print('.');
     				            if(count % 100000 == 0) {
-    				            	System.out.println(count + " lines"
-    				            			//+ ", compressed bytes: " + content.getCount()
-    				            			//+ ", bytes: " + uncompressedStream.getCount()
-    				            			);
+    				            	System.out.println(count + " lines");
     				            }
     				        }
     					} catch (Exception e) {

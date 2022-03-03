@@ -1,5 +1,7 @@
 package org.dstadler.commoncrawl.index;
 
+import static org.dstadler.commoncrawl.Utils.COMMON_CRAWL_URL;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,7 +31,7 @@ public class DownloadURLIndexTest {
 	public void testRead() throws Exception {
         try (HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
 
-        	String url = "https://commoncrawl.s3.amazonaws.com/cc-index/collections/CC-MAIN-2015-48/indexes/cdx-00000.gz";
+        	String url = COMMON_CRAWL_URL + "cc-index/collections/CC-MAIN-2015-48/indexes/cdx-00000.gz";
         	log.info("Loading data from " + url);
 
         	final HttpGet httpGet = new HttpGet(url);
@@ -37,8 +39,6 @@ public class DownloadURLIndexTest {
     		    HttpEntity entity = Utils.checkAndFetch(response, url);
 
     		    log.info("Content has " + entity.getContentLength()  + " bytes");
-//    	        CountingInputStream content = new CountingInputStream(entity.getContent());
-//    			CountingInputStream uncompressedStream = new CountingInputStream(new GZIPInputStream(content));
     	        InputStream content = entity.getContent();
     			InputStream uncompressedStream = new GZIPInputStream(content);
     			try (BufferedReader reader = new BufferedReader(
@@ -51,10 +51,8 @@ public class DownloadURLIndexTest {
     	                    String line = reader.readLine();
     	                    if(line == null) {
     	                    	log.info("End of stream reached for " + url + " after " + count + " lines, bytes: " + length + ", ");
-    	                    	log.info(//content.getCount() + " compressed bytes, "
-    	                    			+ content.available() + " available, "
+    	                    	log.info(content.available() + " available, "
     	                    			+ content.read() + " read, "
-    	                    			// + uncompressedStream.getCount() + " uncompressed bytes, "
     	                    			+ uncompressedStream.available() + " available, "
     	                    			+ uncompressedStream.read() + " read, "
     	                    			);
@@ -69,10 +67,7 @@ public class DownloadURLIndexTest {
     	                    count++;
     	                    length+=line.length() + 1;
     	                    if(count % 100000 == 0 || lastLog < (System.currentTimeMillis() - 10000)) {
-    	                    	log.info(count + " lines, bytes: " + length
-    	                    			//+ ", compressed bytes: " + content.getCount()
-    	                    			//+ ", bytes: " + uncompressedStream.getCount()
-    	                    			);
+    	                    	log.info(count + " lines, bytes: " + length);
     	                    	lastLog = System.currentTimeMillis();
     	                    }
     	                }
@@ -96,7 +91,7 @@ public class DownloadURLIndexTest {
 	public void testReadDirectly() throws Exception {
         try (HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
 
-        	String url = "https://commoncrawl.s3.amazonaws.com/cc-index/collections/CC-MAIN-2015-48/indexes/cdx-00000.gz";
+        	String url = COMMON_CRAWL_URL + "cc-index/collections/CC-MAIN-2015-48/indexes/cdx-00000.gz";
         	log.info("Loading data from " + url);
 
         	final HttpGet httpGet = new HttpGet(url);
@@ -104,8 +99,6 @@ public class DownloadURLIndexTest {
     		    HttpEntity entity = Utils.checkAndFetch(response, url);
 
     		    log.info("Content has " + entity.getContentLength()  + " bytes");
-//    	        CountingInputStream content = new CountingInputStream(entity.getContent());
-//    			CountingInputStream uncompressedStream = new CountingInputStream(new GZIPInputStream(content));
     	        try (InputStream content = entity.getContent()) {
 				try (InputStream uncompressedStream = new GZIPInputStream(content)) {
 		        	int count = 0;
@@ -114,10 +107,8 @@ public class DownloadURLIndexTest {
 	                    int n = uncompressedStream.read();
 	                    if(n == -1) {
 	                    	log.info("End of stream reached for " + url + " after " + count + " bytes, ");
-	                    	log.info(//content.getCount() + " compressed bytes, "
-	                    			+ content.available() + " available, "
+	                    	log.info(content.available() + " available, "
 	                    			+ content.read() + " read, "
-	                    			// + uncompressedStream.getCount() + " uncompressed bytes, "
 	                    			+ uncompressedStream.available() + " available, "
 	                    			+ uncompressedStream.read() + " read, "
 	                    			);
@@ -131,10 +122,7 @@ public class DownloadURLIndexTest {
 
 	                    count++;
 	                    if(count % 1000000 == 0 || lastLog < (System.currentTimeMillis() - 10000)) {
-	                    	log.info(count + " bytes"
-	                    			//+ ", compressed bytes: " + content.getCount()
-	                    			//+ ", bytes: " + uncompressedStream.getCount()
-	                    			);
+	                    	log.info(count + " bytes");
 	                    	lastLog = System.currentTimeMillis();
 	                    }
 	                }
@@ -151,7 +139,6 @@ public class DownloadURLIndexTest {
     		}
         }
 	}
-
 
     @SuppressWarnings("UnstableApiUsage")
 	@Ignore("Not an actual unit-test...")

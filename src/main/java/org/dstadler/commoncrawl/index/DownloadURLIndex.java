@@ -1,5 +1,7 @@
 package org.dstadler.commoncrawl.index;
 
+import static org.dstadler.commoncrawl.Utils.COMMON_CRAWL_URL;
+
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -34,8 +36,8 @@ public class DownloadURLIndex {
 	private static final int START_INDEX = 0;
     private static final int END_INDEX = 299;
 
-    private static final String URL_FORMAT =
-    		"https://commoncrawl.s3.amazonaws.com/cc-index/collections/" + CURRENT_CRAWL + "/indexes/cdx-%05d.gz";
+    private static final String URL_FORMAT = COMMON_CRAWL_URL +
+			"cc-index/collections/" + CURRENT_CRAWL + "/indexes/cdx-%05d.gz";
 
 	private static final JsonFactory JSON_FACTORY = new JsonFactory();
 

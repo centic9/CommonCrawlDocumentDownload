@@ -27,7 +27,7 @@ public class DownloadFromCommonCrawlTest {
 	@Test
 	public void testMain() throws Exception {
 		CDXItem item = CDXItem.parse(line);
-		
+
     	try (final HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
     		File file = Utils.downloadFileFromCommonCrawl(client.getHttpClient(), item.url, item.getDocumentLocation(), true);
     		assertNotNull(file);
@@ -39,25 +39,24 @@ public class DownloadFromCommonCrawlTest {
 	public void testBare() throws Exception {
 		CDXItem item = CDXItem.parse(line);
 		DocumentLocation header = item.getDocumentLocation();
-		
+
     	try (final HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
 	        HttpGet httpGet = new HttpGet(header.getUrl());
 	        httpGet.addHeader("Range", header.getRangeHeader());
 	        try (CloseableHttpResponse response = client.getHttpClient().execute(httpGet)) {
 	            HttpEntity entity = Utils.checkAndFetch(response, header.getUrl());
-	            
+
 	            try (InputStream stream = new GZIPInputStream(entity.getContent())) {
 	            	FileUtils.copyInputStreamToFile(stream, new File("/tmp/test.bin"));
 	            }
 	        }
     	}
 	}
-	
+
 	@Test
 	public void testDownload() throws Exception {
 		downloadFile(line);
 	}
-
 
 	@Test
 	public void testDownload2015_48() throws Exception {
@@ -76,7 +75,6 @@ public class DownloadFromCommonCrawlTest {
 			}
 		}
 	}
-
 
 	@Test
 	public void testReadStartPos() throws IOException {
