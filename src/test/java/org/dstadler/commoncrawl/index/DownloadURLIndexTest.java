@@ -15,7 +15,6 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.util.EntityUtils;
-import org.dstadler.commoncrawl.Utils;
 import org.dstadler.commons.http.HttpClientWrapper;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
 import org.junit.Ignore;
@@ -36,7 +35,7 @@ public class DownloadURLIndexTest {
 
         	final HttpGet httpGet = new HttpGet(url);
     		try (CloseableHttpResponse response = client.getHttpClient().execute(httpGet)) {
-    		    HttpEntity entity = Utils.checkAndFetch(response, url);
+    		    HttpEntity entity = HttpClientWrapper.checkAndFetch(response, url);
 
     		    log.info("Content has " + entity.getContentLength()  + " bytes");
     	        InputStream content = entity.getContent();
@@ -96,7 +95,7 @@ public class DownloadURLIndexTest {
 
         	final HttpGet httpGet = new HttpGet(url);
     		try (CloseableHttpResponse response = client.getHttpClient().execute(httpGet)) {
-    		    HttpEntity entity = Utils.checkAndFetch(response, url);
+    		    HttpEntity entity = HttpClientWrapper.checkAndFetch(response, url);
 
     		    log.info("Content has " + entity.getContentLength()  + " bytes");
     	        try (InputStream content = entity.getContent()) {

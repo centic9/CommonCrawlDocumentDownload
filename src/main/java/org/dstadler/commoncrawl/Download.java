@@ -18,20 +18,20 @@ import java.util.logging.Logger;
 /**
  * Download files from a list of urls stored in a file, convert the reversed domain
  * to normal URLs and try to download them.
- * 
+ *
  *  Note: This is now superseded by reading the binary data directly
- *  from the Common Crawl archive via {@link ProcessAndDownload}. 
+ *  from the Common Crawl archive via {@link ProcessAndDownload}.
  *
  * @author dominik.stadler
  */
 public class Download {
     private final static Logger log = LoggerFactory.make();
-    
+
     public static void main(String[] args) throws Exception {
         LoggerFactory.initLogging();
 
         Utils.ensureDownloadDir();
-        
+
         try (BufferedReader reader = new BufferedReader(new FileReader(Utils.COMMONURLS_PATH));
             HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
             while(true) {
@@ -56,7 +56,7 @@ public class Download {
                 }
             }
         }
-        
+
         log.info("Done");
     }
 
@@ -70,7 +70,7 @@ public class Download {
 
         // convert url, host is in inverted order
         URI url = Utils.convertUrl(urlStr);
-        
+
         log.info("Reading file from " + url + " to " + destFile + " based on input " + urlStr);
         download(client, urlStr, destFile, url);
     }
@@ -78,7 +78,7 @@ public class Download {
     private static void download(CloseableHttpClient client, String urlStr, File destFile, URI url) throws IOException {
         HttpGet httpGet = new HttpGet(url);
         try (CloseableHttpResponse response = client.execute(httpGet)) {
-            HttpEntity entity = Utils.checkAndFetch(response, url.toString());
+            HttpEntity entity = HttpClientWrapper.checkAndFetch(response, url.toString());
             try (InputStream content = entity.getContent()) {
                 storeFile(urlStr, destFile, content);
             }
@@ -98,10 +98,10 @@ public class Download {
                 return;
             }
 
-            // now move the file 
+            // now move the file
             FileUtils.moveFile(file, destFile);
         } finally {
-            // usually not there any more, but ensure that we delete it in any case 
+            // usually not there anymore, but ensure that we delete it in any case
             if(file.exists() && !file.delete()) {
                 //noinspection ThrowFromFinallyBlock
                 throw new IllegalStateException("Could not delete temporary file " + file);

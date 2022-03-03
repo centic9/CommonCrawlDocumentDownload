@@ -15,7 +15,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.archive.util.zip.GZIPMembersInputStream;
-import org.dstadler.commoncrawl.Utils;
+import org.dstadler.commons.http.HttpClientWrapper;
 
 /**
  * Simple test-app to reproduce and narrow down the problem with
@@ -42,7 +42,7 @@ public class TestDownloadFile {
 
         	final HttpGet httpGet = new HttpGet(URL);
 			try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-    		    HttpEntity entity = Utils.checkAndFetch(response, URL);
+    		    HttpEntity entity = HttpClientWrapper.checkAndFetch(response, URL);
 
     		    System.out.println("Content has " + entity.getContentLength()  + " bytes");
 		    	try (InputStream stream = entity.getContent()) {

@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -44,7 +43,7 @@ public class DownloadFromCommonCrawlTest {
 	        HttpGet httpGet = new HttpGet(header.getUrl());
 	        httpGet.addHeader("Range", header.getRangeHeader());
 	        try (CloseableHttpResponse response = client.getHttpClient().execute(httpGet)) {
-	            HttpEntity entity = Utils.checkAndFetch(response, header.getUrl());
+	            HttpEntity entity = HttpClientWrapper.checkAndFetch(response, header.getUrl());
 
 	            try (InputStream stream = new GZIPInputStream(entity.getContent())) {
 	            	FileUtils.copyInputStreamToFile(stream, new File("/tmp/test.bin"));

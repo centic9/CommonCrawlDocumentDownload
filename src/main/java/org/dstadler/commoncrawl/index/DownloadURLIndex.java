@@ -17,7 +17,6 @@ import org.apache.http.util.EntityUtils;
 import org.archive.util.zip.GZIPMembersInputStream;
 import org.dstadler.commoncrawl.Extensions;
 import org.dstadler.commoncrawl.MimeTypes;
-import org.dstadler.commoncrawl.Utils;
 import org.dstadler.commons.collections.MappedCounter;
 import org.dstadler.commons.collections.MappedCounterImpl;
 import org.dstadler.commons.http.HttpClientWrapper;
@@ -73,7 +72,7 @@ public class DownloadURLIndex {
 
     	final HttpGet httpGet = new HttpGet(url);
 		try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-		    HttpEntity entity = Utils.checkAndFetch(response, url);
+		    HttpEntity entity = HttpClientWrapper.checkAndFetch(response, url);
 
 		    log.info("File " + index + " has " + entity.getContentLength()  + " bytes");
 		    try {

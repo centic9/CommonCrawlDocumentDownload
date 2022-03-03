@@ -4,18 +4,14 @@ import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.HexDump;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.http.ConnectionClosedException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.dstadler.poi.util.LittleEndian;
+import org.dstadler.commons.http.HttpClientWrapper;
 import org.archive.io.warc.WARCRecord;
 import org.archive.util.LaxHttpParser;
 import org.commoncrawl.hadoop.mapred.ArcRecord;
@@ -48,18 +44,6 @@ public class Utils {
     public static File DOWNLOAD_DIR = new File("../download");
     public static File BACKUP_DIR = new File("../backup");
     public static final File COMMONURLS_PATH = new File("commonurls.txt");
-
-    public static HttpEntity checkAndFetch(CloseableHttpResponse response, String url) throws IOException {
-        int statusCode = response.getStatusLine().getStatusCode();
-        if(statusCode > 206) {
-            String msg = "Had HTTP StatusCode " + statusCode + " for request: " + url + ", response: " +
-                    response.getStatusLine().getReasonPhrase();
-            log.warning(msg);
-
-            throw new IOException(msg);
-        }
-        return response.getEntity();
-    }
 
     public static String reverseDomain(String host) {
         if(StringUtils.isEmpty(host)) {
@@ -185,7 +169,7 @@ public class Utils {
         HttpGet httpGet = new HttpGet(header.getUrl());
         httpGet.addHeader("Range", header.getRangeHeader());
         try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-            HttpEntity entity = Utils.checkAndFetch(response, header.getUrl());
+            HttpEntity entity = HttpClientWrapper.checkAndFetch(response, header.getUrl());
 
             try (InputStream stream = new GZIPInputStream(entity.getContent())) {
             	// we get differently formatted files depending on the version of CommonCrawl that we look at...

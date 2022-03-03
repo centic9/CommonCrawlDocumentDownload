@@ -75,7 +75,7 @@ public class ReadAndDownload {
         HttpGet httpGet = new HttpGet(Utils.INDEX_URL);
         httpGet.addHeader("Range", "bytes=" + startPos + "-");
         try (CloseableHttpResponse response = client.execute(httpGet)) {
-            HttpEntity entity = Utils.checkAndFetch(response, Utils.INDEX_URL);
+            HttpEntity entity = HttpClientWrapper.checkAndFetch(response, Utils.INDEX_URL);
 
             long startTs = System.currentTimeMillis();
             //try (InputStream stream = new BufferedInputStream(entity.getContent(), 5*blockSize)) {

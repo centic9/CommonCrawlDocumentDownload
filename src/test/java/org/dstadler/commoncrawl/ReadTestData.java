@@ -48,7 +48,7 @@ public class ReadTestData {
         HttpGet httpGet = new HttpGet(Utils.INDEX_URL);
         httpGet.addHeader("Range", "bytes=" + startPos + "-");
         try (CloseableHttpResponse response = client.execute(httpGet)) {
-            HttpEntity entity = Utils.checkAndFetch(response, Utils.INDEX_URL);
+            HttpEntity entity = HttpClientWrapper.checkAndFetch(response, Utils.INDEX_URL);
    
             try (InputStream stream = entity.getContent()) {
                 try {

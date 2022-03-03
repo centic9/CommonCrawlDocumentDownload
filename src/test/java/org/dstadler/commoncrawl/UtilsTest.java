@@ -1,20 +1,11 @@
 package org.dstadler.commoncrawl;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.dstadler.commons.http.HttpClientWrapper;
-import org.dstadler.commons.http.NanoHTTPD;
-import org.dstadler.commons.testing.MockRESTServer;
-import org.dstadler.commons.testing.TestHelpers;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URI;
 
 import static org.junit.Assert.assertEquals;
@@ -153,36 +144,6 @@ public class UtilsTest {
         Utils.logProgress(startPos, blockSize, SKIP_BLOCKS, System.currentTimeMillis()-5000, SKIP_BLOCKS + 500, 20, 233689120776L);
 
         // results not easily testable...
-    }
-
-    @Test
-    public void testCheckAndFetch() throws Exception {
-        try (MockRESTServer server = new MockRESTServer(NanoHTTPD.HTTP_OK, "text/plain", "Ok")) {
-            try (HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
-                HttpGet httpGet = new HttpGet("http://localhost:" + server.getPort());
-                try (CloseableHttpResponse response = client.getHttpClient().execute(httpGet)) {
-                    HttpEntity entity = Utils.checkAndFetch(response, "http://localhost:" + server.getPort());
-                    assertEquals("Ok", IOUtils.toString(entity.getContent(), "UTF-8"));
-                }
-            }
-        }
-    }
-
-    @Test
-    public void testCheckAndFetchFails() throws Exception {
-        try (MockRESTServer server = new MockRESTServer(NanoHTTPD.HTTP_INTERNALERROR, "text/plain", "Ok")) {
-            try (HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
-                HttpGet httpGet = new HttpGet("http://localhost:" + server.getPort());
-                try (CloseableHttpResponse response = client.getHttpClient().execute(httpGet)) {
-                    try {
-                        Utils.checkAndFetch(response, "http://localhost:" + server.getPort());
-                        fail("Expect to catch Exception here");
-                    } catch (IOException e) {
-                        TestHelpers.assertContains(e, "500", "localhost", Integer.toString(server.getPort()));
-                    }
-                }
-            }
-        }
     }
 
     @Test
