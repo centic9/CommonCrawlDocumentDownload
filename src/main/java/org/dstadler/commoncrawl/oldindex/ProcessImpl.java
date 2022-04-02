@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -17,24 +19,25 @@ import org.dstadler.commoncrawl.Extensions;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
 
 /**
- * Handler for blocks, it provides a queue where blocks are pushed to and 
+ * Handler for blocks, it provides a queue where blocks are pushed to and
  * starts a separate thread internally which will do the actual processing
  * of the block so that the main thread can spend all its time downloading.
- * 
- * Typically the Thread is mostly waiting for blocks as the bottleneck usually 
- * will be the downloading of data in the main thread unless you have a very high 
+ *
+ * Typically the Thread is mostly waiting for blocks as the bottleneck usually
+ * will be the downloading of data in the main thread unless you have a very high
  * bandwidth.
  *
  * @author dominik.stadler
  */
 public class ProcessImpl implements BlockProcessor {
     private final static Logger log = LoggerFactory.make();
-    
+
     private final BlockingDeque<Pair<byte[],Long>> queue = new LinkedBlockingDeque<>(1000);
     private final BufferedWriter writer;
     private final Processor processor;
-    
-    private static final Charset CHARSET_ASCII = Charset.forName("ASCII");
+	private final CountDownLatch startLatch = new CountDownLatch(1);
+
+    private static final Charset CHARSET_ASCII = StandardCharsets.US_ASCII;
     public ProcessImpl(File file, boolean append) throws IOException {
         writer = new BufferedWriter(new FileWriter(file, append));
         processor = new Processor();
@@ -43,10 +46,10 @@ public class ProcessImpl implements BlockProcessor {
 
     @Override
     public void offer(byte[] block, long blockIndex) {
-        // offer with timeout to print out "w"s whenever the queue is full and 
-        // pushing in blocks is actually blocked. 
+        // offer with timeout to print out "w"s whenever the queue is full and
+        // pushing in blocks is actually blocked.
         // This will only happen with fast download speed and very low CPU or I/O speed locally
-        // as usually there is much less data written than read and local I/O should be much faster
+        // as usually there is much fewer data written than read and local I/O should be much faster
         // than network bandwidth
         for(int i = 0;i < 60*60;i++) {
             try {
@@ -56,10 +59,10 @@ public class ProcessImpl implements BlockProcessor {
             } catch (InterruptedException e) {
                 log.log(Level.WARNING, "Offer was interrupted", e);
             }
-            
+
             System.out.print("w");
         }
-        
+
         throw new IllegalStateException("Could not add a single block after one hour!");
     }
 
@@ -70,7 +73,7 @@ public class ProcessImpl implements BlockProcessor {
      */
     private class Processor extends Thread {
         private volatile boolean shouldStop = false;
-        
+
         public Processor() {
             super("Processor");
         }
@@ -78,9 +81,12 @@ public class ProcessImpl implements BlockProcessor {
         public void shouldStop() {
             shouldStop = true;
         }
-        
+
         @Override
         public void run() {
+			// indicate that the thread successfully started
+			startLatch.countDown();
+
             while(true) {
                 try {
                     Pair<byte[],Long> item = queue.poll(1, TimeUnit.SECONDS);
@@ -99,7 +105,7 @@ public class ProcessImpl implements BlockProcessor {
                 }
             }
         }
-        
+
         private void splitBlock(byte[] block, long blockIndex) throws IOException {
             int index = 0;
             while(index < block.length) {
@@ -113,14 +119,14 @@ public class ProcessImpl implements BlockProcessor {
 
                 // cut off ":http" and ":https" at the end by adjusting the length
                 int length = index-offset;
-                if(length > 5 && 
+                if(length > 5 &&
                         block[index-1] == 'p' &&
                         block[index-2] == 't' &&
                         block[index-3] == 't' &&
                         block[index-4] == 'h' &&
                         block[index-5] == ':') {
                     length-=5;
-                } else if (length > 5 && 
+                } else if (length > 5 &&
                         block[index-1] == 's' &&
                         block[index-2] == 'p' &&
                         block[index-3] == 't' &&
@@ -130,7 +136,7 @@ public class ProcessImpl implements BlockProcessor {
                     // TODO: is removing https necessary?
                     length-=6;
                 }
-                
+
                 // only look at the last 5 characters as we are only interested in the extension
                 // this makes it easier for new String() and toLowerCase() below...
                 int start = offset;
@@ -138,7 +144,7 @@ public class ProcessImpl implements BlockProcessor {
                     start += (length - 5);
                     length = 5;
                 }
-                
+
                 //System.out.println("Found(" + index + "): " + url);
                 if(Extensions.matches(new String(block, start, length, CHARSET_ASCII).toLowerCase())) {
                     String url = new String(block, offset, (index-offset), CHARSET_ASCII);
@@ -146,25 +152,33 @@ public class ProcessImpl implements BlockProcessor {
 
                     //handle header if wanted, use +1 to skip 0-terminator
                     handle(url, block, index+1, blockIndex);
-                    
+
                     System.out.print(".");
-                } 
-                
+                }
+
                 // skip 0 byte
                 index++;
-                
+
                 // skip location information
                 index+= ITEM_DATA_SIZE;
             }
         }
     }
-    
+
     protected void handle(String url, byte[] block, int headerStart, long blockIndex) throws IOException {
         // NOP here
     }
 
     @Override
     public void close() throws IOException {
+		// wait for the thread to be fully started so we do not run a chance of
+		// missing to process some items in very quick start-and-stop situations
+		try {
+			startLatch.await();
+		} catch (InterruptedException e) {
+			log.log(Level.WARNING, "Await was interrupted", e);
+		}
+
         processor.shouldStop();
         try {
             processor.join();

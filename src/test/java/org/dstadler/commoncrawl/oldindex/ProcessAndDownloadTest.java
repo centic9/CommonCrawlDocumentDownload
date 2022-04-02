@@ -3,6 +3,7 @@ package org.dstadler.commoncrawl.oldindex;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
 import org.dstadler.commoncrawl.Utils;
@@ -33,7 +34,9 @@ public class ProcessAndDownloadTest {
 	            assertTrue(file.exists());
 	            assertTrue(file.length() > 0);
 
-				assertTrue("Should have resulting file, but did not find it at " + destFile, destFile.exists());
+				assertTrue("Should have resulting file, but did not find it at " + destFile +
+								"\nfound: " + Arrays.toString(destFile.getParentFile().list()),
+						destFile.exists());
 	        } finally {
 	            assertTrue(file.delete());
 	        }
