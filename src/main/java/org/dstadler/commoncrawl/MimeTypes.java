@@ -9,8 +9,14 @@ import java.util.regex.Pattern;
 /**
  * A list of patterns of mimetypes that we are interested in.
  *
+ * If you want to change which files are downloaded, just can 
+ * set a different list of mime-types here, e.g.
  *
- * @author dominik.stadler
+ * <pre>
+    	MIME_TYPES.add(Pair.of(Pattern.compile("application/pdf.*"), ".pdf"));
+ </pre>
+ *
+ * would find and download PDF documents.
  */
 public class MimeTypes {
     private static final List<Pair<Pattern, String>> MIME_TYPES = new ArrayList<>();
