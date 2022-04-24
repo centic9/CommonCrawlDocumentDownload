@@ -3,7 +3,14 @@ package org.dstadler.commoncrawl;
 /**
  * Which extensions we are interested in.
  *
- * @author dominik.stadler
+ * If you want to change which files are downloaded, just can 
+ * set a different list of file-extensions here, e.g.
+ *
+ * <pre>
+           ".pdf" 
+ </pre>
+ *
+ * would find and download PDF documents.
  */
 public class Extensions {
 
