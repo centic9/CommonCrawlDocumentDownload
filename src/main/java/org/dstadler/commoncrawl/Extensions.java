@@ -1,5 +1,7 @@
 package org.dstadler.commoncrawl;
 
+import java.util.Locale;
+
 /**
  * Which extensions we are interested in.
  *
@@ -15,67 +17,43 @@ package org.dstadler.commoncrawl;
 public class Extensions {
 
     private static final String[] EXTENSIONS = new String[] {
-        // Excel
-        ".xls",
-        ".xlsx",
-        ".xlsm",
-        ".xltx",
-        ".xlsb",
-
-        // Word
-        ".doc",
-        ".docx",
-        ".dotx",
-        ".docm",
-        ".ooxml",
-
-        // Powerpoint
-        ".ppt",
-        ".pot",
-        ".pptx",
-        ".pptm",
-        ".ppsm",
-        ".ppsx",
-        ".thmx",
-        ".potx",
-
-        // Outlook
-        ".msg",
-
-        // Publisher
-        ".pub",
-
-        // Visio - binary
-        ".vsd",
-        ".vss",
-        ".vst",
-        ".vsw",
-
-        // Visio - ooxml (currently unsupported)
-        ".vsdm",
-        ".vsdx",
-        ".vssm",
-        ".vssx",
-        ".vstm",
-        ".vstx",
-
-        // POIFS
-        ".ole2",
-
-        // Microsoft Admin Template?
-        ".adm",
-
-        // Microsoft TNEF
-        // ".dat", new HMEFFileHandler());
-
-        // Windows image formats which can be embedded in slideshows and can be tested by the integration tests
-        ".wmf",
-        ".emf",
+        ",DCX",
+        ".BMP",
+        ".CUR",
+        ".EXIF",
+        ".DCX",
+        ".GIF",
+        ".GIFF",
+        ".ICNS",
+        ".ICNS",
+        ".ICO",
+        ".ICON",
+        ".JBIG2",
+        ".JPEG",
+        ".JPG",
+        ".PAM",
+        ".PBM",
+        ".PCX",
+        ".PGM",
+        ".PNG",
+        ".PNM",
+        ".PPM",
+        ".PSD",
+        ".RGBE",
+        ".TGA",
+        ".TIF",
+        ".TIFF",
+        ".WBMP",
+        ".XBM",
+        ".XMP",
+        ".XPM",
+        ".WMF",
+        ".EMF",
     };
 
     public static boolean matches(String url) {
         for(String ext : EXTENSIONS) {
-            if(url.endsWith(ext)) {
+            if(url.toLowerCase(Locale.ROOT).endsWith(ext.toLowerCase(Locale.ROOT))) {
                 return true;
             }
         }
