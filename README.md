@@ -42,6 +42,14 @@ called `commoncrawl-CC-MAIN-<year>-<crawl>.txt`
 Uses the URLs listed in `commoncrawl-CC-MAIN-<year>-<crawl>.txt` to 
 download the documents from the Common Crawl
 
+#### Deduplicate files
+
+    ./gradlew deduplicate
+
+Some files have equal content, this task will detect these based on file-size
+and content-hash and move all duplicates to a backup-directory to leave only
+unique files in place.
+
 #### Deprecated: Download documents from the old-index
 
     ./gradlew downloadOldIndex

@@ -194,3 +194,14 @@ task downloadDocuments(type:JavaExec,dependsOn: compileJava) {
     main = 'org.dstadler.commoncrawl.index.DownloadFromCommonCrawl'
 	classpath = sourceSets.main.runtimeClasspath
 }
+
+task deduplicate(type:JavaExec,dependsOn: compileJava) {
+	description = 'Compares files by size and hash and moves away identical files into a backup-directory'
+
+    jvmArgs = [
+            '-Xmx128m'
+    ]
+
+    main = 'org.dstadler.commoncrawl.Deduplicate'
+	classpath = sourceSets.main.runtimeClasspath
+}
