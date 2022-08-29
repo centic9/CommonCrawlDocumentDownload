@@ -73,7 +73,17 @@ There are a few things that you can tweak:
 * The mime-types that are detected as download-able files isare handled in the class `MimeTypes`.
 * Adjust the name of the list of found files in `DownloadURLIndex.COMMON_CRAWL_FILE`.
 * Adjust the location where files are downloaded to in `Utils.DOWNLOAD_DIR`.
-* The starting file-index (of the approximately 300 cdx-files) is currently set as constant in class `org.dstadler.commoncrawl.index.DownloadURLIndex`, this way you can also re-start a download that was interrupted before.
+* The starting file-index (of the approximately 300 cdx-files) is currently set as constant 
+in class `org.dstadler.commoncrawl.index.DownloadURLIndex`, this way you can also 
+re-start a download that was interrupted before.
+
+### Adjust which commoncrawl-index is fetched
+
+CommonCrawl periodically runs crawls and publishes them. You can switch to newer crawls by 
+adjusting the constant `CURRENT_CRAWL` in [DownloadURLIndex.java](src/main/java/org/dstadler/commoncrawl/index/DownloadURLIndex.java#L32) to the proper `<year>-<week>` 
+number of the newer crawl. 
+
+See https://commoncrawl.org/connect/blog/ for announcemnts of the latest crawls.
 
 ### Ideas
 
