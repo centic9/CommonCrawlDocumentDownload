@@ -33,11 +33,7 @@ public class Deduplicate {
     public static void main(String[] args) throws IOException {
         LoggerFactory.initLogging();
 
-        log.info("Scanning for files in " + DOWNLOAD_DIR);
-        String[] files = scanForFiles();
-        log.info("Handling " + files.length + " files");
-
-        TreeMultimap<Long, String> sizes = readFileSizes(files);
+        TreeMultimap<Long, String> sizes = scanAndSortFiles();
 
         //log.info("Having files with 2 bytes: " + sizes.get(2L));
         NavigableSet<Long> sizesKeys = sizes.keySet();
@@ -79,6 +75,14 @@ public class Deduplicate {
             }
         }
         log.info("Found " + duplicates + " duplicate files");
+    }
+
+    private static TreeMultimap<Long, String> scanAndSortFiles() {
+        log.info("Scanning for files in " + DOWNLOAD_DIR);
+        String[] files = scanForFiles();
+        log.info("Handling " + files.length + " files");
+
+        return readFileSizes(files);
     }
 
     private static String[] scanForFiles() {
