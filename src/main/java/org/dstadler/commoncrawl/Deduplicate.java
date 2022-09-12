@@ -1,14 +1,16 @@
 package org.dstadler.commoncrawl;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.TreeMultimap;
 import org.apache.commons.io.FileUtils;
-import org.apache.tools.ant.DirectoryScanner;
+import org.apache.commons.lang3.StringUtils;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NavigableSet;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,24 +25,25 @@ import static org.dstadler.commoncrawl.Utils.DOWNLOAD_DIR;
 public class Deduplicate {
     private final static Logger log = LoggerFactory.make();
 
-    private final static String[] SCAN_EXCLUDES = new String[] {
+    private final static Set<String> SCAN_EXCLUDES = ImmutableSet.of(
             "**/.svn/**",
             "lost+found",
             "**/.git/**"
-    };
-
+    );
 
     public static void main(String[] args) throws IOException {
         LoggerFactory.initLogging();
 
+        // iterate all files and sort them into buckets of equal size
         TreeMultimap<Long, String> sizes = scanAndSortFiles();
 
-        //log.info("Having files with 2 bytes: " + sizes.get(2L));
         NavigableSet<Long> sizesKeys = sizes.keySet();
         log.info("Having " + sizesKeys.size() + " different sizes between " + sizesKeys.first() + " and " + sizesKeys.last());
 
         int duplicates = 0;
         int count = 0;
+
+        // compare hashes for each size-bucket
         for (Long sizesKey : sizesKeys) {
             NavigableSet<String> sizeFiles = sizes.get(sizesKey);
             if (sizeFiles.size() <= 1 /*||
@@ -59,7 +62,8 @@ public class Deduplicate {
                     String hash = hash(new File(DOWNLOAD_DIR, file));
                     if (hashes.containsKey(hash)) {
                         duplicates++;
-                        log.info(duplicates + "/" + count + "/" + sizesKey + ": File " + file + " is the same as " + hashes.get(hash));
+                        log.info("Dups: " + duplicates + ", Count: " + count + ", SizeKey: " + sizesKey +
+                                ": File " + file + " is the same as " + hashes.get(hash));
 
                         FileUtils.moveFile(new File(DOWNLOAD_DIR, file), new File(BACKUP_DIR, file));
                     }
@@ -77,27 +81,40 @@ public class Deduplicate {
         log.info("Found " + duplicates + " duplicate files");
     }
 
-    private static TreeMultimap<Long, String> scanAndSortFiles() {
+    private static TreeMultimap<Long, String> scanAndSortFiles() throws IOException {
         log.info("Scanning for files in " + DOWNLOAD_DIR);
-        String[] files = scanForFiles();
-        log.info("Handling " + files.length + " files");
 
-        return readFileSizes(files);
-    }
+        AtomicLong count = new AtomicLong();
+        final TreeMultimap<Long, String> sizes = TreeMultimap.create();
+        Files.walkFileTree(DOWNLOAD_DIR.toPath(), EnumSet.of(FileVisitOption.FOLLOW_LINKS),
+                Integer.MAX_VALUE, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+                if (SCAN_EXCLUDES.contains(dir.toFile().getName())) {
+                    log.info("Skipping directory " + dir);
+                    return FileVisitResult.SKIP_SUBTREE;
+                }
 
-    private static String[] scanForFiles() {
-        DirectoryScanner scanner = new DirectoryScanner();
-        scanner.setBasedir(DOWNLOAD_DIR);
-        scanner.setExcludes(SCAN_EXCLUDES);
-        scanner.scan();
-        return scanner.getIncludedFiles();
-    }
+                log.info("Entering directory " + dir);
+                return FileVisitResult.CONTINUE;
+            }
 
-    private static TreeMultimap<Long, String> readFileSizes(String[] files) {
-        TreeMultimap<Long, String> sizes = TreeMultimap.create();
-        for (String fileName : files) {
-            sizes.put(new File(DOWNLOAD_DIR, fileName).length(), fileName);
-        }
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                long current = count.getAndIncrement();
+                if (current % 10000 == 0) {
+                    log.info("Handling file " + current + ": " + file);
+                }
+
+                sizes.put(file.toFile().length(),
+                        StringUtils.removeStart(file.toFile().toString(), DOWNLOAD_DIR.toString() + "/"));
+
+                return FileVisitResult.CONTINUE;
+            }
+        });
+
+        log.info("Found " + sizes.values().size() + " files");
+
         return sizes;
     }
 
