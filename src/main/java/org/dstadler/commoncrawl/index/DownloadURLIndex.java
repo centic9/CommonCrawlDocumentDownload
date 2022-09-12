@@ -56,7 +56,12 @@ public class DownloadURLIndex {
 			} catch (IOException e) {
 				log.info("Retry once starting at file " + index + ": " + e);
 
-				Thread.sleep(10_000);
+				if (e.getMessage().contains("503")) {
+					// wait longer if we get a "503" which is how the server indicates "Please reduce your request rate"
+					Thread.sleep(300_000);
+				} else {
+					Thread.sleep(10_000);
+				}
 
 				try (HttpClientWrapper client = new HttpClientWrapper("", null, 600_000)) {
 					handleCDXFile(client.getHttpClient(), index);
