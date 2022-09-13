@@ -66,9 +66,9 @@ public class Deduplicate {
                                 ": File " + file + " is the same as " + hashes.get(hash));
 
                         FileUtils.moveFile(new File(DOWNLOAD_DIR, file), new File(BACKUP_DIR, file));
+                    } else {
+                        hashes.put(hash, file);
                     }
-
-                    hashes.put(hash, file);
                 } catch (FileNotFoundException e) {
                     log.log(Level.WARNING, "Could not read file '" + new File(DOWNLOAD_DIR, file).getAbsolutePath() +
                             "' for size " + sizesKey + ", probably the filename contains unexpected characters", e);
