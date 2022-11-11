@@ -19,7 +19,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'io.codearte.nexus-staging'
 
-sourceCompatibility = 1.8
+sourceCompatibility = JavaVersion.VERSION_11
 group = 'org.dstadler'
 archivesBaseName = 'commoncrawldownload'
 
