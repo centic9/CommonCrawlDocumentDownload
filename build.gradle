@@ -47,7 +47,7 @@ dependencies {
     // version '0.20.2-cdh3u4' is referenced by webarchive-commons, but "vanished"...
     implementation 'org.apache.hadoop:hadoop-core:0.20.205.0'
     implementation 'org.netpreserve.commons:webarchive-commons:1.1.9'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.13.4'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.14.0'
 
     // for commoncrawl-source
     implementation 'org.jsoup:jsoup:1.15.3'
