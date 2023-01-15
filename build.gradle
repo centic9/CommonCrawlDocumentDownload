@@ -1,15 +1,15 @@
 buildscript {
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath 'de.thetaphi:forbiddenapis:3.4'
-	}
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'de.thetaphi:forbiddenapis:3.4'
+    }
 }
 plugins {
     id 'maven-publish'
-	// https://github.com/researchgate/gradle-release
-	id 'net.researchgate.release' version '3.0.2'
+    // https://github.com/researchgate/gradle-release
+    id 'net.researchgate.release' version '3.0.2'
     id 'io.codearte.nexus-staging' version '0.30.0'
 }
 
@@ -23,25 +23,25 @@ group = 'org.dstadler'
 archivesBaseName = 'commoncrawldownload'
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 forbiddenApis {
-	suppressAnnotations = ['org.dstadler.commons.util.SuppressForbidden']
-	bundledSignatures = [ 'jdk-reflection', 'commons-io-unsafe-2.11.0', 'jdk-internal' ]
-	signaturesFiles += files('config/forbidden-apis/http-signatures.txt')
+    suppressAnnotations = ['org.dstadler.commons.util.SuppressForbidden']
+    bundledSignatures = [ 'jdk-reflection', 'commons-io-unsafe-2.11.0', 'jdk-internal' ]
+    signaturesFiles += files('config/forbidden-apis/http-signatures.txt')
 }
 forbiddenApisMain {
-	// 'jdk-unsafe', 'jdk-system-out'
-	bundledSignatures += [ 'jdk-deprecated', 'jdk-internal', 'jdk-non-portable' ]
-	signaturesFiles += files('config/forbidden-apis/forbidden.signatures.txt')
+    // 'jdk-unsafe', 'jdk-system-out'
+    bundledSignatures += [ 'jdk-deprecated', 'jdk-internal', 'jdk-non-portable' ]
+    signaturesFiles += files('config/forbidden-apis/forbidden.signatures.txt')
 }
 
 dependencies {
     implementation 'org.dstadler:commons-dost:1.1.0.2'
     implementation 'org.apache.httpcomponents:httpclient:4.5.14'
-	implementation 'org.apache.commons:commons-lang3:3.12.0'
-	implementation 'commons-io:commons-io:2.11.0'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'commons-io:commons-io:2.11.0'
 
     // version '0.20.2-cdh3u4' is referenced by webarchive-commons, but "vanished"...
     implementation 'org.apache.hadoop:hadoop-core:0.20.205.0'
@@ -55,7 +55,7 @@ dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
     testImplementation 'junit:junit:4.13.2'
-	testImplementation 'org.dstadler:commons-test:1.0.0.20'
+    testImplementation 'org.dstadler:commons-test:1.0.0.20'
 }
 
 wrapper {
@@ -63,23 +63,23 @@ wrapper {
 }
 
 test {
-	systemProperties = System.properties as Map<String, ?>
+    systemProperties = System.properties as Map<String, ?>
 
-	// enable to show standard out and standard error of the test JVM(s) on the console
-	// testLogging.showStandardStreams = true
+    // enable to show standard out and standard error of the test JVM(s) on the console
+    // testLogging.showStandardStreams = true
 
-	// http://forums.gradle.org/gradle/topics/jacoco_related_failure_in_multiproject_build
-	systemProperties['user.dir'] = workingDir
+    // http://forums.gradle.org/gradle/topics/jacoco_related_failure_in_multiproject_build
+    systemProperties['user.dir'] = workingDir
 }
 
 jacoco {
-	toolVersion = '0.8.8'
+    toolVersion = '0.8.8'
 }
 
 jacocoTestReport {
     reports {
         xml.enabled true
-	}
+    }
 }
 
 task sourcesJar(type: Jar) {
@@ -106,6 +106,7 @@ release {
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            artifactId = archivesBaseName
             from components.java
 
             pom {
@@ -150,46 +151,46 @@ signing {
 afterReleaseBuild.dependsOn publish
 
 task lookupURLs(type:JavaExec,dependsOn: compileJava) {
-	description = 'Reads the current Common Crawl URL index data and extracts all URLs for interesting mime-types or file extensions'
+    description = 'Reads the current Common Crawl URL index data and extracts all URLs for interesting mime-types or file extensions'
 
     jvmArgs = [
             '-Xmx128m'
     ]
 
     main = 'org.dstadler.commoncrawl.index.DownloadURLIndex'
-	classpath = sourceSets.main.runtimeClasspath
+    classpath = sourceSets.main.runtimeClasspath
 }
 
 
 task downloadOldIndex(type:JavaExec,dependsOn: compileJava) {
-	description = 'Reading blocks at beginning or the last stored block-number and download binary data from the common crawl archives'
+    description = 'Reading blocks at beginning or the last stored block-number and download binary data from the common crawl archives'
 
     jvmArgs = [
             '-Xmx128m'
     ]
 
     main = 'org.dstadler.commoncrawl.oldindex.ReadAndDownload'
-	classpath = sourceSets.main.runtimeClasspath
+    classpath = sourceSets.main.runtimeClasspath
 }
 
 task downloadDocuments(type:JavaExec,dependsOn: compileJava) {
-	description = 'Uses the URLs listed in commoncrawl.txt to download the documents from the Common Crawl'
+    description = 'Uses the URLs listed in commoncrawl.txt to download the documents from the Common Crawl'
 
     jvmArgs = [
             '-Xmx128m'
     ]
 
     main = 'org.dstadler.commoncrawl.index.DownloadFromCommonCrawl'
-	classpath = sourceSets.main.runtimeClasspath
+    classpath = sourceSets.main.runtimeClasspath
 }
 
 task deduplicate(type:JavaExec,dependsOn: compileJava) {
-	description = 'Compares files by size and hash and moves away identical files into a backup-directory'
+    description = 'Compares files by size and hash and moves away identical files into a backup-directory'
 
     jvmArgs = [
             '-Xmx1024m'
     ]
 
     main = 'org.dstadler.commoncrawl.Deduplicate'
-	classpath = sourceSets.main.runtimeClasspath
+    classpath = sourceSets.main.runtimeClasspath
 }
