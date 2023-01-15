@@ -7,15 +7,15 @@ buildscript {
 	}
 }
 plugins {
+    id 'maven-publish'
 	// https://github.com/researchgate/gradle-release
-	id 'net.researchgate.release' version '2.8.1'
+	id 'net.researchgate.release' version '3.0.2'
     id 'io.codearte.nexus-staging' version '0.30.0'
 }
 
 apply plugin: 'java'
 apply plugin: 'de.thetaphi.forbiddenapis'
 apply plugin: 'jacoco'
-apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'io.codearte.nexus-staging'
 
@@ -60,7 +60,7 @@ dependencies {
 }
 
 wrapper {
-    gradleVersion = '6.9.2'
+    gradleVersion = '7.6'
 }
 
 test {
@@ -93,8 +93,9 @@ task javadocJar(type: Jar) {
     from javadoc
 }
 
-artifacts {
-    archives javadocJar, sourcesJar
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 signing {
@@ -106,6 +107,12 @@ signing {
     sign configurations.archives
 }
 
+release {
+    git {
+        requireBranch.set('master')
+    }
+}
+
 //provide defaults so we do not need to specify them always
 if (!project.hasProperty('ossrhUsername')) {
     ext.ossrhUsername = ''
@@ -114,52 +121,49 @@ if (!project.hasProperty('ossrhPassword')) {
     ext.ossrhPassword = ''
 }
 
-uploadArchives {
-  repositories {
-    mavenDeployer {
-        //noinspection GrUnresolvedAccess
-        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
 
-        repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
-
-      snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
-
-    pom.project {
-        name 'CommonCrawl Document Download'
-        packaging 'jar'
-        // optionally artifactId can be defined here
-        description 'Common utilities I find useful in many of my projects.'
-        url 'https://github.com/centic9/CommonCrawlDocumentDownload'
-
-        scm {
-            connection 'scm:git@github.com:centic9/CommonCrawlDocumentDownload'
-            developerConnection 'scm:git@github.com:centic9/CommonCrawlDocumentDownload'
-            url 'https://github.com/centic9/CommonCrawlDocumentDownload'
+            pom {
+                name = 'CommonCrawl Document Download'
+                description = 'Helper tools to download data from CommonCrawl archives'
+                url = 'https://github.com/centic9/CommonCrawlDocumentDownload'
+                licenses {
+                    license {
+                        name = 'BSD 2-Clause "Simplified" License'
+                        url = 'https://github.com/centic9/CommonCrawlDocumentDownload/blob/master/LICENSE.md'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'centic9'
+                        name = 'Dominik Stadler'
+                    }
+                }
+                scm {
+                    connection = 'scm:git@github.com:centic9/CommonCrawlDocumentDownload'
+                    developerConnection = 'scm:git@github.com:centic9/CommonCrawlDocumentDownload'
+                    url = 'https://github.com/centic9/CommonCrawlDocumentDownload'
+                }
+            }
         }
-
-        licenses {
-          license {
-            name 'BSD 2-Clause License'
-            url 'https://www.opensource.org/licenses/bsd-license.php'
-          }
-        }
-
-        developers {
-          developer {
-            id 'centic9	'
-            name 'Dominik Stadler'
-          }
-        }
-      }
     }
-  }
+    repositories {
+        maven {
+            // change to point to your repo, e.g. http://my.org/repo
+            url = layout.buildDirectory.dir('repo')
+            //url = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            // authentication(userName: ossrhUsername, password: ossrhPassword)
+            /* snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            } */
+        }
+    }
 }
 
-afterReleaseBuild.dependsOn uploadArchives
+//afterReleaseBuild.dependsOn uploadArchives
 
 task lookupURLs(type:JavaExec,dependsOn: compileJava) {
 	description = 'Reads the current Common Crawl URL index data and extracts all URLs for interesting mime-types or file extensions'
