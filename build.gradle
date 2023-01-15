@@ -98,15 +98,6 @@ java {
     withSourcesJar()
 }
 
-signing {
-	setRequired {
-		// signing is only required if this is a release version
-		// and the artifacts are to be published
-		gradle.taskGraph.allTasks.any { it instanceof PublishToMavenRepository }
-	}
-    sign configurations.archives
-}
-
 release {
     git {
         requireBranch.set('master')
@@ -115,7 +106,7 @@ release {
 
 publishing {
     publications {
-        maven(MavenPublication) {
+        mavenJava(MavenPublication) {
             from components.java
 
             pom {
@@ -151,6 +142,10 @@ publishing {
             //snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/')
         }
     }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
 
 afterReleaseBuild.dependsOn publish
