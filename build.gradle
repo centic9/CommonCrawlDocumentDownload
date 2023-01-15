@@ -113,14 +113,6 @@ release {
     }
 }
 
-//provide defaults so we do not need to specify them always
-if (!project.hasProperty('ossrhUsername')) {
-    ext.ossrhUsername = ''
-}
-if (!project.hasProperty('ossrhPassword')) {
-    ext.ossrhPassword = ''
-}
-
 publishing {
     publications {
         maven(MavenPublication) {
@@ -153,17 +145,15 @@ publishing {
     repositories {
         maven {
             // change to point to your repo, e.g. http://my.org/repo
-            url = layout.buildDirectory.dir('repo')
-            //url = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
-            // authentication(userName: ossrhUsername, password: ossrhPassword)
-            /* snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            } */
+            //url = layout.buildDirectory.dir('repo')
+            url = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            credentials(PasswordCredentials)
+            //snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/')
         }
     }
 }
 
-//afterReleaseBuild.dependsOn uploadArchives
+afterReleaseBuild.dependsOn publish
 
 task lookupURLs(type:JavaExec,dependsOn: compileJava) {
 	description = 'Reads the current Common Crawl URL index data and extracts all URLs for interesting mime-types or file extensions'
