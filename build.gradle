@@ -157,7 +157,7 @@ task lookupURLs(type:JavaExec,dependsOn: compileJava) {
             '-Xmx128m'
     ]
 
-    main = 'org.dstadler.commoncrawl.index.DownloadURLIndex'
+    mainClass = 'org.dstadler.commoncrawl.index.DownloadURLIndex'
     classpath = sourceSets.main.runtimeClasspath
 }
 
@@ -169,7 +169,7 @@ task downloadOldIndex(type:JavaExec,dependsOn: compileJava) {
             '-Xmx128m'
     ]
 
-    main = 'org.dstadler.commoncrawl.oldindex.ReadAndDownload'
+    mainClass = 'org.dstadler.commoncrawl.oldindex.ReadAndDownload'
     classpath = sourceSets.main.runtimeClasspath
 }
 
@@ -180,7 +180,7 @@ task downloadDocuments(type:JavaExec,dependsOn: compileJava) {
             '-Xmx128m'
     ]
 
-    main = 'org.dstadler.commoncrawl.index.DownloadFromCommonCrawl'
+    mainClass = 'org.dstadler.commoncrawl.index.DownloadFromCommonCrawl'
     classpath = sourceSets.main.runtimeClasspath
 }
 
@@ -191,6 +191,6 @@ task deduplicate(type:JavaExec,dependsOn: compileJava) {
             '-Xmx1024m'
     ]
 
-    main = 'org.dstadler.commoncrawl.Deduplicate'
+    mainClass = 'org.dstadler.commoncrawl.Deduplicate'
     classpath = sourceSets.main.runtimeClasspath
 }
