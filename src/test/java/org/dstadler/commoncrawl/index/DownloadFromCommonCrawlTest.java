@@ -52,11 +52,13 @@ public class DownloadFromCommonCrawlTest {
     	}
 	}
 
+	@Ignore("Downloads from common-crawl and is sometimes flaky")
 	@Test
 	public void testDownload() throws Exception {
 		downloadFile(line);
 	}
 
+	@Ignore("Downloads from common-crawl and is sometimes flaky")
 	@Test
 	public void testDownload2015_48() throws Exception {
 		downloadFile(line_2015_48);
