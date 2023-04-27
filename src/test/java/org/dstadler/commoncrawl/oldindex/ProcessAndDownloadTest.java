@@ -7,10 +7,11 @@ import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
 import org.dstadler.commoncrawl.Utils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ProcessAndDownloadTest {
-
+	@Ignore("Downloads from common-crawl and is sometimes flaky")
     @Test
     public void testOffer() throws Exception {
     	File tempDir = File.createTempFile("ProcessAndDownloadTest", ".dir");
