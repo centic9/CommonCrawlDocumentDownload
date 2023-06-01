@@ -14,6 +14,8 @@ http://blog.commoncrawl.org/2013/01/common-crawl-url-index/ is still available i
 Please note that a full run usually finds a huge number of files and thus downloading will require a large 
 amount of time and lots of disk-space if the data is stored locally!
 
+**_NOTE_** This project does not implement backoff on HTTP errors about too many requests. Due to the current high rate of access by many GPT/LLM experiments, the CommonCrawl S3 bucket very often returns HTTP errors about rate exceeded. See https://github.com/tballison/commoncrawl-fetcher-lite for a newer implementation of this with more advanced functionality that work more reliably.
+
 > **_NOTE:_**  CommonCrawl only stores up to 1MB per file and cuts off any bytes exceeding this length. So larger documents will be truncated and might not be valid and parsable any more. You can try to download the original file via the URL that is part of the crawl-data, but this project does not implement this due to potential "crawling" restrictions on target websites.
 
 ## Getting started
