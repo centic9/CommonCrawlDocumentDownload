@@ -41,12 +41,12 @@ dependencies {
     implementation 'org.dstadler:commons-dost:1.2.0.1'
     implementation 'org.apache.httpcomponents:httpclient:4.5.14'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
-    implementation 'commons-io:commons-io:2.12.0'
+    implementation 'commons-io:commons-io:2.13.0'
 
     // version '0.20.2-cdh3u4' is referenced by webarchive-commons, but "vanished"...
     implementation 'org.apache.hadoop:hadoop-core:0.20.205.0'
     implementation 'org.netpreserve.commons:webarchive-commons:1.1.9'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.0'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
 
     // for commoncrawl-source
     implementation 'org.jsoup:jsoup:1.15.3'
