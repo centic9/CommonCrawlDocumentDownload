@@ -29,7 +29,7 @@ public class MimeTypes {
 
     public static boolean matches(String mime) {
 		// optimize to exclude most of the values before even using a regex
-		if(mime == null || !mime.startsWith("application/")) {
+		if(mime == null || !mime.startsWith("image/")) {
 			return false;
 		}
 
@@ -44,7 +44,7 @@ public class MimeTypes {
 
     public static String toExtension(String mime) {
 		// optimize to exclude most of the values before even using a regex
-		if(mime == null || !mime.startsWith("application/")) {
+		if(mime == null || !mime.startsWith("image/")) {
     		return "";
     	}
 
