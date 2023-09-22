@@ -87,7 +87,7 @@ CommonCrawl periodically runs crawls and publishes them. You can switch to newer
 adjusting the constant `CURRENT_CRAWL` in [DownloadURLIndex.java](src/main/java/org/dstadler/commoncrawl/index/DownloadURLIndex.java#L32) to the proper `<year>-<week>` 
 number of the newer crawl. 
 
-See https://commoncrawl.org/connect/blog/ for announcemnts of the latest crawls.
+See [https://commoncrawl.org/connect/blog/](https://commoncrawl.org/blog) for announcemnts of the latest crawls.
 
 ### Ideas
 
