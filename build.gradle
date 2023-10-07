@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'de.thetaphi:forbiddenapis:3.5.1'
+        classpath 'de.thetaphi:forbiddenapis:3.6'
     }
 }
 plugins {
@@ -38,10 +38,10 @@ forbiddenApisMain {
 }
 
 dependencies {
-    implementation 'org.dstadler:commons-dost:1.2.0.2'
+    implementation 'org.dstadler:commons-dost:1.2.0.3'
     implementation 'org.apache.httpcomponents:httpclient:4.5.14'
     implementation 'org.apache.commons:commons-lang3:3.13.0'
-    implementation 'commons-io:commons-io:2.13.0'
+    implementation 'commons-io:commons-io:2.14.0'
 
     // version '0.20.2-cdh3u4' is referenced by webarchive-commons, but "vanished"...
     implementation 'org.apache.hadoop:hadoop-core:0.20.205.0'
@@ -54,7 +54,7 @@ dependencies {
     // for @Nullable
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
-    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.junit.vintage:junit-vintage-engine:5.10.0'
     testImplementation 'org.dstadler:commons-test:1.0.0.20'
 }
 
