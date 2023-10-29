@@ -41,7 +41,7 @@ dependencies {
     implementation 'org.dstadler:commons-dost:1.2.0.3'
     implementation 'org.apache.httpcomponents:httpclient:4.5.14'
     implementation 'org.apache.commons:commons-lang3:3.13.0'
-    implementation 'commons-io:commons-io:2.14.0'
+    implementation 'commons-io:commons-io:2.15.0'
 
     // version '0.20.2-cdh3u4' is referenced by webarchive-commons, but "vanished"...
     implementation 'org.apache.hadoop:hadoop-core:0.20.205.0'
@@ -73,7 +73,7 @@ test {
 }
 
 jacoco {
-    toolVersion = '0.8.10'
+    toolVersion = '0.8.11'
 }
 
 jacocoTestReport {
