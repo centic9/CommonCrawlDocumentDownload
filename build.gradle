@@ -41,7 +41,7 @@ dependencies {
     implementation 'org.dstadler:commons-dost:1.2.0.3'
     implementation 'org.apache.httpcomponents:httpclient:4.5.14'
     implementation 'org.apache.commons:commons-lang3:3.14.0'
-    implementation 'commons-io:commons-io:2.15.0'
+    implementation 'commons-io:commons-io:2.15.1'
 
     // version '0.20.2-cdh3u4' is referenced by webarchive-commons, but "vanished"...
     implementation 'org.apache.hadoop:hadoop-core:0.20.205.0'
@@ -59,7 +59,7 @@ dependencies {
 }
 
 wrapper {
-    gradleVersion = '7.6.1'
+    gradleVersion = '8.5'
 }
 
 test {
@@ -78,17 +78,17 @@ jacoco {
 
 jacocoTestReport {
     reports {
-        xml.enabled true
+        xml.required = true
     }
 }
 
 task sourcesJar(type: Jar) {
-    classifier = 'sources'
+    archiveClassifier = 'sources'
     from sourceSets.main.allJava
 }
 
 task javadocJar(type: Jar) {
-    classifier = 'javadoc'
+    archiveClassifier = 'javadoc'
     from javadoc
 }
 
