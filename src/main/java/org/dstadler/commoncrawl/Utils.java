@@ -152,7 +152,17 @@ public class Utils {
         } catch (IOException e) {
         	// retry once for HTTP 500 that we see sometimes
         	if(e.getMessage().contains("HTTP StatusCode 500")) {
-        		downloadFileFromCommonCrawl(httpClient, url, header, useWARC, destFile);
+				downloadFileFromCommonCrawl(httpClient, url, header, useWARC, destFile);
+			} else if(e.getMessage().contains("HTTP StatusCode 503")) {
+				log.info("Sleeping 120 seconds before retrying  to reduce request rate");
+
+				try {
+					Thread.sleep(120_000);
+				} catch (InterruptedException ex) {
+					throw new RuntimeException(ex);
+				}
+
+				downloadFileFromCommonCrawl(httpClient, url, header, useWARC, destFile);
         	} else {
         		throw e;
         	}
