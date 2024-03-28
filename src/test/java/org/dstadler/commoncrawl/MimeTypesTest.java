@@ -1,8 +1,11 @@
 package org.dstadler.commoncrawl;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+
+import java.util.regex.Pattern;
 
 public class MimeTypesTest {
     @Test
@@ -14,36 +17,41 @@ public class MimeTypesTest {
         assertFalse(MimeTypes.matches("application/binary"));
         //assertFalse(MimeTypes.matches(null));
 
-        assertTrue(MimeTypes.matches("application/msword"));
-        assertTrue(MimeTypes.matches("application/vnd.ms-word"));
-        assertTrue(MimeTypes.matches("application/vnd.openxmlformats-officedocument.wordprocessingml.document"));
-        assertTrue(MimeTypes.matches("application/msexcel"));
-        assertTrue(MimeTypes.matches("application/vnd.ms-excel"));
-        assertTrue(MimeTypes.matches("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-        assertTrue(MimeTypes.matches("application/vnd.ms-excel.addin.macroEnabled.12"));
-        assertTrue(MimeTypes.matches("application/vnd.ms-excel.sheet.binary.macroEnabled.12"));
-        assertTrue(MimeTypes.matches("application/vnd.ms-powerpoint"));
-        assertTrue(MimeTypes.matches("application/vnd.openxmlformats-officedocument.presentationml.presentation"));
-        assertTrue(MimeTypes.matches("application/vnd.ms-powerpoint.presentation.macroenabled.12"));
-        assertTrue(MimeTypes.matches("application/vnd.ms-powerpoint.slideshow.macroenabled.12"));
-        assertTrue(MimeTypes.matches("application/vnd.openxmlformats-officedocument.presentationml.template"));
-        assertTrue(MimeTypes.matches("application/vnd.ms-officetheme"));
-        assertTrue(MimeTypes.matches("application/vnd.ms-tnef"));
-        assertTrue(MimeTypes.matches("application/vnd.openxmlformats-officedocument.drawingml.chart+xml"));
-        assertTrue(MimeTypes.matches("application/vnd.openxmlformats-officedocument.vmlDrawing"));
-        assertTrue(MimeTypes.matches("application/vnd.visio"));
-        assertTrue(MimeTypes.matches("application/vnd.ms-visio.drawing.main+xml"));
-        assertTrue(MimeTypes.matches("application/vnd.ms-visio.template.main+xml"));
-        assertTrue(MimeTypes.matches("application/vnd.ms-visio.stencil.main+xml"));
-        assertTrue(MimeTypes.matches("application/vnd.ms-visio.drawing.macroEnabled.main+xml"));
-        assertTrue(MimeTypes.matches("application/vnd.ms-visio.template.macroEnabled.main+xml"));
-        assertTrue(MimeTypes.matches("application/vnd.ms-visio.stencil.macroEnabled.main+xml"));
-        assertTrue(MimeTypes.matches("application/vnd.ms-outlook"));
-        assertTrue(MimeTypes.matches("application/x-mspublisher"));
-        assertTrue(MimeTypes.matches("application/vnd.openxmlformats-officedocument"));
-        assertTrue(MimeTypes.matches("application/x-tika-ooxml"));
-        assertTrue(MimeTypes.matches("application/x-tika-ooxml-protected"));
-        assertTrue(MimeTypes.matches("application/x-tika-msoffice"));
+        assertFalse(MimeTypes.matches("application/msword"));
+        assertFalse(MimeTypes.matches("application/vnd.ms-word"));
+        assertFalse(MimeTypes.matches("application/vnd.openxmlformats-officedocument.wordprocessingml.document"));
+        assertFalse(MimeTypes.matches("application/msexcel"));
+        assertFalse(MimeTypes.matches("application/vnd.ms-excel"));
+        assertFalse(MimeTypes.matches("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        assertFalse(MimeTypes.matches("application/vnd.ms-excel.addin.macroEnabled.12"));
+        assertFalse(MimeTypes.matches("application/vnd.ms-excel.sheet.binary.macroEnabled.12"));
+        assertFalse(MimeTypes.matches("application/vnd.ms-powerpoint"));
+        assertFalse(MimeTypes.matches("application/vnd.openxmlformats-officedocument.presentationml.presentation"));
+        assertFalse(MimeTypes.matches("application/vnd.ms-powerpoint.presentation.macroenabled.12"));
+        assertFalse(MimeTypes.matches("application/vnd.ms-powerpoint.slideshow.macroenabled.12"));
+        assertFalse(MimeTypes.matches("application/vnd.openxmlformats-officedocument.presentationml.template"));
+        assertFalse(MimeTypes.matches("application/vnd.ms-officetheme"));
+        assertFalse(MimeTypes.matches("application/vnd.ms-tnef"));
+        assertFalse(MimeTypes.matches("application/vnd.openxmlformats-officedocument.drawingml.chart+xml"));
+        assertFalse(MimeTypes.matches("application/vnd.openxmlformats-officedocument.vmlDrawing"));
+        assertFalse(MimeTypes.matches("application/vnd.visio"));
+        assertFalse(MimeTypes.matches("application/vnd.ms-visio.drawing.main+xml"));
+        assertFalse(MimeTypes.matches("application/vnd.ms-visio.template.main+xml"));
+        assertFalse(MimeTypes.matches("application/vnd.ms-visio.stencil.main+xml"));
+        assertFalse(MimeTypes.matches("application/vnd.ms-visio.drawing.macroEnabled.main+xml"));
+        assertFalse(MimeTypes.matches("application/vnd.ms-visio.template.macroEnabled.main+xml"));
+        assertFalse(MimeTypes.matches("application/vnd.ms-visio.stencil.macroEnabled.main+xml"));
+        assertFalse(MimeTypes.matches("application/vnd.ms-outlook"));
+        assertFalse(MimeTypes.matches("application/x-mspublisher"));
+        assertFalse(MimeTypes.matches("application/vnd.openxmlformats-officedocument"));
+        assertFalse(MimeTypes.matches("application/x-tika-ooxml"));
+        assertFalse(MimeTypes.matches("application/x-tika-ooxml-protected"));
+        assertFalse(MimeTypes.matches("application/x-tika-msoffice"));
+
+		assertTrue(MimeTypes.matches("application/gpx"));
+		assertTrue(MimeTypes.matches("application/gpx+xml"));
+		assertTrue(MimeTypes.matches("application/xml-gpx"));
+		assertTrue(MimeTypes.matches("application/x-gpx+xml"));
     }
 
     @Test
@@ -55,35 +63,40 @@ public class MimeTypesTest {
         assertEquals("", MimeTypes.toExtension("application/binary"));
         assertEquals("", MimeTypes.toExtension(null));
 
-        assertEquals(".doc", MimeTypes.toExtension("application/msword"));
-        assertEquals(".doc", MimeTypes.toExtension("application/vnd.ms-word"));
-        assertEquals(".docx", MimeTypes.toExtension("application/vnd.openxmlformats-officedocument.wordprocessingml.document"));
-        assertEquals(".xls", MimeTypes.toExtension("application/msexcel"));
-        assertEquals(".xls", MimeTypes.toExtension("application/vnd.ms-excel"));
-        assertEquals(".xlsx", MimeTypes.toExtension("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-        assertEquals(".xlsm", MimeTypes.toExtension("application/vnd.ms-excel.addin.macroEnabled.12"));
-        assertEquals(".xlsb", MimeTypes.toExtension("application/vnd.ms-excel.sheet.binary.macroEnabled.12"));
-        assertEquals(".ppt", MimeTypes.toExtension("application/vnd.ms-powerpoint"));
-        assertEquals(".pptx", MimeTypes.toExtension("application/vnd.openxmlformats-officedocument.presentationml.presentation"));
-        assertEquals(".pptm", MimeTypes.toExtension("application/vnd.ms-powerpoint.presentation.macroenabled.12"));
-        assertEquals(".ppsm", MimeTypes.toExtension("application/vnd.ms-powerpoint.slideshow.macroenabled.12"));
-        assertEquals(".potx", MimeTypes.toExtension("application/vnd.openxmlformats-officedocument.presentationml.template"));
-        assertEquals(".thmx", MimeTypes.toExtension("application/vnd.ms-officetheme"));
-        assertEquals(".msg", MimeTypes.toExtension("application/vnd.ms-tnef"));
-        assertEquals(".dwg", MimeTypes.toExtension("application/vnd.openxmlformats-officedocument.drawingml.chart+xml"));
-        assertEquals(".dwg", MimeTypes.toExtension("application/vnd.openxmlformats-officedocument.vmlDrawing"));
-        assertEquals(".vsd", MimeTypes.toExtension("application/vnd.visio"));
-        assertEquals(".vsdx", MimeTypes.toExtension("application/vnd.ms-visio.drawing.main+xml"));
-        assertEquals(".vstx", MimeTypes.toExtension("application/vnd.ms-visio.template.main+xml"));
-        assertEquals(".vssx", MimeTypes.toExtension("application/vnd.ms-visio.stencil.main+xml"));
-        assertEquals(".vsdm", MimeTypes.toExtension("application/vnd.ms-visio.drawing.macroEnabled.main+xml"));
-        assertEquals(".vstm", MimeTypes.toExtension("application/vnd.ms-visio.template.macroEnabled.main+xml"));
-        assertEquals(".vssm", MimeTypes.toExtension("application/vnd.ms-visio.stencil.macroEnabled.main+xml"));
-        assertEquals(".msg", MimeTypes.toExtension("application/vnd.ms-outlook"));
-        assertEquals(".pub", MimeTypes.toExtension("application/x-mspublisher"));
-        assertEquals(".ooxml", MimeTypes.toExtension("application/vnd.openxmlformats-officedocument"));
-        assertEquals(".ooxml", MimeTypes.toExtension("application/x-tika-ooxml"));
-        assertEquals(".ooxml", MimeTypes.toExtension("application/x-tika-ooxml-protected"));
-        assertEquals(".ole2", MimeTypes.toExtension("application/x-tika-msoffice"));
-    }
+        assertEquals("", MimeTypes.toExtension("application/msword"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.ms-word"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.openxmlformats-officedocument.wordprocessingml.document"));
+        assertEquals("", MimeTypes.toExtension("application/msexcel"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.ms-excel"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.ms-excel.addin.macroEnabled.12"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.ms-excel.sheet.binary.macroEnabled.12"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.ms-powerpoint"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.openxmlformats-officedocument.presentationml.presentation"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.ms-powerpoint.presentation.macroenabled.12"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.ms-powerpoint.slideshow.macroenabled.12"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.openxmlformats-officedocument.presentationml.template"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.ms-officetheme"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.ms-tnef"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.openxmlformats-officedocument.drawingml.chart+xml"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.openxmlformats-officedocument.vmlDrawing"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.visio"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.ms-visio.drawing.main+xml"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.ms-visio.template.main+xml"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.ms-visio.stencil.main+xml"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.ms-visio.drawing.macroEnabled.main+xml"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.ms-visio.template.macroEnabled.main+xml"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.ms-visio.stencil.macroEnabled.main+xml"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.ms-outlook"));
+        assertEquals("", MimeTypes.toExtension("application/x-mspublisher"));
+        assertEquals("", MimeTypes.toExtension("application/vnd.openxmlformats-officedocument"));
+        assertEquals("", MimeTypes.toExtension("application/x-tika-ooxml"));
+        assertEquals("", MimeTypes.toExtension("application/x-tika-ooxml-protected"));
+        assertEquals("", MimeTypes.toExtension("application/x-tika-msoffice"));
+
+        assertEquals(".gpx", MimeTypes.toExtension("application/gpx"));
+        assertEquals(".gpx", MimeTypes.toExtension("application/gpx+xml"));
+        assertEquals(".gpx", MimeTypes.toExtension("application/xml-gpx"));
+        assertEquals(".gpx", MimeTypes.toExtension("application/x-gpx+xml"));
+	}
 }
