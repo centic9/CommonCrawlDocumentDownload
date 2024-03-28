@@ -15,46 +15,52 @@ public class ProcessImplTest {
         File file = File.createTempFile("ProcessImplTest", ".tmp");
         try {
             assertTrue(file.delete());
-            
+
             try (BlockProcessor process = new ProcessImpl(file, false)) {
                 byte[] block = FileUtils.readFileToByteArray(new File("src/test/data/block1.bin"));
-                
+
                 process.offer(block, 0);
-            }
+            } // this will flush the queue
 
             // need to do this outside the block to let process.close() join the Thread
-            assertTrue(file.exists());
-            assertTrue(file.length() > 0);
-            
-            final long length = file.length(); 
+            assertTrue("Failed for " + file,
+					file.exists());
+            assertTrue("Failed for " + file,
+					file.length() > 0);
+
+            final long length = file.length();
 
             // with append=false
             try (BlockProcessor process = new ProcessImpl(file, false)) {
                 byte[] block = FileUtils.readFileToByteArray(new File("src/test/data/block1.bin"));
-                
+
                 process.offer(block, 0);
-            }
-            
+            } // this will flush the queue
+
             // need to do this outside the block to let process.close() join the Thread
-            assertTrue(file.exists());
-            assertTrue(file.length() > 0);
-            
-            assertEquals("When re-creating the file the length should be the same as before", 
-                    length, file.length()); 
+            assertTrue("Failed for " + file,
+					file.exists());
+            assertTrue("Failed for " + file,
+					file.length() > 0);
+
+            assertEquals("When re-creating the file the length should be the same as before",
+                    length, file.length());
 
             // with append=false
             try (BlockProcessor process = new ProcessImpl(file, true)) {
                 byte[] block = FileUtils.readFileToByteArray(new File("src/test/data/block1.bin"));
-                
+
                 process.offer(block, 0);
-            }
-            
+            } // this will flush the queue
+
             // need to do this outside the block to let process.close() join the Thread
-            assertTrue(file.exists());
-            assertTrue(file.length() > 0);
-            
-            assertEquals("When appending, the length should be double", 
-                    length*2, file.length()); 
+            assertTrue("Failed for " + file,
+					file.exists());
+            assertTrue("Failed for " + file,
+					file.length() > 0);
+
+            assertEquals("When appending, the length should be double",
+                    length*2, file.length());
         } finally {
             assertTrue(file.delete());
         }
