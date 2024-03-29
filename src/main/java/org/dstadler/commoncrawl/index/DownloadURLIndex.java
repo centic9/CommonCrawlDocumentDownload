@@ -142,6 +142,14 @@ public class DownloadURLIndex {
 							"linesPerSecond: " + linesPerSecond + ": " +
 							StringUtils.abbreviate(FOUND_MIME_TYPES.sortedMap().toString(), 95));
 					lastLog = System.currentTimeMillis();
+
+					// downloading from common-crawl S3 buckets is now heavily throttled, let's add some
+					// delay for each file to not hit the rate-limits very quickly
+					try {
+						Thread.sleep(10_000);
+					} catch (InterruptedException e) {
+						throw new RuntimeException(e);
+					}
 				}
 			}
 		}

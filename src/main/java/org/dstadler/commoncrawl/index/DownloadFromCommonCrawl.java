@@ -49,6 +49,14 @@ public class DownloadFromCommonCrawl {
 					File file = Utils.downloadFileFromCommonCrawl(client.getHttpClient(), item.url, item.getDocumentLocation(), true);
 					if (file != null) {
 						downloaded++;
+
+						// downloading from common-crawl S3 buckets is now heavily throttled, let's add some
+						// delay for each file to not hit the rate-limits very quickly
+						try {
+							Thread.sleep(10_000);
+						} catch (InterruptedException e) {
+							throw new RuntimeException(e);
+						}
 					}
 				} catch (IOException e) {
 					// skip files that we cannot store locally,
