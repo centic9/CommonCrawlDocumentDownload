@@ -31,6 +31,10 @@ import java.util.zip.GZIPInputStream;
 public class Utils {
     private final static Logger log = LoggerFactory.make();
 
+	// downloading from common-crawl S3 buckets is now heavily throttled, let's add some
+	// delay for each file to not hit the rate-limits very quickly
+	private static final int THROTTLE_DELAY_MS = 10_000;
+
     // avoid having to read the header data always during testing, can be removed later...
     public static final int INDEX_BLOCK_COUNT = 2644;
     public static final int BLOCK_SIZE = 65536;
@@ -213,5 +217,15 @@ public class Utils {
                 throw new IllegalStateException("Could not create directory " + Utils.DOWNLOAD_DIR);
             }
         }
+	}
+
+	public static void throttleDownloads() {
+		// downloading from common-crawl S3 buckets is now heavily throttled, let's add some
+		// delay for each file to not hit the rate-limits very quickly
+		try {
+			Thread.sleep(THROTTLE_DELAY_MS);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

@@ -31,13 +31,7 @@ public class ProcessAndDownload extends ProcessImpl implements Closeable {
 
         Utils.downloadFileFromCommonCrawl(client.getHttpClient(), url, header, false);
 
-		// downloading from common-crawl S3 buckets is now heavily throttled, let's add some
-		// delay for each file to not hit the rate-limits very quickly
-		try {
-			Thread.sleep(10_000);
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
+		Utils.throttleDownloads();
 	}
 
     @Override
