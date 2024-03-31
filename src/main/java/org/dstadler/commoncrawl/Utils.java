@@ -33,7 +33,7 @@ public class Utils {
 
 	// downloading from common-crawl S3 buckets is now heavily throttled, let's add some
 	// delay for each file to not hit the rate-limits very quickly
-	private static final int THROTTLE_DELAY_MS = 10_000;
+	private static final int THROTTLE_DELAY_MS = 15_000;
 
     // avoid having to read the header data always during testing, can be removed later...
     public static final int INDEX_BLOCK_COUNT = 2644;
