@@ -29,8 +29,8 @@ import java.util.logging.Logger;
 public class DownloadURLIndex {
     private static final Logger log = LoggerFactory.make();
 
-    // https://commoncrawl.org/connect/blog/
-    public static final String CURRENT_CRAWL = "CC-MAIN-2023-23";
+    // https://commoncrawl.org/blog/
+    public static final String CURRENT_CRAWL = "CC-MAIN-2024-42";
 	public static final File COMMON_CRAWL_FILE = new File("commoncrawl-" + CURRENT_CRAWL + ".txt");
 
 	private static final int START_INDEX = 0;
