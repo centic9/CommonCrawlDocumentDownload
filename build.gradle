@@ -18,7 +18,11 @@ apply plugin: 'de.thetaphi.forbiddenapis'
 apply plugin: 'jacoco'
 apply plugin: 'signing'
 
-sourceCompatibility = JavaVersion.VERSION_17
+java {
+  toolchain {
+	  sourceCompatibility = JavaVersion.VERSION_17
+  }
+}
 group = 'org.dstadler'
 archivesBaseName = 'commoncrawldownload'
 
