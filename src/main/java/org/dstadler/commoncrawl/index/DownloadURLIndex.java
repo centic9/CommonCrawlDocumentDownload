@@ -72,7 +72,7 @@ public class DownloadURLIndex {
 	}
 
 	private static void handleCDXFile(CloseableHttpClient httpClient, int index) throws IOException {
-		String url = String.format(URL_FORMAT, index);
+		String url = URL_FORMAT.formatted(index);
 
 		log.info("Loading file " + index + " from " + url);
 
@@ -139,7 +139,7 @@ public class DownloadURLIndex {
 					long linesPerSecond = time == 0 ? count : count/time;
 
 					log.info("File " + index + ": " + count + " lines, compressed bytes: " + content.getCount() + " of " + length +
-							" (" + String.format("%.2f", ((double)content.getCount())/length*100) + "%), bytes: " + uncompressedStream.getCount() + ": " +
+							" (" + "%.2f".formatted(((double)content.getCount()) / length * 100) + "%), bytes: " + uncompressedStream.getCount() + ": " +
 							"linesPerSecond: " + linesPerSecond + ": " +
 							StringUtils.abbreviate(FOUND_MIME_TYPES.sortedMap().toString(), 95));
 					lastLog = System.currentTimeMillis();

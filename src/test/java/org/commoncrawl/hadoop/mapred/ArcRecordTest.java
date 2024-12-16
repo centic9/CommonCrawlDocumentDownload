@@ -3,14 +3,14 @@ package org.commoncrawl.hadoop.mapred;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.archive.io.arc.ARCRecord;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ArcRecordTest {
 
@@ -34,7 +34,7 @@ public class ArcRecordTest {
         }
 	}
 	
-	@Ignore("The resulting file is not correctly written, HTTP Headers are ignored!")
+	@Disabled("The resulting file is not correctly written, HTTP Headers are ignored!")
 	@Test
 	public void testArcRecordCommons() throws Exception {
         try (InputStream stream = new GZIPInputStream(new FileInputStream("src/test/data/record.bin"))) {

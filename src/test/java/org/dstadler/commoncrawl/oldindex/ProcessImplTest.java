@@ -1,12 +1,12 @@
 package org.dstadler.commoncrawl.oldindex;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ProcessImplTest {
 
@@ -23,10 +23,10 @@ public class ProcessImplTest {
             } // this will flush the queue
 
             // need to do this outside the block to let process.close() join the Thread
-            assertTrue("Failed for " + file,
-					file.exists());
-            assertTrue("Failed for " + file,
-					file.length() > 0);
+            assertTrue(file.exists(),
+					"Failed for " + file);
+            assertTrue(file.length() > 0,
+					"Failed for " + file);
 
             final long length = file.length();
 
@@ -38,13 +38,12 @@ public class ProcessImplTest {
             } // this will flush the queue
 
             // need to do this outside the block to let process.close() join the Thread
-            assertTrue("Failed for " + file,
-					file.exists());
-            assertTrue("Failed for " + file,
-					file.length() > 0);
+            assertTrue(file.exists(),
+					"Failed for " + file);
+            assertTrue(file.length() > 0,
+					"Failed for " + file);
 
-            assertEquals("When re-creating the file the length should be the same as before",
-                    length, file.length());
+            assertEquals(length, file.length(), "When re-creating the file the length should be the same as before");
 
             // with append=false
             try (BlockProcessor process = new ProcessImpl(file, true)) {
@@ -54,13 +53,12 @@ public class ProcessImplTest {
             } // this will flush the queue
 
             // need to do this outside the block to let process.close() join the Thread
-            assertTrue("Failed for " + file,
-					file.exists());
-            assertTrue("Failed for " + file,
-					file.length() > 0);
+            assertTrue(file.exists(),
+					"Failed for " + file);
+            assertTrue(file.length() > 0,
+					"Failed for " + file);
 
-            assertEquals("When appending, the length should be double",
-                    length*2, file.length());
+            assertEquals(length*2, file.length(), "When appending, the length should be double");
         } finally {
             assertTrue(file.delete());
         }

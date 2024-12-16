@@ -1,17 +1,17 @@
 package org.dstadler.commoncrawl.oldindex;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.dstadler.commoncrawl.Utils;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class ProcessAndDownloadTest {
-	@Ignore("Downloads from common-crawl and is sometimes flaky")
+	@Disabled("Downloads from common-crawl and is sometimes flaky")
     @Test
     public void testOffer() throws Exception {
     	File tempDir = File.createTempFile("ProcessAndDownloadTest", ".dir");
@@ -35,9 +35,9 @@ public class ProcessAndDownloadTest {
 	            assertTrue(file.exists());
 	            assertTrue(file.length() > 0);
 
-				assertTrue("Should have resulting file, but did not find it at " + destFile +
-								"\nfound: " + Arrays.toString(destFile.getParentFile().list()),
-						destFile.exists());
+				assertTrue(destFile.exists(),
+						"Should have resulting file, but did not find it at " + destFile +
+								"\nfound: " + Arrays.toString(destFile.getParentFile().list()));
 	        } finally {
 	            assertTrue(file.delete());
 	        }

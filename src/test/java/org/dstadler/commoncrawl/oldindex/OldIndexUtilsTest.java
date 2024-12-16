@@ -2,14 +2,14 @@ package org.dstadler.commoncrawl.oldindex;
 
 import org.apache.commons.io.FileUtils;
 import org.dstadler.commoncrawl.Utils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OldIndexUtilsTest {
     @Test

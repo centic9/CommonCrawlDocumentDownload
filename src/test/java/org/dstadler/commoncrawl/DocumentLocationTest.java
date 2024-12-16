@@ -1,8 +1,8 @@
 package org.dstadler.commoncrawl;
 
 import static org.dstadler.commoncrawl.Utils.COMMON_CRAWL_URL;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import org.apache.commons.io.HexDump;
 import org.dstadler.commoncrawl.oldindex.BlockProcessor;
 import org.dstadler.commons.net.UrlUtils;
 import org.dstadler.poi.util.LittleEndian;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DocumentLocationTest {
     @Test

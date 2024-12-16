@@ -23,7 +23,7 @@ public class DownloadURLIndexFromFile {
 		LoggerFactory.initLogging();
 
 		for(int i = START_INDEX;i <= END_INDEX;i++) {
-			File file = new File(String.format("cdx-%05d.gz", i));
+			File file = new File("cdx-%05d.gz".formatted(i));
 
 	    	log.info("Loading data from " + file + " which has " + file.length()  + " bytes");
 		    try (InputStream stream = new FileInputStream(file)) {

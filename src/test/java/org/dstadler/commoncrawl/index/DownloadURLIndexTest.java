@@ -17,15 +17,14 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.util.EntityUtils;
 import org.dstadler.commons.http.HttpClientWrapper;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
-import org.junit.Ignore;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import com.google.common.io.CountingInputStream;
 
 public class DownloadURLIndexTest {
     private static final Logger log = LoggerFactory.make();
 
-    @Ignore("Not an actual unit-test...")
+    @Disabled("Not an actual unit-test...")
 	@Test
 	public void testRead() throws Exception {
         try (HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
@@ -85,7 +84,7 @@ public class DownloadURLIndexTest {
         }
 	}
 
-    @Ignore("Not an actual unit-test...")
+    @Disabled("Not an actual unit-test...")
 	@Test
 	public void testReadDirectly() throws Exception {
         try (HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
@@ -140,7 +139,7 @@ public class DownloadURLIndexTest {
 	}
 
     @SuppressWarnings("UnstableApiUsage")
-	@Ignore("Not an actual unit-test...")
+	@Disabled("Not an actual unit-test...")
 	@Test
 	public void testReadFromFile() throws Exception {
 		File file = new File("cdx-00000.gz");
