@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'de.thetaphi:forbiddenapis:3.8'
+        classpath 'de.thetaphi:forbiddenapis:3.9'
     }
 }
 plugins {
@@ -32,7 +32,7 @@ repositories {
 
 forbiddenApis {
     suppressAnnotations = ['org.dstadler.commons.util.SuppressForbidden']
-    bundledSignatures = [ 'jdk-reflection', 'commons-io-unsafe-2.15.1', 'jdk-internal' ]
+    bundledSignatures = [ 'jdk-reflection', 'commons-io-unsafe-2.18.0', 'jdk-internal' ]
     signaturesFiles += files('config/forbidden-apis/http-signatures.txt')
 }
 forbiddenApisMain {
@@ -50,16 +50,16 @@ dependencies {
     // version '0.20.2-cdh3u4' is referenced by webarchive-commons, but "vanished"...
     implementation 'org.apache.hadoop:hadoop-core:0.20.205.0'
     implementation 'org.netpreserve.commons:webarchive-commons:1.1.9'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.18.1'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.18.3'
 
     // for commoncrawl-source
     implementation 'org.jsoup:jsoup:1.15.3'
 
     // for @Nullable
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.4'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.11.4'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.11.4'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.12.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.12.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.12.1'
     testImplementation 'org.dstadler:commons-test:1.0.0.21'
 }
 
