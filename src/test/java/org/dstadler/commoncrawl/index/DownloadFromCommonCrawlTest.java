@@ -9,12 +9,12 @@ import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.HttpEntity;
 import org.dstadler.commoncrawl.DocumentLocation;
 import org.dstadler.commoncrawl.Utils;
-import org.dstadler.commons.http.HttpClientWrapper;
+import org.dstadler.commons.http5.HttpClientWrapper5;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +27,7 @@ public class DownloadFromCommonCrawlTest {
 	public void testMain() throws Exception {
 		CDXItem item = CDXItem.parse(line);
 
-    	try (final HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
+    	try (final HttpClientWrapper5 client = new HttpClientWrapper5("", null, 30_000)) {
     		File file = Utils.downloadFileFromCommonCrawl(client.getHttpClient(), item.url, item.getDocumentLocation(), true);
     		assertNotNull(file);
     	}
@@ -39,11 +39,11 @@ public class DownloadFromCommonCrawlTest {
 		CDXItem item = CDXItem.parse(line);
 		DocumentLocation header = item.getDocumentLocation();
 
-    	try (final HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
+    	try (final HttpClientWrapper5 client = new HttpClientWrapper5("", null, 30_000)) {
 	        HttpGet httpGet = new HttpGet(header.getUrl());
 	        httpGet.addHeader("Range", header.getRangeHeader());
 	        try (CloseableHttpResponse response = client.getHttpClient().execute(httpGet)) {
-	            HttpEntity entity = HttpClientWrapper.checkAndFetch(response, header.getUrl());
+	            HttpEntity entity = HttpClientWrapper5.checkAndFetch(response, header.getUrl());
 
 	            try (InputStream stream = new GZIPInputStream(entity.getContent())) {
 	            	FileUtils.copyInputStreamToFile(stream, new File("/tmp/test.bin"));
@@ -65,7 +65,7 @@ public class DownloadFromCommonCrawlTest {
 	}
 
 	private void downloadFile(String json) throws IOException {
-		try (final HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
+		try (final HttpClientWrapper5 client = new HttpClientWrapper5("", null, 30_000)) {
 			File file = File.createTempFile("DownloadFromCommonCrawl", ".tst");
 			try {
 				CDXItem item = CDXItem.parse(json);

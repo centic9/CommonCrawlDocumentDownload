@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import org.dstadler.commoncrawl.DocumentLocation;
 import org.dstadler.commoncrawl.Utils;
-import org.dstadler.commons.http.HttpClientWrapper;
+import org.dstadler.commons.http5.HttpClientWrapper5;
 
 /**
  * Specialized {@link BlockProcessor} which reads the position in the Common Crawl
@@ -18,7 +18,7 @@ import org.dstadler.commons.http.HttpClientWrapper;
  * @author dominik.stadler
  */
 public class ProcessAndDownload extends ProcessImpl implements Closeable {
-    private final HttpClientWrapper client = new HttpClientWrapper("", null, 30_000);
+    private final HttpClientWrapper5 client = new HttpClientWrapper5("", null, 30_000);
 
     public ProcessAndDownload(File file, boolean append) throws IOException {
         super(file, append);

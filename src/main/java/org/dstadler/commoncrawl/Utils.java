@@ -6,12 +6,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.dstadler.commons.http.HttpClientWrapper;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.HttpEntity;
+import org.dstadler.commons.http5.HttpClientWrapper5;
 import org.archive.io.warc.WARCRecord;
 import org.archive.util.LaxHttpParser;
 import org.commoncrawl.hadoop.mapred.ArcRecord;
@@ -183,7 +182,7 @@ public class Utils {
         HttpGet httpGet = new HttpGet(header.getUrl());
         httpGet.addHeader("Range", header.getRangeHeader());
         try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-            HttpEntity entity = HttpClientWrapper.checkAndFetch(response, header.getUrl());
+            HttpEntity entity = HttpClientWrapper5.checkAndFetch(response, header.getUrl());
 
             try (InputStream stream = new GZIPInputStream(entity.getContent())) {
             	// we get differently formatted files depending on the version of CommonCrawl that we look at...
@@ -203,7 +202,7 @@ public class Utils {
 	            	record.readFrom(stream);
 	                try {
 	                	FileUtils.copyInputStreamToFile(record.getHttpResponse().getEntity().getContent(), destFile);
-	                } catch (IllegalStateException  | HttpException e) {
+	                } catch (IllegalStateException | org.apache.http.HttpException e) {
 	                	throw new IOException(e);
 	                }
             	}

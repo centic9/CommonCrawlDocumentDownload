@@ -2,12 +2,12 @@ package org.dstadler.commoncrawl;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.HttpEntity;
 import org.dstadler.commoncrawl.oldindex.ProcessAndDownload;
-import org.dstadler.commons.http.HttpClientWrapper;
+import org.dstadler.commons.http5.HttpClientWrapper5;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
 
 import java.io.*;
@@ -33,7 +33,7 @@ public class Download {
         Utils.ensureDownloadDir();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(Utils.COMMONURLS_PATH));
-            HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
+            HttpClientWrapper5 client = new HttpClientWrapper5("", null, 30_000)) {
             while(true) {
                 String url = reader.readLine();
                 if(url == null) {
@@ -78,7 +78,7 @@ public class Download {
     private static void download(CloseableHttpClient client, String urlStr, File destFile, URI url) throws IOException {
         HttpGet httpGet = new HttpGet(url);
         try (CloseableHttpResponse response = client.execute(httpGet)) {
-            HttpEntity entity = HttpClientWrapper.checkAndFetch(response, url.toString());
+            HttpEntity entity = HttpClientWrapper5.checkAndFetch(response, url.toString());
             try (InputStream content = entity.getContent()) {
                 storeFile(urlStr, destFile, content);
             }

@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.dstadler.commoncrawl.Utils;
-import org.dstadler.commons.http.HttpClientWrapper;
+import org.dstadler.commons.http5.HttpClientWrapper5;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
 
 import static org.dstadler.commoncrawl.index.DownloadURLIndex.COMMON_CRAWL_FILE;
@@ -28,7 +28,7 @@ public class DownloadFromCommonCrawl {
 
 		Utils.ensureDownloadDir();
 
-    	try (final HttpClientWrapper client = new HttpClientWrapper("", null, 600_000);
+    	try (final HttpClientWrapper5 client = new HttpClientWrapper5("", null, 600_000);
     		BufferedReader reader = new BufferedReader(new FileReader(COMMON_CRAWL_FILE), 1024*1024)) {
 			int count = 0, downloaded = 0, fileNameTooLong = 0;
 			long bytes = 0;

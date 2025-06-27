@@ -11,11 +11,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.util.EntityUtils;
-import org.dstadler.commons.http.HttpClientWrapper;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.dstadler.commons.http5.HttpClientWrapper5;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -27,14 +27,14 @@ public class DownloadURLIndexTest {
     @Disabled("Not an actual unit-test...")
 	@Test
 	public void testRead() throws Exception {
-        try (HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
+        try (HttpClientWrapper5 client = new HttpClientWrapper5("", null, 30_000)) {
 
         	String url = COMMON_CRAWL_URL + "cc-index/collections/CC-MAIN-2015-48/indexes/cdx-00000.gz";
         	log.info("Loading data from " + url);
 
         	final HttpGet httpGet = new HttpGet(url);
     		try (CloseableHttpResponse response = client.getHttpClient().execute(httpGet)) {
-    		    HttpEntity entity = HttpClientWrapper.checkAndFetch(response, url);
+    		    HttpEntity entity = HttpClientWrapper5.checkAndFetch(response, url);
 
     		    log.info("Content has " + entity.getContentLength()  + " bytes");
     	        InputStream content = entity.getContent();
@@ -87,14 +87,14 @@ public class DownloadURLIndexTest {
     @Disabled("Not an actual unit-test...")
 	@Test
 	public void testReadDirectly() throws Exception {
-        try (HttpClientWrapper client = new HttpClientWrapper("", null, 30_000)) {
+        try (HttpClientWrapper5 client = new HttpClientWrapper5("", null, 30_000)) {
 
         	String url = COMMON_CRAWL_URL + "cc-index/collections/CC-MAIN-2015-48/indexes/cdx-00000.gz";
         	log.info("Loading data from " + url);
 
         	final HttpGet httpGet = new HttpGet(url);
     		try (CloseableHttpResponse response = client.getHttpClient().execute(httpGet)) {
-    		    HttpEntity entity = HttpClientWrapper.checkAndFetch(response, url);
+    		    HttpEntity entity = HttpClientWrapper5.checkAndFetch(response, url);
 
     		    log.info("Content has " + entity.getContentLength()  + " bytes");
     	        try (InputStream content = entity.getContent()) {

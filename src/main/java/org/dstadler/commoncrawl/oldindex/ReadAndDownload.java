@@ -7,12 +7,12 @@ import java.net.SocketTimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.HttpEntity;
 import org.dstadler.commoncrawl.Utils;
-import org.dstadler.commons.http.HttpClientWrapper;
+import org.dstadler.commons.http5.HttpClientWrapper5;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
 
 import com.google.common.base.Preconditions;
@@ -40,7 +40,7 @@ public class ReadAndDownload {
     public static void main(String[] args) throws IllegalStateException, IOException {
         LoggerFactory.initLogging();
 
-        try (HttpClientWrapper client = new HttpClientWrapper("", null, 1800_000)) {
+        try (HttpClientWrapper5 client = new HttpClientWrapper5("", null, 1800_000)) {
             // TODO: disabled until new data is published to save us one additional HTTP Request during startup
 //            Pair<Long, Long> values = readStartPos(client.getHttpClient());
 //            long startPos = values.getRight();
@@ -68,14 +68,14 @@ public class ReadAndDownload {
     }
 
     private static void readBlocks(CloseableHttpClient client,
-            long startPos, int blockSize, int startBlock) throws IOException {
+                                   long startPos, int blockSize, int startBlock) throws IOException {
         Preconditions.checkArgument(startPos > 0);
 
         log.info("Reading blocks starting at " + startPos + " from " + Utils.INDEX_URL + ", skipping " + startBlock + " blocks");
         HttpGet httpGet = new HttpGet(Utils.INDEX_URL);
         httpGet.addHeader("Range", "bytes=" + startPos + "-");
         try (CloseableHttpResponse response = client.execute(httpGet)) {
-            HttpEntity entity = HttpClientWrapper.checkAndFetch(response, Utils.INDEX_URL);
+            HttpEntity entity = HttpClientWrapper5.checkAndFetch(response, Utils.INDEX_URL);
 
             long startTs = System.currentTimeMillis();
             //try (InputStream stream = new BufferedInputStream(entity.getContent(), 5*blockSize)) {

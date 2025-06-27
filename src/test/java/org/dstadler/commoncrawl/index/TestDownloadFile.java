@@ -1,21 +1,26 @@
 package org.dstadler.commoncrawl.index;
 
-import static org.dstadler.commoncrawl.Utils.COMMON_CRAWL_URL;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
+import org.apache.hc.client5.http.ssl.TrustAllStrategy;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
+import org.archive.util.zip.GZIPMembersInputStream;
+import org.dstadler.commons.http5.HttpClientWrapper5;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-import org.archive.util.zip.GZIPMembersInputStream;
-import org.dstadler.commons.http.HttpClientWrapper;
+import static org.dstadler.commoncrawl.Utils.COMMON_CRAWL_URL;
 
 /**
  * Simple test-app to reproduce and narrow down the problem with
@@ -35,14 +40,24 @@ public class TestDownloadFile {
     public static void main(String[] args) throws Exception {
     	HttpClientBuilder builder = HttpClients.custom();
 
-    	builder.setSSLHostnameVerifier(new NoopHostnameVerifier());
+		PoolingHttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder.create()
+				.setSSLSocketFactory(
+						SSLConnectionSocketFactoryBuilder.create()
+								.setSslContext(SSLContextBuilder.create()
+										.loadTrustMaterial(TrustAllStrategy.INSTANCE)
+										.build())
+								.setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+								.build())
+				.build();
+
+		builder.setConnectionManager(connectionManager);
 
         try (CloseableHttpClient httpClient = builder.build()) {
         	System.out.println("Loading data from " + URL);
 
         	final HttpGet httpGet = new HttpGet(URL);
 			try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-    		    HttpEntity entity = HttpClientWrapper.checkAndFetch(response, URL);
+    		    HttpEntity entity = HttpClientWrapper5.checkAndFetch(response, URL);
 
     		    System.out.println("Content has " + entity.getContentLength()  + " bytes");
 		    	try (InputStream stream = entity.getContent()) {

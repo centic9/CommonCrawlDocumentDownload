@@ -24,7 +24,9 @@ java {
   }
 }
 group = 'org.dstadler'
-archivesBaseName = 'commoncrawldownload'
+base {
+    archivesName = 'commoncrawldownload'
+}
 
 repositories {
     mavenCentral()
@@ -43,7 +45,7 @@ forbiddenApisMain {
 
 dependencies {
     implementation 'org.dstadler:commons-dost:1.4.2'
-    implementation 'org.apache.httpcomponents:httpclient:4.5.14'
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.5'
     implementation 'org.apache.commons:commons-lang3:3.17.0'
     implementation 'commons-io:commons-io:2.19.0'
 
@@ -90,12 +92,12 @@ jacocoTestReport {
     }
 }
 
-task sourcesJar(type: Jar) {
+tasks.register('sourcesJar', Jar) {
     archiveClassifier = 'sources'
     from sourceSets.main.allJava
 }
 
-task javadocJar(type: Jar) {
+tasks.register('javadocJar', Jar) {
     archiveClassifier = 'javadoc'
     from javadoc
 }
@@ -158,7 +160,8 @@ signing {
 
 afterReleaseBuild.dependsOn publish
 
-task lookupURLs(type:JavaExec,dependsOn: compileJava) {
+tasks.register('lookupURLs', JavaExec) {
+    dependsOn compileJava
     description = 'Reads the current Common Crawl URL index data and extracts all URLs for interesting mime-types or file extensions'
 
     jvmArgs = [
@@ -170,7 +173,8 @@ task lookupURLs(type:JavaExec,dependsOn: compileJava) {
 }
 
 
-task downloadOldIndex(type:JavaExec,dependsOn: compileJava) {
+tasks.register('downloadOldIndex', JavaExec) {
+    dependsOn compileJava
     description = 'Reading blocks at beginning or the last stored block-number and download binary data from the common crawl archives'
 
     jvmArgs = [
@@ -181,7 +185,8 @@ task downloadOldIndex(type:JavaExec,dependsOn: compileJava) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
-task downloadDocuments(type:JavaExec,dependsOn: compileJava) {
+tasks.register('downloadDocuments', JavaExec) {
+    dependsOn compileJava
     description = 'Uses the URLs listed in commoncrawl.txt to download the documents from the Common Crawl'
 
     jvmArgs = [
@@ -192,7 +197,8 @@ task downloadDocuments(type:JavaExec,dependsOn: compileJava) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
-task deduplicate(type:JavaExec,dependsOn: compileJava) {
+tasks.register('deduplicate', JavaExec) {
+    dependsOn compileJava
     description = 'Compares files by size and hash and moves away identical files into a backup-directory'
 
     jvmArgs = [

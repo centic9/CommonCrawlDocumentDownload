@@ -9,18 +9,18 @@ import com.google.common.base.Preconditions;
 import com.google.common.io.CountingInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.archive.util.zip.GZIPMembersInputStream;
 import org.dstadler.commoncrawl.Extensions;
 import org.dstadler.commoncrawl.MimeTypes;
 import org.dstadler.commoncrawl.Utils;
 import org.dstadler.commons.collections.MappedCounter;
 import org.dstadler.commons.collections.MappedCounterImpl;
-import org.dstadler.commons.http.HttpClientWrapper;
+import org.dstadler.commons.http5.HttpClientWrapper5;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
 
 import java.io.*;
@@ -51,7 +51,7 @@ public class DownloadURLIndex {
 		log.info("Processing index files starting from index " + index + " with pattern " + URL_FORMAT);
 		for(; index <= END_INDEX; index++) {
 			try {
-				try (HttpClientWrapper client = new HttpClientWrapper("", null, 600_000)) {
+				try (HttpClientWrapper5 client = new HttpClientWrapper5("", null, 600_000)) {
 					handleCDXFile(client.getHttpClient(), index);
 				}
 			} catch (IOException e) {
@@ -64,7 +64,7 @@ public class DownloadURLIndex {
 					Thread.sleep(10_000);
 				}
 
-				try (HttpClientWrapper client = new HttpClientWrapper("", null, 600_000)) {
+				try (HttpClientWrapper5 client = new HttpClientWrapper5("", null, 600_000)) {
 					handleCDXFile(client.getHttpClient(), index);
 				}
 			}
@@ -78,7 +78,7 @@ public class DownloadURLIndex {
 
     	final HttpGet httpGet = new HttpGet(url);
 		try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-		    HttpEntity entity = HttpClientWrapper.checkAndFetch(response, url);
+		    HttpEntity entity = HttpClientWrapper5.checkAndFetch(response, url);
 
 		    log.info("File " + index + " has " + entity.getContentLength()  + " bytes");
 		    try {
