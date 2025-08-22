@@ -44,30 +44,30 @@ forbiddenApisMain {
 }
 
 dependencies {
-    implementation 'org.dstadler:commons-dost:1.4.2'
+    implementation 'org.dstadler:commons-dost:1.4.3'
     implementation 'org.apache.httpcomponents.client5:httpclient5:5.5'
-    implementation 'org.apache.commons:commons-lang3:3.17.0'
-    implementation 'commons-io:commons-io:2.19.0'
+    implementation 'org.apache.commons:commons-lang3:3.18.0'
+    implementation 'commons-io:commons-io:2.20.0'
 
     // version '0.20.2-cdh3u4' is referenced by webarchive-commons, but "vanished"...
     implementation 'org.apache.hadoop:hadoop-core:0.20.205.0'
     implementation 'org.netpreserve.commons:webarchive-commons:1.1.9'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.18.3'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.19.2'
 
     // for commoncrawl-source
     implementation 'org.jsoup:jsoup:1.15.3'
 
     // for @Nullable
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.13.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.13.1'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.13.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.13.4'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.13.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.13.4'
 
     testImplementation 'org.dstadler:commons-test:1.0.0.22'
 }
 
 wrapper {
-    gradleVersion = '8.14.2'
+    gradleVersion = '8.14.3'
 }
 
 test {
