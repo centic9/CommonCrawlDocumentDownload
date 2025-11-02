@@ -145,9 +145,11 @@ public class DownloadURLIndex {
 							" (" + "%.2f".formatted(((double)content.getCount()) / length * 100) + "%), bytes: " + uncompressedStream.getCount() + ": " +
 							"linesPerSecond: " + linesPerSecond + ": " +
 							StringUtils.abbreviate(FOUND_MIME_TYPES.sortedMap().toString(), 95));
-					lastLog = System.currentTimeMillis();
 
+                    // if necessary, throttling needs to be done before resetting the timestamp
 					//Utils.throttleDownloads();
+
+                    lastLog = System.currentTimeMillis();
 				}
 			}
 		}
