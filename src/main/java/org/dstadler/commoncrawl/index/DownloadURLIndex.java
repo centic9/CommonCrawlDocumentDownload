@@ -165,12 +165,14 @@ public class DownloadURLIndex {
 		    			if(MimeTypes.matches(mimeType)) {
 		    				log.info("Found-Mimetype: " + json);
 		    				FileUtils.writeStringToFile(COMMON_CRAWL_FILE, json + "\n", "UTF-8", true);
+                            break;
 		    			}
 		    		} else if("url".equals(jp.currentName())) {
 		    			String url = jp.getValueAsString().toLowerCase();
 		    			if(Extensions.matches(url)) {
 		    				log.info("Found-URL: " + json);
 		    				FileUtils.writeStringToFile(COMMON_CRAWL_FILE, json + "\n", "UTF-8", true);
+                            break;
 		    			}
 		    		}
 	    		}
