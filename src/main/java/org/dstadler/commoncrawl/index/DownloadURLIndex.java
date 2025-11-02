@@ -33,7 +33,7 @@ public class DownloadURLIndex {
 	public static final File COMMON_CRAWL_FILE = new File("commoncrawl-" + CURRENT_CRAWL + ".txt");
 
 	private static final int START_INDEX = 0;
-    private static final int END_INDEX = 299;
+    private static final int END_INDEX = 302;
 
     private static final String URL_FORMAT = COMMON_CRAWL_URL +
 			"cc-index/collections/" + CURRENT_CRAWL + "/indexes/cdx-%05d.gz";
