@@ -31,7 +31,7 @@ public class ProcessAndDownload extends ProcessImpl implements Closeable {
 
         Utils.downloadFileFromCommonCrawl(client.getHttpClient(), url, header, false);
 
-		Utils.throttleDownloads();
+		//Utils.throttleDownloads();
 	}
 
     @Override

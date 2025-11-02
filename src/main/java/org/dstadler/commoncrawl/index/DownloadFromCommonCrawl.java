@@ -50,7 +50,7 @@ public class DownloadFromCommonCrawl {
 					if (file != null) {
 						downloaded++;
 
-						Utils.throttleDownloads();
+//						Utils.throttleDownloads();
 					}
 				} catch (IOException e) {
 					// skip files that we cannot store locally,
