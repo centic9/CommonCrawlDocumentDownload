@@ -11,13 +11,12 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.archive.util.zip.GZIPMembersInputStream;
 import org.dstadler.commoncrawl.Extensions;
 import org.dstadler.commoncrawl.MimeTypes;
-import org.dstadler.commoncrawl.Utils;
 import org.dstadler.commons.collections.MappedCounter;
 import org.dstadler.commons.collections.MappedCounterImpl;
 import org.dstadler.commons.http5.HttpClientWrapper5;
@@ -59,9 +58,11 @@ public class DownloadURLIndex {
 
 				if (e.getMessage().contains("503")) {
 					// wait longer if we get a "503" which is how the server indicates "Please reduce your request rate"
-					Thread.sleep(300_000);
+                    //noinspection BusyWait
+                    Thread.sleep(300_000);
 				} else {
-					Thread.sleep(10_000);
+                    //noinspection BusyWait
+                    Thread.sleep(10_000);
 				}
 
 				try (HttpClientWrapper5 client = new HttpClientWrapper5("", null, 600_000)) {
@@ -77,23 +78,25 @@ public class DownloadURLIndex {
 		log.info("Loading file " + index + " from " + url);
 
     	final HttpGet httpGet = new HttpGet(url);
-		try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-		    HttpEntity entity = HttpClientWrapper5.checkAndFetch(response, url);
+        httpClient.execute(httpGet, (HttpClientResponseHandler<Void>) response -> {
+            HttpEntity entity = HttpClientWrapper5.checkAndFetch(response, url);
 
-		    log.info("File " + index + " has " + entity.getContentLength()  + " bytes");
-		    try {
-				handleInputStream(url, entity.getContent(), index, entity.getContentLength());
-			} catch (Exception e) {
-				// try to stop processing in case of Exceptions in order to not download the whole file
-				// in the implicit close()
-				httpClient.close();
+            log.info("File " + index + " has " + entity.getContentLength()  + " bytes");
+            try {
+                handleInputStream(url, entity.getContent(), index, entity.getContentLength());
+            } catch (Exception e) {
+                // try to stop processing in case of Exceptions in order to not download the whole file
+                // in the implicit close()
+                httpClient.close();
 
-				throw e;
-			} finally {
-				// ensure all content is taken out to free resources
-				EntityUtils.consume(entity);
-			}
-		}
+                throw e;
+            } finally {
+                // ensure all content is taken out to free resources
+                EntityUtils.consume(entity);
+            }
+
+            return null;
+        });
 
 		FileUtils.writeStringToFile(new File("mimetypes.txt"),
 				FOUND_MIME_TYPES.sortedMap().toString().replace(",", "\n"), "UTF-8");
@@ -155,7 +158,7 @@ public class DownloadURLIndex {
 	    	while(jp.nextToken() != JsonToken.END_OBJECT) {
 	    		if(jp.getCurrentToken() == JsonToken.VALUE_STRING) {
 	    			/* JSON: url, mime, mime-detected, status, digest, length, offset, filename, charset, language */
-		    		if("mime".equals(jp.getCurrentName())) {
+		    		if("mime".equals(jp.currentName())) {
 		    			String mimeType = jp.getValueAsString().toLowerCase();
 						FOUND_MIME_TYPES.inc(mimeType);
 
@@ -163,7 +166,7 @@ public class DownloadURLIndex {
 		    				log.info("Found-Mimetype: " + json);
 		    				FileUtils.writeStringToFile(COMMON_CRAWL_FILE, json + "\n", "UTF-8", true);
 		    			}
-		    		} else if("url".equals(jp.getCurrentName())) {
+		    		} else if("url".equals(jp.currentName())) {
 		    			String url = jp.getValueAsString().toLowerCase();
 		    			if(Extensions.matches(url)) {
 		    				log.info("Found-URL: " + json);
