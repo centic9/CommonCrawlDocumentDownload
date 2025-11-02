@@ -10,8 +10,8 @@ import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.dstadler.commoncrawl.DocumentLocation;
 import org.dstadler.commoncrawl.Utils;
 import org.dstadler.commons.http5.HttpClientWrapper5;
@@ -42,13 +42,15 @@ public class DownloadFromCommonCrawlTest {
     	try (final HttpClientWrapper5 client = new HttpClientWrapper5("", null, 30_000)) {
 	        HttpGet httpGet = new HttpGet(header.getUrl());
 	        httpGet.addHeader("Range", header.getRangeHeader());
-	        try (CloseableHttpResponse response = client.getHttpClient().execute(httpGet)) {
-	            HttpEntity entity = HttpClientWrapper5.checkAndFetch(response, header.getUrl());
+            client.getHttpClient().execute(httpGet, (HttpClientResponseHandler<Void>) response -> {
+                HttpEntity entity = HttpClientWrapper5.checkAndFetch(response, header.getUrl());
 
-	            try (InputStream stream = new GZIPInputStream(entity.getContent())) {
-	            	FileUtils.copyInputStreamToFile(stream, new File("/tmp/test.bin"));
-	            }
-	        }
+                try (InputStream stream = new GZIPInputStream(entity.getContent())) {
+                    FileUtils.copyInputStreamToFile(stream, new File("/tmp/test.bin"));
+                }
+
+                return null;
+            });
     	}
 	}
 

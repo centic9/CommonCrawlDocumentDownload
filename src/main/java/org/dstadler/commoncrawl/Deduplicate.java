@@ -3,9 +3,10 @@ package org.dstadler.commoncrawl;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.TreeMultimap;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -87,31 +88,33 @@ public class Deduplicate {
         AtomicLong count = new AtomicLong();
         final TreeMultimap<Long, String> sizes = TreeMultimap.create();
         Files.walkFileTree(DOWNLOAD_DIR.toPath(), EnumSet.of(FileVisitOption.FOLLOW_LINKS),
-                Integer.MAX_VALUE, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-                if (SCAN_EXCLUDES.contains(dir.toFile().getName())) {
-                    log.info("Skipping directory " + dir);
-                    return FileVisitResult.SKIP_SUBTREE;
-                }
+                Integer.MAX_VALUE, new SimpleFileVisitor<>() {
+                    @Nonnull
+                    @Override
+                    public FileVisitResult preVisitDirectory(@Nonnull Path dir, @Nonnull BasicFileAttributes attrs) {
+                        if (SCAN_EXCLUDES.contains(dir.toFile().getName())) {
+                            log.info("Skipping directory " + dir);
+                            return FileVisitResult.SKIP_SUBTREE;
+                        }
 
-                log.info("Entering directory " + dir);
-                return FileVisitResult.CONTINUE;
-            }
+                        log.info("Entering directory " + dir);
+                        return FileVisitResult.CONTINUE;
+                    }
 
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                long current = count.getAndIncrement();
-                if (current % 10000 == 0) {
-                    log.info("Handling file " + current + ": " + file);
-                }
+                    @Nonnull
+                    @Override
+                    public FileVisitResult visitFile(@Nonnull Path file, @Nonnull BasicFileAttributes attrs) {
+                        long current = count.getAndIncrement();
+                        if (current % 10000 == 0) {
+                            log.info("Handling file " + current + ": " + file);
+                        }
 
-                sizes.put(file.toFile().length(),
-                        StringUtils.removeStart(file.toFile().toString(), DOWNLOAD_DIR.toString() + "/"));
+                        sizes.put(file.toFile().length(),
+                                Strings.CS.removeStart(file.toFile().toString(), DOWNLOAD_DIR.toString() + "/"));
 
-                return FileVisitResult.CONTINUE;
-            }
-        });
+                        return FileVisitResult.CONTINUE;
+                    }
+                });
 
         log.info("Found " + sizes.values().size() + " files");
 

@@ -6,10 +6,12 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
+import org.apache.http.HttpException;
 import org.dstadler.commons.http5.HttpClientWrapper5;
 import org.archive.io.warc.WARCRecord;
 import org.archive.util.LaxHttpParser;
@@ -69,9 +71,9 @@ public class Utils {
 
     public static URI convertUrl(String urlStr) throws URISyntaxException {
         if(urlStr.endsWith(":http")) {
-            urlStr = "http://" + StringUtils.removeEnd(urlStr, ":http");
+            urlStr = "http://" + Strings.CS.removeEnd(urlStr, ":http");
         } else if (urlStr.endsWith(":https")) {
-            urlStr = "https://" + StringUtils.removeEnd(urlStr, ":https");
+            urlStr = "https://" + Strings.CS.removeEnd(urlStr, ":https");
         } else {
             urlStr = "http://" + urlStr;
         }
@@ -121,9 +123,9 @@ public class Utils {
 
     public static File computeDownloadFileName(File rootDir, String urlStr, String postfix) {
         // try to simply use the full url with only slashes replaced
-    	String replace = StringUtils.removeStart(urlStr, "http://");
-    	replace = StringUtils.removeStart(replace, "https://");
-        replace = StringUtils.removeEnd(replace, ":http").
+    	String replace = Strings.CS.removeStart(urlStr, "http://");
+    	replace = Strings.CS.removeStart(replace, "https://");
+        replace = Strings.CS.removeEnd(replace, ":http").
                 replace("/", "_").replace("[", "(").
                 replace("]", ")").replace("?", "_").
                 replace(":", "_").replace("%",  "_").
@@ -181,33 +183,36 @@ public class Utils {
         // do a range-query for exactly this document in the Common Crawl dataset
         HttpGet httpGet = new HttpGet(header.getUrl());
         httpGet.addHeader("Range", header.getRangeHeader());
-        try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
+
+        httpClient.execute(httpGet, (HttpClientResponseHandler<Void>) response -> {
             HttpEntity entity = HttpClientWrapper5.checkAndFetch(response, header.getUrl());
 
             try (InputStream stream = new GZIPInputStream(entity.getContent())) {
-            	// we get differently formatted files depending on the version of CommonCrawl that we look at...
-            	if(useWARC) {
-					try (WARCRecord record = new WARCRecord(new FastBufferedInputStream(stream), destFile.getName(), 0)) {
-						// use the parser to remove the HTTP headers
-						LaxHttpParser.parseHeaders(record,"UTF-8");
+                // we get differently formatted files depending on the version of CommonCrawl that we look at...
+                if(useWARC) {
+                    try (WARCRecord record = new WARCRecord(new FastBufferedInputStream(stream), destFile.getName(), 0)) {
+                        // use the parser to remove the HTTP headers
+                        LaxHttpParser.parseHeaders(record,"UTF-8");
 
-    	                try {
-    	                	FileUtils.copyInputStreamToFile(record, destFile);
-    	                } catch (IllegalStateException e) {
-    	                	throw new IOException(e);
-    	                }
-            		}
-            	} else {
-            		ArcRecord record = new ArcRecord();
-	            	record.readFrom(stream);
-	                try {
-	                	FileUtils.copyInputStreamToFile(record.getHttpResponse().getEntity().getContent(), destFile);
-	                } catch (IllegalStateException | org.apache.http.HttpException e) {
-	                	throw new IOException(e);
-	                }
-            	}
+                        try {
+                            FileUtils.copyInputStreamToFile(record, destFile);
+                        } catch (IllegalStateException e) {
+                            throw new IOException(e);
+                        }
+                    }
+                } else {
+                    ArcRecord record = new ArcRecord();
+                    record.readFrom(stream);
+                    try {
+                        FileUtils.copyInputStreamToFile(record.getHttpResponse().getEntity().getContent(), destFile);
+                    } catch (IllegalStateException | HttpException e) {
+                        throw new IOException(e);
+                    }
+                }
             }
-        }
+
+            return null;
+        });
 	}
 
 	public static void ensureDownloadDir() {

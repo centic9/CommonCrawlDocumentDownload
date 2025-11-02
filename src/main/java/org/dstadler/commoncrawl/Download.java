@@ -4,8 +4,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.dstadler.commoncrawl.oldindex.ProcessAndDownload;
 import org.dstadler.commons.http5.HttpClientWrapper5;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
@@ -77,12 +77,14 @@ public class Download {
 
     private static void download(CloseableHttpClient client, String urlStr, File destFile, URI url) throws IOException {
         HttpGet httpGet = new HttpGet(url);
-        try (CloseableHttpResponse response = client.execute(httpGet)) {
+        client.execute(httpGet, (HttpClientResponseHandler<Void>) response -> {
             HttpEntity entity = HttpClientWrapper5.checkAndFetch(response, url.toString());
             try (InputStream content = entity.getContent()) {
                 storeFile(urlStr, destFile, content);
             }
-        }
+
+            return null;
+        });
     }
 
     public static void storeFile(String urlStr, File destFile, InputStream content) throws IOException {

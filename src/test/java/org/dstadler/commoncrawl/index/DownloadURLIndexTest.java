@@ -12,8 +12,8 @@ import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.dstadler.commons.http5.HttpClientWrapper5;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
@@ -33,54 +33,56 @@ public class DownloadURLIndexTest {
         	log.info("Loading data from " + url);
 
         	final HttpGet httpGet = new HttpGet(url);
-    		try (CloseableHttpResponse response = client.getHttpClient().execute(httpGet)) {
-    		    HttpEntity entity = HttpClientWrapper5.checkAndFetch(response, url);
+            client.getHttpClient().execute(httpGet, (HttpClientResponseHandler<Void>) response -> {
+                HttpEntity entity = HttpClientWrapper5.checkAndFetch(response, url);
 
-    		    log.info("Content has " + entity.getContentLength()  + " bytes");
-    	        InputStream content = entity.getContent();
-    			InputStream uncompressedStream = new GZIPInputStream(content);
-    			try (BufferedReader reader = new BufferedReader(
-    	        		new InputStreamReader(uncompressedStream, StandardCharsets.UTF_8), 1024*1024)) {
-    				try {
-    		        	int count = 0;
-    		        	long length = 0;
-    		        	long lastLog = System.currentTimeMillis();
-    	                while(true) {
-    	                    String line = reader.readLine();
-    	                    if(line == null) {
-    	                    	log.info("End of stream reached for " + url + " after " + count + " lines, bytes: " + length + ", ");
-    	                    	log.info(content.available() + " available, "
-    	                    			+ content.read() + " read, "
-    	                    			+ uncompressedStream.available() + " available, "
-    	                    			+ uncompressedStream.read() + " read, "
-    	                    			);
+                log.info("Content has " + entity.getContentLength()  + " bytes");
+                InputStream content = entity.getContent();
+                InputStream uncompressedStream = new GZIPInputStream(content);
+                try (BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(uncompressedStream, StandardCharsets.UTF_8), 1024*1024)) {
+                    try {
+                        int count = 0;
+                        long length = 0;
+                        long lastLog = System.currentTimeMillis();
+                        while(true) {
+                            String line = reader.readLine();
+                            if(line == null) {
+                                log.info("End of stream reached for " + url + " after " + count + " lines, bytes: " + length + ", ");
+                                log.info(content.available() + " available, "
+                                        + content.read() + " read, "
+                                        + uncompressedStream.available() + " available, "
+                                        + uncompressedStream.read() + " read, "
+                                );
 
-    	                    	// TODO: close the client here for now until we find out why it stops before the stream
-    	                    	// is actually fully processed
-    	                    	client.getHttpClient().close();
+                                // TODO: close the client here for now until we find out why it stops before the stream
+                                // is actually fully processed
+                                client.getHttpClient().close();
 
-    	                    	break;
-    	                    }
+                                break;
+                            }
 
-    	                    count++;
-    	                    length+=line.length() + 1;
-    	                    if(count % 100000 == 0 || lastLog < (System.currentTimeMillis() - 10000)) {
-    	                    	log.info(count + " lines, bytes: " + length);
-    	                    	lastLog = System.currentTimeMillis();
-    	                    }
-    	                }
-    				} catch (Exception e) {
-    					// try to stop processing in case of Exceptions in order to not download the whole file
-    					// in the implicit close()
-    					client.getHttpClient().close();
+                            count++;
+                            length+=line.length() + 1;
+                            if(count % 100000 == 0 || lastLog < (System.currentTimeMillis() - 10000)) {
+                                log.info(count + " lines, bytes: " + length);
+                                lastLog = System.currentTimeMillis();
+                            }
+                        }
+                    } catch (Exception e) {
+                        // try to stop processing in case of Exceptions in order to not download the whole file
+                        // in the implicit close()
+                        client.getHttpClient().close();
 
-    					throw e;
-    				}
-            	} finally {
-            		// ensure all content is taken out to free resources
-            		EntityUtils.consume(entity);
-            	}
-    		}
+                        throw e;
+                    }
+                } finally {
+                    // ensure all content is taken out to free resources
+                    EntityUtils.consume(entity);
+                }
+
+                return null;
+            });
         }
 	}
 
@@ -93,48 +95,50 @@ public class DownloadURLIndexTest {
         	log.info("Loading data from " + url);
 
         	final HttpGet httpGet = new HttpGet(url);
-    		try (CloseableHttpResponse response = client.getHttpClient().execute(httpGet)) {
-    		    HttpEntity entity = HttpClientWrapper5.checkAndFetch(response, url);
+            client.getHttpClient().execute(httpGet, (HttpClientResponseHandler<Void>) response -> {
+                HttpEntity entity = HttpClientWrapper5.checkAndFetch(response, url);
 
-    		    log.info("Content has " + entity.getContentLength()  + " bytes");
-    	        try (InputStream content = entity.getContent()) {
-				try (InputStream uncompressedStream = new GZIPInputStream(content)) {
-		        	int count = 0;
-		        	long lastLog = System.currentTimeMillis();
-	                while(true) {
-	                    int n = uncompressedStream.read();
-	                    if(n == -1) {
-	                    	log.info("End of stream reached for " + url + " after " + count + " bytes, ");
-	                    	log.info(content.available() + " available, "
-	                    			+ content.read() + " read, "
-	                    			+ uncompressedStream.available() + " available, "
-	                    			+ uncompressedStream.read() + " read, "
-	                    			);
+                log.info("Content has " + entity.getContentLength()  + " bytes");
+                try (InputStream content = entity.getContent()) {
+                    try (InputStream uncompressedStream = new GZIPInputStream(content)) {
+                        int count = 0;
+                        long lastLog = System.currentTimeMillis();
+                        while(true) {
+                            int n = uncompressedStream.read();
+                            if(n == -1) {
+                                log.info("End of stream reached for " + url + " after " + count + " bytes, ");
+                                log.info(content.available() + " available, "
+                                        + content.read() + " read, "
+                                        + uncompressedStream.available() + " available, "
+                                        + uncompressedStream.read() + " read, "
+                                );
 
-	                    	// TODO: close the client here for now until we find out why it stops before the stream
-	                    	// is actually fully processed
-	                    	client.getHttpClient().close();
+                                // TODO: close the client here for now until we find out why it stops before the stream
+                                // is actually fully processed
+                                client.getHttpClient().close();
 
-	                    	break;
-	                    }
+                                break;
+                            }
 
-	                    count++;
-	                    if(count % 1000000 == 0 || lastLog < (System.currentTimeMillis() - 10000)) {
-	                    	log.info(count + " bytes");
-	                    	lastLog = System.currentTimeMillis();
-	                    }
-	                }
-				} catch (Exception e) {
-					// try to stop processing in case of Exceptions in order to not download the whole file
-					// in the implicit close()
-					client.getHttpClient().close();
+                            count++;
+                            if(count % 1000000 == 0 || lastLog < (System.currentTimeMillis() - 10000)) {
+                                log.info(count + " bytes");
+                                lastLog = System.currentTimeMillis();
+                            }
+                        }
+                    } catch (Exception e) {
+                        // try to stop processing in case of Exceptions in order to not download the whole file
+                        // in the implicit close()
+                        client.getHttpClient().close();
 
-					throw e;
-            	} finally {
-            		// ensure all content is taken out to free resources
-            		EntityUtils.consume(entity);
-            	} }
-    		}
+                        throw e;
+                    } finally {
+                        // ensure all content is taken out to free resources
+                        EntityUtils.consume(entity);
+                    }
+                }
+                return null;
+            });
         }
 	}
 

@@ -10,8 +10,8 @@ import org.apache.commons.io.IOUtils;
 
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.dstadler.commons.http5.HttpClientWrapper5;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
 
@@ -47,7 +47,7 @@ public class ReadTestData {
         log.info("Reading data starting at " + startPos + " from " + Utils.INDEX_URL);
         HttpGet httpGet = new HttpGet(Utils.INDEX_URL);
         httpGet.addHeader("Range", "bytes=" + startPos + "-");
-        try (CloseableHttpResponse response = client.execute(httpGet)) {
+        client.execute(httpGet, (HttpClientResponseHandler<Void>) response -> {
             HttpEntity entity = HttpClientWrapper5.checkAndFetch(response, Utils.INDEX_URL);
 
             try (InputStream stream = entity.getContent()) {
@@ -63,7 +63,8 @@ public class ReadTestData {
                     httpGet.abort();
                 }
             }
-        }
-    }
 
+            return null;
+        });
+    }
 }

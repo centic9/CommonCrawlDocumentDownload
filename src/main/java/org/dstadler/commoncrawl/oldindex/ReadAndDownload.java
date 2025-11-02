@@ -9,8 +9,8 @@ import java.util.logging.Logger;
 
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.dstadler.commoncrawl.Utils;
 import org.dstadler.commons.http5.HttpClientWrapper5;
 import org.dstadler.commons.logging.jdk.LoggerFactory;
@@ -74,13 +74,13 @@ public class ReadAndDownload {
         log.info("Reading blocks starting at " + startPos + " from " + Utils.INDEX_URL + ", skipping " + startBlock + " blocks");
         HttpGet httpGet = new HttpGet(Utils.INDEX_URL);
         httpGet.addHeader("Range", "bytes=" + startPos + "-");
-        try (CloseableHttpResponse response = client.execute(httpGet)) {
+        client.execute(httpGet, (HttpClientResponseHandler<Void>) response -> {
             HttpEntity entity = HttpClientWrapper5.checkAndFetch(response, Utils.INDEX_URL);
 
             long startTs = System.currentTimeMillis();
             //try (InputStream stream = new BufferedInputStream(entity.getContent(), 5*blockSize)) {
             try (InputStream stream = entity.getContent();
-                BlockProcessor processor = new ProcessAndDownload(Utils.COMMONURLS_PATH, true)) {
+                 BlockProcessor processor = new ProcessAndDownload(Utils.COMMONURLS_PATH, true)) {
                 while(true) {
                     Utils.logProgress(startPos, blockSize, startBlock, startTs, blockIndex, 20, 233689120776L);
 
@@ -95,6 +95,8 @@ public class ReadAndDownload {
                 // otherwise HttpClient tries to read the stream fully, which is at least 270GB...
                 httpGet.abort();
             }
-        }
+
+            return null;
+        });
     }
 }

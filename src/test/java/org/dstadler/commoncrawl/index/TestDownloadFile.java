@@ -2,7 +2,6 @@ package org.dstadler.commoncrawl.index;
 
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
@@ -11,6 +10,7 @@ import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
 import org.apache.hc.client5.http.ssl.TrustAllStrategy;
 import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.archive.util.zip.GZIPMembersInputStream;
@@ -56,49 +56,51 @@ public class TestDownloadFile {
         	System.out.println("Loading data from " + URL);
 
         	final HttpGet httpGet = new HttpGet(URL);
-			try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-    		    HttpEntity entity = HttpClientWrapper5.checkAndFetch(response, URL);
+            httpClient.execute(httpGet, (HttpClientResponseHandler<Void>) response -> {
+                HttpEntity entity = HttpClientWrapper5.checkAndFetch(response, URL);
 
-    		    System.out.println("Content has " + entity.getContentLength()  + " bytes");
-		    	try (InputStream stream = entity.getContent()) {
-    				InputStream uncompressedStream = new GZIPMembersInputStream(stream);
-    				try (BufferedReader reader = new BufferedReader(
-    						new InputStreamReader(uncompressedStream), 1024*1024)) {
-    					try {
-    				    	int count = 0;
-    				        while(true) {
-    				            String line = reader.readLine();
-    				            if(line == null) {
-    				            	System.out.println("End of stream reached for " + URL + " after " + count + " lines, ");
-    				            	System.out.println(uncompressedStream.read() + " read, "
-    				            			);
+                System.out.println("Content has " + entity.getContentLength()  + " bytes");
+                try (InputStream stream = entity.getContent()) {
+                    InputStream uncompressedStream = new GZIPMembersInputStream(stream);
+                    try (BufferedReader reader = new BufferedReader(
+                            new InputStreamReader(uncompressedStream), 1024*1024)) {
+                        try {
+                            int count = 0;
+                            while(true) {
+                                String line = reader.readLine();
+                                if(line == null) {
+                                    System.out.println("End of stream reached for " + URL + " after " + count + " lines, ");
+                                    System.out.println(uncompressedStream.read() + " read, "
+                                    );
 
-    				            	// TODO: close the client here for now until we find out why it stops before the stream
-    				            	// is actually fully processed
-    				            	httpClient.close();
+                                    // TODO: close the client here for now until we find out why it stops before the stream
+                                    // is actually fully processed
+                                    httpClient.close();
 
-    				                break;
-    				            }
+                                    break;
+                                }
 
-    				            count++;
-    				            //System.out.print('.');
-    				            if(count % 100000 == 0) {
-    				            	System.out.println(count + " lines");
-    				            }
-    				        }
-    					} catch (Exception e) {
-    						// try to stop processing in case of Exceptions in order to not download the whole file
-    						// in the implicit close()
-    						httpClient.close();
+                                count++;
+                                //System.out.print('.');
+                                if(count % 100000 == 0) {
+                                    System.out.println(count + " lines");
+                                }
+                            }
+                        } catch (Exception e) {
+                            // try to stop processing in case of Exceptions in order to not download the whole file
+                            // in the implicit close()
+                            httpClient.close();
 
-    						throw e;
-    					}
-    				}
-    			} finally {
-    				// ensure all content is taken out to free resources
-    				EntityUtils.consume(entity);
-    			}
-    		}
+                            throw e;
+                        }
+                    }
+                } finally {
+                    // ensure all content is taken out to free resources
+                    EntityUtils.consume(entity);
+                }
+
+                return null;
+            });
         }
     }
 }
