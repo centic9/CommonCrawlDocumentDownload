@@ -134,7 +134,8 @@ locally, which will avoid using too much disk-space
 * Increase the version in `gradle.properties` afterwards
 * Afterwards go to the [Github tags page](https://github.com/centic9/CommonCrawlDocumentDownload/tags) and 
   create a release and add release-notes for the published version
-* The resulting binaries should appear at https://repo1.maven.org/maven2/org/dstadler/CommonCrawlDocumentDownload/
+* The resulting binaries should appear at https://repo1.maven.org/maven2/org/dstadler/commoncrawldownload/ 
+  (Note: some releases were done to https://repo1.maven.org/maven2/org/dstadler/CommonCrawlDocumentDownload/)
 
 ## Support this project
 
