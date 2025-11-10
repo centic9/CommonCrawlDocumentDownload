@@ -48,10 +48,9 @@ dependencies {
     implementation 'org.apache.httpcomponents.client5:httpclient5:5.5.1'
     implementation 'org.apache.commons:commons-lang3:3.19.0'
     implementation 'commons-io:commons-io:2.20.0'
+    implementation 'commons-codec:commons-codec:1.19.0'
 
-    // version '0.20.2-cdh3u4' is referenced by webarchive-commons, but "vanished"...
-    implementation 'org.apache.hadoop:hadoop-core:0.20.205.0'
-    implementation 'org.netpreserve.commons:webarchive-commons:1.1.9'
+    implementation 'org.netpreserve.commons:webarchive-commons:1.1.11'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.20.0'
 
     // for commoncrawl-source
