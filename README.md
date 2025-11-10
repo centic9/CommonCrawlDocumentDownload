@@ -123,10 +123,18 @@ locally, which will avoid using too much disk-space
 
 ### Release it
 
-    ./gradlew --console=plain release && ./gradlew closeAndReleaseRepository
-    
+* Check the version defined in `gradle.properties`
+* Push changes to GitHub
+* Publish the binaries to Maven Central
+
+    ./gradlew --console=plain publishToMavenCentral
+
 * This should automatically release the new version on MavenCentral
-* Afterwards go to the [Github releases page](https://github.com/centic9/commons-dost/releases) and add release-notes
+* Apply tag in Github (`git tag` && `git push --tags`)
+* Increase the version in `gradle.properties` afterwards
+* Afterwards go to the [Github tags page](https://github.com/centic9/CommonCrawlDocumentDownload/tags) and 
+  create a release and add release-notes for the published version
+* The resulting binaries should appear at https://repo1.maven.org/maven2/org/dstadler/CommonCrawlDocumentDownload/
 
 ## Support this project
 

@@ -7,13 +7,13 @@ buildscript {
     }
 }
 plugins {
+    id 'java-library'
     id 'maven-publish'
-    // https://github.com/researchgate/gradle-release
-    id 'net.researchgate.release' version '3.1.0'
+    // https://github.com/SgtSilvio/gradle-maven-central-publishing
+    id 'io.github.sgtsilvio.gradle.maven-central-publishing' version '0.4.0'
     id 'io.codearte.nexus-staging' version '0.30.0'
 }
 
-apply plugin: 'java'
 apply plugin: 'de.thetaphi.forbiddenapis'
 apply plugin: 'jacoco'
 apply plugin: 'signing'
@@ -102,21 +102,22 @@ tasks.register('javadocJar', Jar) {
     from javadoc
 }
 
+tasks.withType(Jar).configureEach { task ->
+    task.doLast {
+        ant.checksum algorithm: 'md5', file: it.archivePath
+        ant.checksum algorithm: 'sha1', file: it.archivePath
+    }
+}
+
 java {
     withJavadocJar()
     withSourcesJar()
 }
 
-release {
-    git {
-        requireBranch.set('master')
-    }
-}
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = archivesBaseName
+            artifactId = 'commoncrawldownload'
             from components.java
 
             pom {
@@ -157,8 +158,6 @@ publishing {
 signing {
     sign publishing.publications.mavenJava
 }
-
-afterReleaseBuild.dependsOn publish
 
 tasks.register('lookupURLs', JavaExec) {
     dependsOn compileJava
