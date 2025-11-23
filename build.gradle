@@ -44,23 +44,23 @@ forbiddenApisMain {
 }
 
 dependencies {
-    implementation 'org.dstadler:commons-dost:1.4.3'
+    implementation 'org.dstadler:commons-dost:1.4.4'
     implementation 'org.apache.httpcomponents.client5:httpclient5:5.5.1'
-    implementation 'org.apache.commons:commons-lang3:3.19.0'
-    implementation 'commons-io:commons-io:2.20.0'
-    implementation 'commons-codec:commons-codec:1.19.0'
+    implementation 'org.apache.commons:commons-lang3:3.20.0'
+    implementation 'commons-io:commons-io:2.21.0'
+    implementation 'commons-codec:commons-codec:1.20.0'
 
     implementation 'org.netpreserve.commons:webarchive-commons:1.1.11'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.20.0'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.20.1'
 
     // for commoncrawl-source
     implementation 'org.jsoup:jsoup:1.15.3'
 
     // for @Nullable
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:6.0.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:6.0.0'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:6.0.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:6.0.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:6.0.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:6.0.1'
 
     testImplementation 'org.dstadler:commons-test:1.0.0.22'
 }
