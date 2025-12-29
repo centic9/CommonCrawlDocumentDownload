@@ -39,7 +39,7 @@ public class Deduplicate {
         TreeMultimap<Long, String> sizes = scanAndSortFiles();
 
         NavigableSet<Long> sizesKeys = sizes.keySet();
-        log.info("Having " + sizesKeys.size() + " different sizes between " + sizesKeys.first() + " and " + sizesKeys.last());
+        log.info("Having " + sizesKeys.size() + " different sizes between " + sizesKeys.getFirst() + " and " + sizesKeys.getLast());
 
         int duplicates = 0;
         int count = 0;
