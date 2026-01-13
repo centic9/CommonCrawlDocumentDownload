@@ -25,7 +25,6 @@ public class CDXItem {
 	public long offset;
 	public String filename;
 
-	@SuppressWarnings("StatementWithEmptyBody")
 	public static CDXItem parse(String json) throws IOException {
 		/*
 {"url": "http://www.malthus.com.br/rw/forense/o_alcoolismo_e_a_lei.ppt", "mime": "application/vnd.ms-powerpoint", "status": "200",
@@ -36,34 +35,20 @@ public class CDXItem {
     	try (JsonParser jp = f.createParser(json)) {
 	    	while(jp.nextToken() != JsonToken.END_OBJECT) {
 	    		if(jp.getCurrentToken() == JsonToken.VALUE_STRING) {
-	    			String name = jp.getCurrentName();
-					if("url".equals(name)) {
-	    				item.url = jp.getValueAsString().toLowerCase();
-	    			} else if ("mime".equals(name)) {
-	    				item.mime = jp.getValueAsString().toLowerCase();
-	    			} else if ("status".equals(name)) {
-	    				item.status = jp.getValueAsString();
-	    			} else if ("digest".equals(name)) {
-	    				item.digest = jp.getValueAsString();
-	    			} else if ("length".equals(name)) {
-	    				item.length = jp.getValueAsLong();
-	    			} else if ("offset".equals(name)) {
-	    				item.offset = jp.getValueAsLong();
-	    			} else if ("filename".equals(name)) {
-	    				item.filename = jp.getValueAsString();
-					} else if ("mime-detected".equals(name)) {
-						// ignored for now
-					} else if ("charset".equals(name)) {
-						// ignored for now
-					} else if ("languages".equals(name)) {
-						// ignored for now
-					} else if ("truncated".equals(name)) {
-						// ignored for now
-					} else if ("redirect".equals(name)) {
-						// ignored for now
-	    			} else {
-	    				throw new IllegalStateException("Unknown field found: " + name);
-	    			}
+	    			String name = jp.currentName();
+                    switch (name) {
+                        case "url" -> item.url = jp.getValueAsString().toLowerCase();
+                        case "mime" -> item.mime = jp.getValueAsString().toLowerCase();
+                        case "status" -> item.status = jp.getValueAsString();
+                        case "digest" -> item.digest = jp.getValueAsString();
+                        case "length" -> item.length = jp.getValueAsLong();
+                        case "offset" -> item.offset = jp.getValueAsLong();
+                        case "filename" -> item.filename = jp.getValueAsString();
+                        case "mime-detected", "redirect", "truncated", "languages", "charset" -> {
+                            // ignored for now
+                        }
+                        case null, default -> throw new IllegalStateException("Unknown field found: " + name);
+                    }
 	    		}
 	    	}
     	}
