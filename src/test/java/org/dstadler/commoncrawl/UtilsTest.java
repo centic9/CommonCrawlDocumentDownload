@@ -28,6 +28,7 @@ public class UtilsTest {
         assertNull(Utils.reverseDomain(null));
     }
 
+    @SuppressWarnings("HttpUrlsUsage")
     @Test
     public void testConvertUrl() throws Exception {
         assertEquals(
@@ -142,6 +143,7 @@ public class UtilsTest {
         // results not easily testable...
     }
 
+    @SuppressWarnings("HttpUrlsUsage")
     @Test
     public void testComputeDownloadFileName() {
         assertEquals(Utils.DOWNLOAD_DIR, Utils.computeDownloadFileName("", ""));
@@ -155,7 +157,8 @@ public class UtilsTest {
         assertEquals(new File(Utils.DOWNLOAD_DIR, "com.corp.www_file123234()123()123_"), Utils.computeDownloadFileName("com.corp.www/file123234()123[]123/", ""));
 
         // overlong names
-        assertEquals(new File(Utils.DOWNLOAD_DIR, StringUtils.repeat("1", 240 ) + "..."), Utils.computeDownloadFileName(StringUtils.repeat("1", 500), ""));
+        assertEquals(new File(Utils.DOWNLOAD_DIR, "111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111...111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"),
+                Utils.computeDownloadFileName(StringUtils.repeat("1", 500), ""));
 
         // http/https-prefix
         assertEquals(new File(Utils.DOWNLOAD_DIR, "com.corp.www_file123234()123()123_"), Utils.computeDownloadFileName("http://com.corp.www/file123234()123[]123/", ""));
@@ -165,13 +168,22 @@ public class UtilsTest {
         assertEquals(new File(Utils.DOWNLOAD_DIR, "3d-coat.com_mantis_excel_xml_export.php.xls"), Utils.computeDownloadFileName("http://3d-coat.com/mantis/excel_xml_export.php", ".xls"));
         assertEquals(new File(Utils.DOWNLOAD_DIR, "3d-coat.com_mantis_excel_xml_export.php.xls"), Utils.computeDownloadFileName("http://3d-coat.com/mantis/excel_xml_export.php.xls", ".xls"));
         // overlong extension
-        assertEquals(new File(Utils.DOWNLOAD_DIR, StringUtils.repeat("a", 10) + "." + StringUtils.repeat("a", 229) + "....xls"), Utils.computeDownloadFileName(StringUtils.repeat("a",  10) + "." + StringUtils.repeat("a", 400), ".xls"));
+        assertEquals(new File(Utils.DOWNLOAD_DIR, "aaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.xls"),
+                Utils.computeDownloadFileName(StringUtils.repeat("a",  10) + "." + StringUtils.repeat("a", 400), ".xls"));
+        assertEquals(new File(Utils.DOWNLOAD_DIR, "aaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...ls.xls.xls.xls.xls.xls.xls.xls.xls.xls.xls.xls.xls.xls.xls.xls.xls.xls.xls.xls.xls.xls.xls.xls.xls.xls.xls.xls.xls.xls.xls.xls"),
+                Utils.computeDownloadFileName(StringUtils.repeat("a",  10) + "." + StringUtils.repeat("a", 400), StringUtils.repeat(".xls", 400)));
 
         // more special characters
         assertEquals(new File(Utils.DOWNLOAD_DIR, "3d-coat.com_mantis_excel__xml_export.php.xls"), Utils.computeDownloadFileName("http://3d-coat.com/mantis/excel_:xml_export.php.xls", ".xls"));
         assertEquals(new File(Utils.DOWNLOAD_DIR, "3d-coat.com_mantis_excel__xml_export.php.xls"), Utils.computeDownloadFileName("http://3d-coat.com/mantis/excel_%xml_export.php.xls", ".xls"));
         assertEquals(new File(Utils.DOWNLOAD_DIR, "3d-coat.com_mantis_excel__xml_export.php.xls"), Utils.computeDownloadFileName("http://3d-coat.com/mantis/excel_+xml_export.php.xls", ".xls"));
         assertEquals(new File(Utils.DOWNLOAD_DIR, "3d-coat.com_mantis_excel__xml_export.php.xls"), Utils.computeDownloadFileName("http://3d-coat.com/mantis/excel_*xml_export.php.xls", ".xls"));
+
+        // too long
+        assertEquals(new File(Utils.DOWNLOAD_DIR, "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456...90123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890.xls"),
+                   Utils.computeDownloadFileName("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890", ".xls"));
+        assertEquals(new File(Utils.DOWNLOAD_DIR, "list.msu.edu_cgi-bin_wa_a3=ind2309&l=aib-l&e=base64&p=11849136&b=--part-abb8jmhfykdubcnxmopclwapua7dtsjpu3djq2caybuso&t=applic..._2fvnd.openxmlformats-officedocument.wordprocessingml.document;_20name=_22jibs_20call_20for_20papers_20rethink.docx&xss=3.docx"),
+                   Utils.computeDownloadFileName("list.msu.edu_cgi-bin_wa_a3=ind2309&l=aib-l&e=base64&p=11849136&b=--part-abb8jmhfykdubcnxmopclwapua7dtsjpu3djq2caybuso&t=application_2fvnd.openxmlformats-officedocument.wordprocessingml.document;_20name=_22jibs_20call_20for_20papers_20rethink.docx&xss=3", ".docx"));
     }
 
     // helper method to get coverage of the unused constructor

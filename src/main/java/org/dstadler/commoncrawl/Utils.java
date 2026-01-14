@@ -3,7 +3,6 @@ package org.dstadler.commoncrawl;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
@@ -121,7 +120,7 @@ public class Utils {
         return computeDownloadFileName(DOWNLOAD_DIR, urlStr, postfix);
     }
 
-    public static File computeDownloadFileName(File rootDir, String urlStr, String postfix) {
+    private static File computeDownloadFileName(File rootDir, String urlStr, String postfix) {
         // try to simply use the full url with only slashes replaced
     	String replace = Strings.CS.removeStart(urlStr, "http://");
     	replace = Strings.CS.removeStart(replace, "https://");
@@ -130,15 +129,14 @@ public class Utils {
                 replace("]", ")").replace("?", "_").
                 replace(":", "_").replace("%",  "_").
                 replace("+", "_").replace("*", "_");
-        if(replace.length() > 240) {
-            String extension = FilenameUtils.getExtension(replace);
-            // don't use an extension that would make the overall filename length become more than 250 characters
-            if(extension.length() > 10) {
-            	extension = "";
-            }
-			replace = replace.substring(0, 240) + "..." + extension;
-        }
-        return new File(rootDir, replace.endsWith(postfix) ? replace : replace + postfix);
+
+        String fileName = replace.endsWith(postfix) ? replace : replace + postfix;
+
+        // some filesystems only allow names up to 255 chars
+        // e.g. https://en.wikipedia.org/wiki/Ext3 for ext3
+        fileName = StringUtils.abbreviateMiddle(fileName, "...", 255);
+
+        return new File(rootDir, fileName);
     }
 
 	public static File downloadFileFromCommonCrawl(CloseableHttpClient httpClient, String url, DocumentLocation header, boolean useWARC)
