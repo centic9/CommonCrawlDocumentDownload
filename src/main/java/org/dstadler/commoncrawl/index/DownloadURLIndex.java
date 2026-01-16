@@ -29,7 +29,7 @@ public class DownloadURLIndex {
     private static final Logger log = LoggerFactory.make();
 
     // https://commoncrawl.org/blog/
-    public static final String CURRENT_CRAWL = "CC-MAIN-2025-43";
+    public static final String CURRENT_CRAWL = "CC-MAIN-2025-51";
 	public static final File COMMON_CRAWL_FILE = new File("commoncrawl-" + CURRENT_CRAWL + ".txt");
 
 	private static final int START_INDEX = 0;
