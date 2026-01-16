@@ -3,11 +3,11 @@ package org.dstadler.commoncrawl;
 /**
  * Which extensions we are interested in.
  *
- * If you want to change which files are downloaded, just can 
+ * If you want to change which files are downloaded, just can
  * set a different list of file-extensions here, e.g.
  *
  * <pre>
-           ".pdf" 
+           ".pdf"
  </pre>
  *
  * would find and download PDF documents.
@@ -50,7 +50,7 @@ public class Extensions {
         ".vss",
         ".vst",
         ".vsw",
-        
+
         // Visio - ooxml (currently unsupported)
         ".vsdm",
         ".vsdx",
@@ -67,15 +67,19 @@ public class Extensions {
 
         // Microsoft TNEF
         // ".dat", new HMEFFileHandler());
+
+        // Windows image formats which can be embedded in slideshows and can be tested by the integration tests
+        ".wmf",
+        ".emf",
     };
-    
+
     public static boolean matches(String url) {
         for(String ext : EXTENSIONS) {
             if(url.endsWith(ext)) {
                 return true;
             }
         }
-        
+
         return false;
     }
 }

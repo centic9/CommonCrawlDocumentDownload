@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 /**
  * A list of patterns of mimetypes that we are interested in.
  *
- * If you want to change which files are downloaded, just can 
+ * If you want to change which files are downloaded, just can
  * set a different list of mime-types here, e.g.
  *
  * <pre>
@@ -78,6 +78,12 @@ public class MimeTypes {
                 "x-tika-ooxml|" +
                 "x-tika-ooxml-protected)"), ".ooxml"));
         MIME_TYPES.add(Pair.of(Pattern.compile("application/x-tika-msoffice"), ".ole2"));
+
+        // Windows image formats which can be embedded in slideshows and can be tested by the integration tests
+        MIME_TYPES.add(Pair.of(Pattern.compile(" image/wmf"), ".wmf"));
+        MIME_TYPES.add(Pair.of(Pattern.compile("image/x-wmf"), ".wmf"));
+        MIME_TYPES.add(Pair.of(Pattern.compile(" image/emf"), ".emf"));
+        MIME_TYPES.add(Pair.of(Pattern.compile("image/x-emf"), ".emf"));
 
 //    	MIME_TYPE_MATCHER.put(Pattern.compile(".*.*"));
 
