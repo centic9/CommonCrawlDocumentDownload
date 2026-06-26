@@ -51,7 +51,7 @@ dependencies {
     implementation 'commons-codec:commons-codec:1.21.0'
 
     implementation 'org.netpreserve.commons:webarchive-commons:1.1.11'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.21.1'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.22.0'
 
     // for commoncrawl-source
     implementation 'org.jsoup:jsoup:1.15.3'
