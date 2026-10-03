@@ -44,7 +44,7 @@ public class CDXItem {
                         case "length" -> item.length = jp.getValueAsLong();
                         case "offset" -> item.offset = jp.getValueAsLong();
                         case "filename" -> item.filename = jp.getValueAsString();
-                        case "mime-detected", "redirect", "truncated", "languages", "charset" -> {
+                        case "recordid", "mime-detected", "redirect", "truncated", "languages", "charset" -> {
                             // ignored for now
                         }
                         case null, default -> throw new IllegalStateException("Unknown field found: " + name);
